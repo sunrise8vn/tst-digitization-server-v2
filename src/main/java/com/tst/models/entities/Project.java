@@ -1,6 +1,5 @@
 package com.tst.models.entities;
 
-import com.tst.models.enums.EUserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,14 +12,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "roles")
-public class Role {
+@Table(name = "projects")
+public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 50, nullable = false, unique = true)
-    private EUserRole name;
+    @Column(name = "project_name", nullable = false)
+    private String projectName;
+
+    @Column(name = "project_code", nullable = false)
+    private String projectCode;
+
+    @Column(name = "project_folder", nullable = false)
+    private String projectFolder;
 
 }

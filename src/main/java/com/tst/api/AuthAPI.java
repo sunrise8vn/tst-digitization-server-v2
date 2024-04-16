@@ -1,13 +1,15 @@
 package com.tst.api;
 
 import com.tst.components.LocalizationUtils;
-import com.tst.models.dtos.RefreshTokenDTO;
-import com.tst.models.dtos.UserDTO;
-import com.tst.models.dtos.UserLoginDTO;
+import com.tst.models.dtos.auth.RefreshTokenDTO;
+import com.tst.models.dtos.user.UserCreateDTO;
+import com.tst.models.dtos.user.UserLoginDTO;
 import com.tst.models.entities.Token;
 import com.tst.models.entities.User;
 import com.tst.models.responses.ResponseObject;
-import com.tst.models.responses.user.LoginResponse;
+import com.tst.models.responses.auth.AuthLoginResponse;
+import com.tst.models.responses.auth.AuthTokenResponse;
+import com.tst.models.responses.auth.AuthUserResponse;
 import com.tst.models.responses.user.UserRegisterResponse;
 import com.tst.services.token.ITokenService;
 import com.tst.services.user.IUserService;
@@ -35,32 +37,35 @@ public class AuthAPI {
 
     @PostMapping("/register")
     public ResponseEntity<ResponseObject> createUser(
-            @Valid @RequestBody UserDTO userDTO,
+            @Valid @RequestBody UserCreateDTO userCreateDTO,
             BindingResult result
     ) throws Exception {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .message(localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_FAILED))
-                    .status(HttpStatus.BAD_REQUEST)
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
                     .data(appUtils.mapErrorToResponse(result))
                     .build());
         }
 
-        if (!userDTO.getPassword().equals(userDTO.getRetypePassword())) {
+        if (!userCreateDTO.getPassword().equals(userCreateDTO.getRetypePassword())) {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .message(localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_FAILED))
-                    .status(HttpStatus.BAD_REQUEST)
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_GATEWAY)
                     .data(localizationUtils.getLocalizedMessage(MessageKeys.PASSWORD_NOT_MATCH))
                     .build());
         }
 
-        User user = userService.createUser(userDTO);
+        User user = userService.createUser(userCreateDTO);
 
         return new ResponseEntity<>(
                 ResponseObject.builder()
-                .status(HttpStatus.CREATED)
-                .data(UserRegisterResponse.fromUser(user))
                 .message(localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_SUCCESSFULLY))
+                .status(HttpStatus.CREATED.value())
+                .statusText(HttpStatus.CREATED)
+                .data(UserRegisterResponse.fromUser(user))
                 .build(),
                 HttpStatus.CREATED
         );
@@ -74,7 +79,8 @@ public class AuthAPI {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .message(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_FAILED))
-                    .status(HttpStatus.BAD_REQUEST)
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_GATEWAY)
                     .data(appUtils.mapErrorToResponse(result))
                     .build());
         }
@@ -88,42 +94,70 @@ public class AuthAPI {
         User userDetail = userService.getUserDetailsFromToken(token);
         Token jwtToken = tokenService.addToken(userDetail, token);
 
-        LoginResponse loginResponse = LoginResponse.builder()
+        AuthUserResponse authUserResponse = AuthUserResponse.builder()
                 .id(userDetail.getId())
                 .username(userDetail.getUsername())
-                .token(jwtToken.getToken())
-                .tokenType(jwtToken.getTokenType())
-                .refreshToken(jwtToken.getRefreshToken())
                 .roles(userDetail.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                .build();
+
+        AuthTokenResponse authTokenResponse = AuthTokenResponse.builder()
+                .accessToken(jwtToken.getToken())
+                .refreshToken(jwtToken.getRefreshToken())
+                .build();
+
+        AuthLoginResponse authLoginResponse = AuthLoginResponse.builder()
+                .user(authUserResponse)
+                .token(authTokenResponse)
                 .build();
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_SUCCESSFULLY))
-                .data(loginResponse)
-                .status(HttpStatus.OK)
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(authLoginResponse)
                 .build());
+    }
+
+    @PostMapping("/verify-token")
+    public ResponseEntity<ResponseObject> verifyToken() {
+        return ResponseEntity.ok().body(
+                ResponseObject.builder()
+                        .message(localizationUtils.getLocalizedMessage(MessageKeys.VERIFY_TOKEN_SUCCESSFULLY))
+                        .status(HttpStatus.OK.value())
+                        .statusText(HttpStatus.OK)
+                        .build());
     }
 
     @PostMapping("/refresh-token")
     public ResponseEntity<ResponseObject> refreshToken(
-            @Valid @RequestBody RefreshTokenDTO refreshTokenDTO
+            @Valid @RequestBody RefreshTokenDTO refreshTokenDTO,
+            BindingResult result
     ) throws Exception {
+        if (result.hasErrors()) {
+            return new ResponseEntity<>(
+                    ResponseObject.builder()
+                            .message(localizationUtils.getLocalizedMessage(MessageKeys.VERIFY_TOKEN_FAILED))
+                            .status(HttpStatus.UNAUTHORIZED.value())
+                            .statusText(HttpStatus.UNAUTHORIZED)
+                            .build(),
+                    HttpStatus.UNAUTHORIZED
+            );
+        }
+
         User userDetail = userService.getUserDetailsFromRefreshToken(refreshTokenDTO.getRefreshToken());
         Token jwtToken = tokenService.refreshToken(refreshTokenDTO.getRefreshToken(), userDetail);
 
-        LoginResponse loginResponse = LoginResponse.builder()
-                .token(jwtToken.getToken())
-                .tokenType(jwtToken.getTokenType())
+        AuthTokenResponse authTokenResponse = AuthTokenResponse.builder()
+                .accessToken(jwtToken.getToken())
                 .refreshToken(jwtToken.getRefreshToken())
-                .username(userDetail.getUsername())
-                .roles(userDetail.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
-                .id(userDetail.getId()).build();
+                .build();
 
         return ResponseEntity.ok().body(
                 ResponseObject.builder()
-                        .data(loginResponse)
-                        .message("Làm mới token thành công")
-                        .status(HttpStatus.OK)
+                        .message(localizationUtils.getLocalizedMessage(MessageKeys.REFRESH_TOKEN_SUCCESSFULLY))
+                        .status(HttpStatus.OK.value())
+                        .statusText(HttpStatus.OK)
+                        .data(authTokenResponse)
                         .build());
     }
 

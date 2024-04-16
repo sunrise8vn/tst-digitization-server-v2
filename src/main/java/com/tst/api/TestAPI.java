@@ -28,13 +28,15 @@ public class TestAPI {
         if (!userDetails.getRole().getName().equals(EUserRole.ROLE_ADMIN)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseObject.builder()
                     .message(localizationUtils.getLocalizedMessage(MessageKeys.ERROR_FORBIDDEN))
-                    .status(HttpStatus.FORBIDDEN)
+                    .status(HttpStatus.FORBIDDEN.value())
+                    .statusText(HttpStatus.FORBIDDEN)
                     .build());
         }
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Get Hello successfully")
-                .status(HttpStatus.OK)
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
                 .build());
     }
 }
