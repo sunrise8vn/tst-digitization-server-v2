@@ -1,4 +1,4 @@
-package com.tst.models.dtos;
+package com.tst.models.dtos.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
@@ -11,12 +11,12 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class UserDTO {
+public class UserCreateDTO {
 
-    @NotBlank(message = "Tên tài khoản không được để trống")
+    @NotBlank(message = "{user.username.not_empty}")
     private String username;
 
-    @NotBlank(message = "Mật khẩu không được để trống")
+    @NotBlank(message = "{user.password.not_empty}")
     private String password;
 
     @JsonProperty("retype_password")

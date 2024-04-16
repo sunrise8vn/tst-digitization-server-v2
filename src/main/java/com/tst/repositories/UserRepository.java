@@ -15,7 +15,19 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<User> findByUsername(String username);
 
-    @Query(value = "SELECT new com.tst.models.responses.user.UserResponse(" +
+    @Query(value =
+            "SELECT us " +
+            "FROM User AS us " +
+            "LEFT JOIN UserInfo AS ui " +
+            "ON us = ui.user " +
+            "WHERE us.username = :username " +
+            "OR ui.email = :username " +
+            "OR ui.phoneNumber = :username"
+    )
+    Optional<User> findByUsernameOrEmailOrPhoneNumber(String username);
+
+    @Query(value = "" +
+            "SELECT new com.tst.models.responses.user.UserResponse(" +
                 "us.id, " +
                 "us.username, " +
                 "ui.fullName, " +
@@ -28,11 +40,11 @@ public interface UserRepository extends JpaRepository<User, String> {
             "FROM User AS us " +
             "LEFT JOIN UserInfo AS ui " +
             "ON us = ui.user " +
-            "WHERE us.username LIKE %:keyWord% " +
-            "OR ui.fullName LIKE %:keyWord% " +
-            "OR ui.email LIKE %:keyWord% " +
-            "OR ui.phoneNumber LIKE %:keyWord% " +
-            "OR ui.address LIKE %:keyWord% "
+            "WHERE us.username LIKE :keyWord " +
+            "OR ui.fullName LIKE :keyWord " +
+            "OR ui.email LIKE :keyWord " +
+            "OR ui.phoneNumber LIKE :keyWord " +
+            "OR ui.address LIKE :keyWord "
     )
     Page<UserResponse> findAllUserResponse(@Param("keyWord") String keyWord, Pageable pageable);
 

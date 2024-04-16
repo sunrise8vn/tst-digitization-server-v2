@@ -27,7 +27,7 @@ public class UserAPI {
 
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAllUser(
-            @RequestParam(value = "q", defaultValue = "", required = false) String keyword,
+            @RequestParam(value = "q", defaultValue = "") String keyword,
             @RequestParam(value = "_page", defaultValue = "1") int page,
             @RequestParam(value = "_limit", defaultValue = "10") int limit,
             @RequestParam(value = "_sort", defaultValue = "createdAt") String sortBy,
@@ -59,7 +59,8 @@ public class UserAPI {
 
             return ResponseEntity.ok().body(ResponseObject.builder()
                     .message("Get user list successfully")
-                    .status(HttpStatus.OK)
+                    .status(HttpStatus.OK.value())
+                    .statusText(HttpStatus.OK)
                     .data(paginationResponseObject)
                     .build());
         }

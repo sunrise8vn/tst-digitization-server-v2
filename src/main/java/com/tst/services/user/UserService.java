@@ -2,7 +2,7 @@ package com.tst.services.user;
 
 import com.tst.components.JwtTokenUtils;
 import com.tst.components.LocalizationUtils;
-import com.tst.models.dtos.UserDTO;
+import com.tst.models.dtos.user.UserCreateDTO;
 import com.tst.exceptions.*;
 import com.tst.models.entities.Role;
 import com.tst.models.entities.Token;
@@ -50,7 +50,7 @@ public class UserService implements IUserService {
     @Override
     public User getUserDetailsFromToken(String token) throws Exception {
         if (jwtTokenUtil.isTokenExpired(token)) {
-            throw new UnauthorizedException("Token đã hết hạn");
+            throw new UnauthorizedException(localizationUtils.getLocalizedMessage(MessageKeys.VERIFY_TOKEN_EXPIRED));
         }
 
         String username = jwtTokenUtil.extractUsername(token);
@@ -67,32 +67,32 @@ public class UserService implements IUserService {
     public User getUserDetailsFromRefreshToken(String refreshToken) throws Exception {
         Optional<Token> tokenOptional = tokenRepository.findByRefreshToken(refreshToken);
         if (tokenOptional.isEmpty()) {
-            throw new UnauthorizedException("Token không tồn tại");
+            throw new UnauthorizedException(localizationUtils.getLocalizedMessage(MessageKeys.REFRESH_TOKEN_NOT_EXISTS));
         }
         return getUserDetailsFromToken(tokenOptional.get().getToken());
     }
 
     @Override
     @Transactional
-    public User createUser(UserDTO userDTO) {
-        String username = userDTO.getUsername();
+    public User createUser(UserCreateDTO userCreateDTO) {
+        String username = userCreateDTO.getUsername();
 
         if (userRepository.existsByUsername(username)) {
-            throw new DataExistsException("Tên tài khoản đã tồn tại");
+            throw new DataExistsException(localizationUtils.getLocalizedMessage(MessageKeys.USER_IS_EXISTING));
         }
 
-        Role role = roleRepository.findById(userDTO.getRoleId())
+        Role role = roleRepository.findById(userCreateDTO.getRoleId())
                 .orElseThrow(() -> new DataInputException(
                         localizationUtils.getLocalizedMessage(MessageKeys.ROLE_DOES_NOT_EXISTS)));
 
         if (role.getName().equals(EUserRole.ROLE_ADMIN)) {
-            throw new PermissionDenyException("Không được phép đăng ký tài khoản có vai trò Admin");
+            throw new PermissionDenyException("Không được phép đăng ký tài khoản có vai trò " + EUserRole.ROLE_ADMIN.getValue());
         }
 
-        String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
+        String encodedPassword = passwordEncoder.encode(userCreateDTO.getPassword());
 
         User newUser = User.builder()
-                .username(userDTO.getUsername())
+                .username(userCreateDTO.getUsername())
                 .password(encodedPassword)
                 .activated(true)
                 .build();
@@ -107,20 +107,16 @@ public class UserService implements IUserService {
             String username,
             String password
     ) {
-        Optional<User> optionalUser = userRepository.findByUsername(username);
-
-        if (optionalUser.isEmpty()) {
+        User existingUser = userRepository.findByUsernameOrEmailOrPhoneNumber(username).orElseThrow(() -> {
             throw new UnauthorizedException(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_USERNAME_PASSWORD));
-        }
+        });
 
-        User existingUser = optionalUser.get();
-
-        if (!optionalUser.get().isActivated()) {
+        if (!existingUser.isActivated()) {
             throw new UnauthorizedException(localizationUtils.getLocalizedMessage(MessageKeys.USER_IS_LOCKED));
         }
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                username,
+                existingUser.getUsername(),
                 password
         );
 

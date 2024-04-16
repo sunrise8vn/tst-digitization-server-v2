@@ -13,7 +13,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseObject> handleGeneralException(Exception exception) {
         return ResponseEntity.internalServerError().body(
                 ResponseObject.builder()
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .statusText(HttpStatus.INTERNAL_SERVER_ERROR)
                         .message(exception.getMessage())
                         .build()
         );
@@ -23,7 +24,8 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> handleBadRequestException(DataInputException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseObject.builder()
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.BAD_REQUEST.value())
+                .statusText(HttpStatus.BAD_REQUEST)
                 .message(exception.getMessage())
                 .build());
     }
@@ -32,7 +34,8 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<?> handleUnauthorizedException(UnauthorizedException exception) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseObject.builder()
-                .status(HttpStatus.UNAUTHORIZED)
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .statusText(HttpStatus.UNAUTHORIZED)
                 .message(exception.getMessage())
                 .build());
     }
@@ -41,7 +44,8 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> handleResourceNotFoundException(DataNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseObject.builder()
-                .status(HttpStatus.NOT_FOUND)
+                .status(HttpStatus.NOT_FOUND.value())
+                .statusText(HttpStatus.NOT_FOUND)
                 .message(exception.getMessage())
                 .build());
     }
@@ -50,7 +54,8 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<?> handleFieldExistsException(DataExistsException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ResponseObject.builder()
-                .status(HttpStatus.CONFLICT)
+                .status(HttpStatus.CONFLICT.value())
+                .statusText(HttpStatus.CONFLICT)
                 .message(exception.getMessage())
                 .build());
     }
@@ -59,7 +64,8 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<?> handlePermissionDenyException(PermissionDenyException exception) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseObject.builder()
-                .status(HttpStatus.FORBIDDEN)
+                .status(HttpStatus.FORBIDDEN.value())
+                .statusText(HttpStatus.FORBIDDEN)
                 .message(exception.getMessage())
                 .build());
     }

@@ -1,4 +1,4 @@
-package com.tst.models.dtos;
+package com.tst.models.dtos.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -11,10 +11,10 @@ import lombok.*;
 @Builder
 public class UserLoginDTO {
 
-    @NotBlank(message = "Tên tài khoản không được để trống")
+    @NotBlank(message = "{user.username.not_empty}")
     private String username;
 
-    @NotBlank(message = "Mật khẩu không được để trống")
+    @NotBlank(message = "{user.password.not_empty}")
     private String password;
 
 }

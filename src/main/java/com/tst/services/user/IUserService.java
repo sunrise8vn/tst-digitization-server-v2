@@ -1,6 +1,6 @@
 package com.tst.services.user;
 
-import com.tst.models.dtos.UserDTO;
+import com.tst.models.dtos.user.UserCreateDTO;
 import com.tst.models.entities.User;
 import com.tst.models.responses.user.UserResponse;
 import com.tst.services.IGeneralService;
@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 
 public interface IUserService extends IGeneralService<User, String> {
-    User createUser(UserDTO userDTO);
+    User createUser(UserCreateDTO userCreateDTO);
 
     String login(String username, String password);
 

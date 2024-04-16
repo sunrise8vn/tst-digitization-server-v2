@@ -1,10 +1,12 @@
 package com.tst.services.token;
 
 import com.tst.components.JwtTokenUtils;
-import com.tst.exceptions.DataInputException;
+import com.tst.components.LocalizationUtils;
+import com.tst.exceptions.UnauthorizedException;
 import com.tst.models.entities.Token;
 import com.tst.models.entities.User;
 import com.tst.repositories.TokenRepository;
+import com.tst.utils.MessageKeys;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,26 +32,8 @@ public class TokenService implements ITokenService {
 
     private final JwtTokenUtils jwtTokenUtil;
 
-    @Transactional
-    @Override
-    public Token refreshToken(String refreshToken, User user) throws Exception {
-        Token existingToken = tokenRepository.findByRefreshToken(refreshToken).orElseThrow(() -> {
-            throw new DataInputException("Token làm mới không tồn tại");
-        });
+    private final LocalizationUtils localizationUtils;
 
-        if (existingToken.getRefreshExpirationDate().isBefore(LocalDateTime.now())) {
-            tokenRepository.delete(existingToken);
-            throw new DataInputException("Token làm mới đã hết hạn");
-        }
-
-        String token = jwtTokenUtil.generateToken(user);
-        LocalDateTime expirationDateTime = LocalDateTime.now().plusSeconds(expiration);
-        existingToken.setExpirationDate(expirationDateTime);
-        existingToken.setToken(token);
-        existingToken.setRefreshToken(UUID.randomUUID().toString());
-        existingToken.setRefreshExpirationDate(LocalDateTime.now().plusSeconds(expirationRefreshToken));
-        return existingToken;
-    }
 
     @Transactional
     @Override
@@ -82,4 +66,29 @@ public class TokenService implements ITokenService {
 
         return newToken;
     }
+
+    @Transactional
+    @Override
+    public Token refreshToken(String refreshToken, User user) {
+        Token existingToken = tokenRepository.findByRefreshToken(refreshToken).orElseThrow(() -> {
+            throw new UnauthorizedException(localizationUtils.getLocalizedMessage(MessageKeys.REFRESH_TOKEN_NOT_EXISTS));
+        });
+
+        if (existingToken.getRefreshExpirationDate().isBefore(LocalDateTime.now())) {
+            tokenRepository.delete(existingToken);
+            throw new UnauthorizedException(localizationUtils.getLocalizedMessage(MessageKeys.REFRESH_TOKEN_EXPIRED));
+        }
+
+        String token = jwtTokenUtil.generateToken(user);
+        LocalDateTime expirationDateTime = LocalDateTime.now().plusSeconds(expiration);
+        existingToken.setExpirationDate(expirationDateTime);
+        existingToken.setToken(token);
+        existingToken.setRefreshToken(UUID.randomUUID().toString());
+        existingToken.setRefreshExpirationDate(LocalDateTime.now().plusSeconds(expirationRefreshToken));
+        return existingToken;
+    }
+
+
+
+
 }
