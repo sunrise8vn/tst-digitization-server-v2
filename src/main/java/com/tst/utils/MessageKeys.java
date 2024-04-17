@@ -19,7 +19,8 @@ public class MessageKeys {
     public static final String REFRESH_TOKEN_NOT_EXISTS = "auth.refresh_token.not_exist";
     public static final String REFRESH_TOKEN_EXPIRED = "auth.refresh_token.expired";
 
-    public static final String ERROR_FORBIDDEN = "error.forbidden";
+    public static final String NO_CONTENT = "message.no_content";
+    public static final String ERROR_FORBIDDEN = "message.error.forbidden";
 
 
 }

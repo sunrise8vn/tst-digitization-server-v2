@@ -1,10 +1,12 @@
 package com.tst.api;
 
+import com.tst.components.LocalizationUtils;
 import com.tst.models.responses.PaginationResponseObject;
 import com.tst.models.responses.PagingResponseObject;
 import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.user.UserResponse;
 import com.tst.services.user.IUserService;
+import com.tst.utils.MessageKeys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,7 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserAPI {
 
+    private final LocalizationUtils localizationUtils;
     private final IUserService userService;
+
 
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAllUser(
@@ -45,7 +49,14 @@ public class UserAPI {
         Page<UserResponse> userResponses = userService.findAllUserResponse(keyword, pageable);
 
         if (userResponses.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(
+                    ResponseObject.builder()
+                            .message(localizationUtils.getLocalizedMessage(MessageKeys.NO_CONTENT))
+                            .status(HttpStatus.OK.value())
+                            .statusText(HttpStatus.OK)
+                            .build(),
+                    HttpStatus.OK
+            );
         } else {
             PagingResponseObject pagingResponseObject = new PagingResponseObject();
             pagingResponseObject.setCount(userResponses.getTotalElements());

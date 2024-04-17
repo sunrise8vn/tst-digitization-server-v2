@@ -39,7 +39,7 @@ public class AuthAPI {
     public ResponseEntity<ResponseObject> createUser(
             @Valid @RequestBody UserCreateDTO userCreateDTO,
             BindingResult result
-    ) throws Exception {
+    ) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .message(localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_FAILED))
