@@ -18,13 +18,13 @@ public class ParentsChildren {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "number", length = 20)
+    @Column(name = "number", length = 10)
     private String number;
 
-    @Column(name = "number_book", length = 20)
+    @Column(name = "number_book", length = 10)
     private String numberBook;
 
-    @Column(name = "number_page", length = 3)
+    @Column(name = "number_page", length = 4)
     private String numberPage;
 
     @Column(name = "decision_no", length = 5)
@@ -39,8 +39,8 @@ public class ParentsChildren {
     @Column(name = "confirmation_type ")
     private Integer confirmationType;
 
-    @Column(name = "register_place")
-    private String registerPlace;
+    @Column(name = "registration_place")
+    private String registrationPlace;
 
     @Column(name = "signer", length = 50)
     private String signer;
