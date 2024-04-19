@@ -23,7 +23,7 @@ public class Birth {
     @Column(name = "number_book", length = 10)
     private String numberBook;
 
-    @Column(name = "number_page", length = 4)
+    @Column(name = "number_page", length = 10)
     private String numberPage;
 
     @Column(name = "registration_date", length = 10)
@@ -92,7 +92,7 @@ public class Birth {
     @Column(name = "birther_missing_cancel_statement_note_date", length = 10)
     private String birtherMissingCancelStatementNoteDate;
 
-    @Column(name = "birther_missing_cancel_statement_base")
+    @Column(name = "birther_missing_cancel_statement_base", length = 50)
     private String birtherMissingCancelStatementBase;
 
     @Column(name = "birther_limited_behavioral_capacity")

@@ -24,7 +24,7 @@ public class ParentsChildren {
     @Column(name = "number_book", length = 10)
     private String numberBook;
 
-    @Column(name = "number_page", length = 4)
+    @Column(name = "number_page", length = 10)
     private String numberPage;
 
     @Column(name = "decision_no", length = 5)
