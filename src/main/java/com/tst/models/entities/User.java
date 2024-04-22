@@ -2,7 +2,6 @@ package com.tst.models.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,8 +18,7 @@ import java.util.*;
 @Table(name = "users")
 public class User extends BaseEntity implements UserDetails {
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column(length = 35, nullable = false, unique = true)

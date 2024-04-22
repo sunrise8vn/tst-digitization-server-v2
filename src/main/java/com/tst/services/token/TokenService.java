@@ -29,9 +29,7 @@ public class TokenService implements ITokenService {
     private int expirationRefreshToken;
 
     private final TokenRepository tokenRepository;
-
     private final JwtTokenUtils jwtTokenUtil;
-
     private final LocalizationUtils localizationUtils;
 
 

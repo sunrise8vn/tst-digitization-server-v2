@@ -11,7 +11,7 @@ spring:
     show-sql: false
     open-in-view: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
       dialect: org.hibernate.dialect.MySQL8Dialect
@@ -29,8 +29,8 @@ spring:
 api:
   prefix: /api/v1
 jwt:
-  expiration: 180 #3 minutes = 60 * 3
-  expiration-refresh-token: 300 #5 minutes = 60 * 5
+  expiration: 600 #10 minutes = 60 * 10
+  expiration-refresh-token: 900 #15 minutes = 60 * 15
   secretKey: Kxxb9zA91Vz7IQ/pHuID1+xHkekZ9tBqYAorv7ghNSc=
 
 logging:
