@@ -1,5 +1,6 @@
 package com.tst.models.entities.locationRegion;
 
+import com.tst.models.responses.locationRegion.LocationProvinceResponse;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +31,16 @@ public class LocationProvince {
 
     @Column(name = "phone_code")
     private String phoneCode;
+
+    public LocationProvinceResponse toLocationProvinceResponse() {
+        return new LocationProvinceResponse()
+                .setId(id)
+                .setName(name)
+                .setCode(code)
+                .setDivisionType(divisionType)
+                .setPhoneCode(phoneCode)
+                ;
+    }
 
 }
 
