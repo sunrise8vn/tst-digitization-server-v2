@@ -25,6 +25,10 @@ public class ProjectNumberBook {
     @JoinColumn(name = "project_registration_date_id")
     private ProjectRegistrationDate projectRegistrationDate;
 
+    @OneToOne
+    @JoinColumn(name = "project_number_book_cover_id", nullable = false)
+    private ProjectNumberBookCover projectNumberBookCover;
+
     @Column(columnDefinition = "int default 0", nullable = false)
     private Integer a0;
 
@@ -42,4 +46,5 @@ public class ProjectNumberBook {
 
     @Column(name = "convert_a4", columnDefinition = "int default 0", nullable = false)
     private Integer convertA4;
+
 }
