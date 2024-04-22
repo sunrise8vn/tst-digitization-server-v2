@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -37,7 +38,7 @@ public class AuthAPI {
 
     @PostMapping("/register")
     public ResponseEntity<ResponseObject> createUser(
-            @Valid @RequestBody UserCreateDTO userCreateDTO,
+            @Validated @RequestBody UserCreateDTO userCreateDTO,
             BindingResult result
     ) {
         if (result.hasErrors()) {
@@ -73,7 +74,7 @@ public class AuthAPI {
 
     @PostMapping("/login")
     public ResponseEntity<ResponseObject> login(
-            @Valid @RequestBody UserLoginDTO userLoginDTO,
+            @Validated @RequestBody UserLoginDTO userLoginDTO,
             BindingResult result
     ) throws Exception {
         if (result.hasErrors()) {
@@ -130,7 +131,7 @@ public class AuthAPI {
 
     @PostMapping("/refresh-token")
     public ResponseEntity<ResponseObject> refreshToken(
-            @Valid @RequestBody RefreshTokenDTO refreshTokenDTO,
+            @Validated @RequestBody RefreshTokenDTO refreshTokenDTO,
             BindingResult result
     ) throws Exception {
         if (result.hasErrors()) {
