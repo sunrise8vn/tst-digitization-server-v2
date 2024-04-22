@@ -15,7 +15,7 @@ import lombok.Setter;
 @Table(
     name = "registration_type_details",
     uniqueConstraints = {
-            @UniqueConstraint(name = "unique_code_registration_type_id", columnNames = {"code", "registration_type_id"})
+        @UniqueConstraint(name = "unique_code_registration_type_id", columnNames = {"code", "registration_type_id"})
     }
 )
 public class RegistrationTypeDetail {

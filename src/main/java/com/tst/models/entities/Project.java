@@ -18,13 +18,31 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "project_name", nullable = false)
-    private String projectName;
+    @Column(nullable = false)
+    private String name;
 
-    @Column(name = "project_code", nullable = false)
-    private String projectCode;
+    @Column(nullable = false)
+    private String code;
 
-    @Column(name = "project_folder", nullable = false)
-    private String projectFolder;
+    @Column(nullable = false)
+    private String folder;
+
+    @Column(columnDefinition = "int default 0", nullable = false)
+    private Integer a0;
+
+    @Column(columnDefinition = "int default 0", nullable = false)
+    private Integer a1;
+
+    @Column(columnDefinition = "int default 0", nullable = false)
+    private Integer a2;
+
+    @Column(columnDefinition = "int default 0", nullable = false)
+    private Integer a3;
+
+    @Column(columnDefinition = "int default 0", nullable = false)
+    private Integer a4;
+
+    @Column(name = "convert_a4", columnDefinition = "int default 0", nullable = false)
+    private Integer convertA4;
 
 }
