@@ -4,13 +4,15 @@ import com.tst.exceptions.DataNotFoundException;
 import com.tst.models.dtos.project.ProjectNumberBookCreateDTO;
 import com.tst.models.entities.ProjectNumberBook;
 import com.tst.models.entities.ProjectRegistrationDate;
+import com.tst.models.entities.User;
+import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.models.responses.ResponseObject;
 import com.tst.services.projectNumberBook.IProjectNumberBookService;
-import com.tst.services.projectNumberBookCover.IProjectNumberBookCoverService;
 import com.tst.services.projectRegistrationDate.IProjectRegistrationDateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +25,7 @@ public class ProjectAPI {
 
     private final IProjectNumberBookService projectNumberBookService;
     private final IProjectRegistrationDateService projectRegistrationDateService;
-    private final IProjectNumberBookCoverService projectNumberBookCoverService;
+
 
     @PostMapping("/number-book")
     public ResponseEntity<ResponseObject> createProjectNumberBook(ProjectNumberBookCreateDTO projectNumberBookCreateDTO) {
@@ -34,7 +36,11 @@ public class ProjectAPI {
             throw new DataNotFoundException("Năm đăng ký không tồn tại");
         });
 
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         ProjectNumberBook projectNumberBook = projectNumberBookCreateDTO.toProjectNumberBook(projectRegistrationDate);
+        projectNumberBook.setCreatedBy(user);
+        projectNumberBook.setStatus(EProjectNumberBookStatus.NEW);
 
         projectNumberBookService.create(projectNumberBook, projectNumberBookCreateDTO.getCoverFile());
 
