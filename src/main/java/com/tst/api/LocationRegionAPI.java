@@ -24,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.prefix}/location-region")
 @RequiredArgsConstructor
+@Validated
 public class LocationRegionAPI {
 
     private final ILocationProvinceService locationProvinceService;
@@ -45,7 +46,7 @@ public class LocationRegionAPI {
 
     @GetMapping("/districts/{provinceId}")
     public ResponseEntity<ResponseObject> getAllDistrictsByProvinceId(
-        @Validated @PathVariable @Pattern(regexp = "\\d+", message = "ID tỉnh/thành phố phải là một số") String provinceId
+        @PathVariable @Pattern(regexp = "\\d+", message = "ID tỉnh/thành phố phải là một số") String provinceId
     ) {
         locationProvinceService.findById(Long.parseLong(provinceId)).orElseThrow(() -> {
             throw new DataNotFoundException("ID tỉnh/thành phố không tồn tại");
@@ -63,7 +64,7 @@ public class LocationRegionAPI {
 
     @GetMapping("/wards/{districtId}")
     public ResponseEntity<ResponseObject> getAllWardsByDistrictId(
-        @Validated @PathVariable @Pattern(regexp = "\\d+", message = "ID thành phố/quận/huyện phải là một số") String districtId
+        @PathVariable @Pattern(regexp = "\\d+", message = "ID thành phố/quận/huyện phải là một số") String districtId
     ) {
         locationDistrictService.findById(Long.parseLong(districtId)).orElseThrow(() -> {
             throw new DataNotFoundException("ID thành phố/quận/huyện không tồn tại");

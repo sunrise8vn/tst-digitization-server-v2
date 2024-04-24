@@ -12,7 +12,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "project_number_book")
+@Table(
+    name = "project_number_books",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "unique_project_registration_date_id_code", columnNames = {"project_registration_date_id", "code"})
+    }
+)
 public class ProjectNumberBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +27,7 @@ public class ProjectNumberBook {
     private String code;
 
     @ManyToOne
-    @JoinColumn(name = "project_registration_date_id")
+    @JoinColumn(name = "project_registration_date_id", nullable = false)
     private ProjectRegistrationDate projectRegistrationDate;
 
     @OneToOne
