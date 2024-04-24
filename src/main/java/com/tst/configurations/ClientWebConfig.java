@@ -17,4 +17,10 @@ public class ClientWebConfig implements WebMvcConfigurer {
         return new MethodValidationPostProcessor();
     }
 
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/storage/**")
+                .addResourceLocations("file:storage/");
+    }
+
 }

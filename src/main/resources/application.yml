@@ -1,5 +1,6 @@
 server:
   port: 9347
+  root-folder: storage
 spring:
   datasource:
     url: jdbc:mysql://103.183.112.133:4307/tst_digitization_dev?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
