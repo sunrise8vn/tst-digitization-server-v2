@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "project_number_book_cover")
+@Table(name = "project_number_book_covers")
 public class ProjectNumberBookCover {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -25,5 +25,9 @@ public class ProjectNumberBookCover {
     private String folderName;
 
     @Column(name = "file_size", nullable = false)
-    private String fileSize;
+    private Long fileSize;
+
+    @Column(name = "size_type", nullable = false, length = 2)
+    private String sizeType;
+
 }
