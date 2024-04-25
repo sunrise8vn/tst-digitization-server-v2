@@ -13,10 +13,10 @@ import com.tst.services.projectRegistrationType.IProjectRegistrationTypeService;
 import com.tst.services.projectWard.IProjectWardService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -32,6 +32,9 @@ public class ProjectNumberBookService implements IProjectNumberBookService {
     private final IProjectDistrictService projectDistrictService;
     private final IProjectProvinceService projectProvinceService;
     private final IProjectService projectService;
+
+    @Value("${server.root-folder}")
+    private String serverRootFolder;
 
 
     @Override
@@ -96,7 +99,13 @@ public class ProjectNumberBookService implements IProjectNumberBookService {
                 throw new DataNotFoundException("Không tìm thấy dự án đăng ký");
             });
 
-            String coverFileName = "Cover." + projectNumberBook.getCode() + ".pdf";
+            String coverFileName = "Cover." +
+                    projectWard.getCode() + "." +
+                    projectRegistrationType.getCode() + "." +
+                    projectPaperSize.getCode() + "." +
+                    projectRegistrationDate.getCode() + "." +
+                    projectNumberBook.getCode() +
+                    ".pdf";
 
             String coverFolderName = project.getFolder() + "/" +
                     projectProvince.getCode() + "/" +
