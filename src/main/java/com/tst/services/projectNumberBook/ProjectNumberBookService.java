@@ -3,6 +3,7 @@ package com.tst.services.projectNumberBook;
 import com.tst.exceptions.DataInputException;
 import com.tst.exceptions.DataNotFoundException;
 import com.tst.models.entities.*;
+import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.repositories.ProjectNumberBookRepository;
 import com.tst.services.project.IProjectService;
 import com.tst.services.projectDistrict.IProjectDistrictService;
@@ -40,6 +41,11 @@ public class ProjectNumberBookService implements IProjectNumberBookService {
     @Override
     public Optional<ProjectNumberBook> findById(Long id) {
         return projectNumberBookRepository.findById(id);
+    }
+
+    @Override
+    public Optional<ProjectNumberBook> findByIdAndStatus(Long id, EProjectNumberBookStatus status) {
+        return projectNumberBookRepository.findByIdAndStatus(id, status);
     }
 
     @Override
@@ -130,6 +136,11 @@ public class ProjectNumberBookService implements IProjectNumberBookService {
 
             return projectNumberBookRepository.save(projectNumberBook);
         }
+    }
+
+    @Override
+    public void update(ProjectNumberBook projectNumberBook) {
+        projectNumberBookRepository.save(projectNumberBook);
     }
 
     @Override
