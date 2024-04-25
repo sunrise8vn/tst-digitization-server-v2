@@ -8,22 +8,27 @@ import com.tst.models.entities.User;
 import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.models.responses.ResponseObject;
 import com.tst.services.projectNumberBook.IProjectNumberBookService;
+import com.tst.services.projectNumberBookCover.IProjectNumberBookCoverService;
 import com.tst.services.projectRegistrationDate.IProjectRegistrationDateService;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 
 @RestController
 @RequestMapping("${api.prefix}/projects")
 @RequiredArgsConstructor
+@Validated
 public class ProjectAPI {
 
     private final IProjectNumberBookService projectNumberBookService;
+    private final IProjectNumberBookCoverService projectNumberBookCoverService;
     private final IProjectRegistrationDateService projectRegistrationDateService;
 
 
@@ -48,7 +53,61 @@ public class ProjectAPI {
                 .message("Create Project Number Book successfully")
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
-                .data("")
+                .build());
+    }
+
+    // FE quản lý kiểm tra màn hình dữ liệu ảnh bìa khớp với cấu trúc thư mục thì chấp nhận
+    @PatchMapping("/number-book/accept/{projectNumberBookId}")
+    public ResponseEntity<ResponseObject> acceptCreateProjectNumberBook(
+            @PathVariable @Pattern(regexp = "\\d+", message = "ID quyển số phải là một số") String projectNumberBookId
+    ) {
+
+        ProjectNumberBook projectNumberBook = projectNumberBookService.findByIdAndStatus(
+                Long.parseLong(projectNumberBookId), EProjectNumberBookStatus.NEW
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("ID quyển số không tồn tại");
+        });
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        projectNumberBook.setUpdatedBy(user);
+        projectNumberBook.setStatus(EProjectNumberBookStatus.ACCEPT);
+
+        projectNumberBookService.update(projectNumberBook);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Accept Create Project Number Book successfully")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .build());
+    }
+
+    // FE quản lý kiểm tra màn hình dữ liệu ảnh bìa không khớp với cấu trúc thư mục thì hủy bỏ và xóa thư mục ảnh bìa
+    @PatchMapping("/number-book/cancel/{projectNumberBookId}")
+    public ResponseEntity<ResponseObject> cancelCreateProjectNumberBook(
+            @PathVariable @Pattern(regexp = "\\d+", message = "ID quyển số phải là một số") String projectNumberBookId
+    ) throws IOException {
+
+        ProjectNumberBook projectNumberBook = projectNumberBookService.findByIdAndStatus(
+                Long.parseLong(projectNumberBookId), EProjectNumberBookStatus.NEW
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("ID quyển số không tồn tại");
+        });
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        projectNumberBook.setUpdatedBy(user);
+        projectNumberBook.setStatus(EProjectNumberBookStatus.CANCEL);
+
+        projectNumberBookService.update(projectNumberBook);
+
+        // Đăng ký mới nên folder chỉ có 1 file cover, được xóa hết thư mục mới tạo
+        projectNumberBookCoverService.deleteCoverDirectory(projectNumberBook.getProjectNumberBookCover());
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Cancel Create Project Number Book successfully")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
                 .build());
     }
 }

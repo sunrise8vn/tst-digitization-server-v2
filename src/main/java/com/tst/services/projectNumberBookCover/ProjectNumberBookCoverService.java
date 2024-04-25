@@ -4,6 +4,7 @@ import com.tst.exceptions.DataInputException;
 import com.tst.models.entities.ProjectNumberBookCover;
 import com.tst.repositories.ProjectNumberBookCoverRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -67,6 +68,13 @@ public class ProjectNumberBookCoverService implements IProjectNumberBookCoverSer
         catch (Exception ex) {
             throw new DataInputException("Không thể lưu trữ tệp. " + ex.getMessage());
         }
+    }
+
+    @Override
+    public void deleteCoverDirectory(ProjectNumberBookCover projectNumberBookCover) throws IOException {
+        Path destinationPath = Paths.get(serverRootFolder + "/" + projectNumberBookCover.getFolderName());
+
+        FileUtils.deleteDirectory(destinationPath.toFile());
     }
 
     @Override
