@@ -1,18 +1,17 @@
 package com.tst.models.responses.auth;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
 public class AuthTokenResponse {
-    @JsonProperty("access_token")
     private String accessToken;
-
-    @JsonProperty("refresh_token")
     private String refreshToken;
 }

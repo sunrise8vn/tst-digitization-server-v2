@@ -1,10 +1,14 @@
 package com.tst.models.dtos.project;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.tst.models.entities.ProjectNumberBook;
 import com.tst.models.entities.ProjectRegistrationDate;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

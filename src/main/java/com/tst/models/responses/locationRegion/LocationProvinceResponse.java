@@ -1,9 +1,11 @@
 package com.tst.models.responses.locationRegion;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -13,11 +15,7 @@ public class LocationProvinceResponse {
     private Long id;
     private String name;
     private String code;
-
-    @JsonProperty("division_type")
     private String divisionType;
-
-    @JsonProperty("phone_code")
     private String phoneCode;
 
 }

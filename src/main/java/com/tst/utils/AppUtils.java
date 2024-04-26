@@ -1,5 +1,6 @@
 package com.tst.utils;
 
+import com.google.common.base.CaseFormat;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -19,7 +20,9 @@ public class AppUtils {
         List<FieldError> fieldErrors = result.getFieldErrors();
         Map<String, String> errors = new HashMap<>();
         for (FieldError fieldError : fieldErrors) {
-            errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+            String field = fieldError.getField();
+            field = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, field);
+            errors.put(field, fieldError.getDefaultMessage());
         }
         return errors;
     }
