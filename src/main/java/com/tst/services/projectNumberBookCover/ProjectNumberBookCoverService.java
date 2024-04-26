@@ -44,7 +44,6 @@ public class ProjectNumberBookCoverService implements IProjectNumberBookCoverSer
 
     @Override
     public void uploadCoverFile(MultipartFile file, String fileName, String folderName) {
-
         try {
             Path uploadPath = Paths.get(serverRootFolder + "/" + folderName);
 
