@@ -1,11 +1,13 @@
 package com.tst.models.dtos.user;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -19,10 +21,8 @@ public class UserCreateDTO {
     @NotBlank(message = "{user.password.not_empty}")
     private String password;
 
-    @JsonProperty("retype_password")
     private String retypePassword;
 
     @NotNull(message = "Vai trò là bắt buộc")
-    @JsonProperty("role_id")
     private Long roleId;
 }

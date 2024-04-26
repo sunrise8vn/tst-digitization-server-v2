@@ -1,10 +1,13 @@
 package com.tst.models.responses.user;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.tst.models.entities.Role;
 import com.tst.models.enums.EUserRole;
 import lombok.*;
 
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

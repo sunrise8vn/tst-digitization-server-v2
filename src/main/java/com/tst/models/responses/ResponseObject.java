@@ -1,11 +1,13 @@
 package com.tst.models.responses;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -15,9 +17,6 @@ import org.springframework.http.HttpStatus;
 public class ResponseObject {
     private String message;
     private int status;
-
-    @JsonProperty("status_text")
     private HttpStatus statusText;
-
     private Object data;
 }
