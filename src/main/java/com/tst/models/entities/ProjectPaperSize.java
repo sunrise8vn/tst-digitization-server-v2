@@ -1,10 +1,12 @@
 package com.tst.models.entities;
 
+import com.tst.models.enums.EPaperSize;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 
 @NoArgsConstructor
@@ -18,28 +20,48 @@ public class ProjectPaperSize {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 2)
-    private String code;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 2, nullable = false, unique = true)
+    private EPaperSize code;
 
     @ManyToOne
     @JoinColumn(name = "project_registration_type_id", nullable = false)
     private ProjectRegistrationType projectRegistrationType;
 
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a0;
+    @Column(nullable = false)
+    private Long a0 = 0L;
 
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a1;
+    @Column(nullable = false)
+    private Long a1 = 0L;
 
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a2;
+    @Column(nullable = false)
+    private Long a2 = 0L;
 
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a3;
+    @Column(nullable = false)
+    private Long a3 = 0L;
 
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a4;
+    @Column(nullable = false)
+    private Long a4 = 0L;
 
-    @Column(name = "convert_a4", columnDefinition = "int default 0", nullable = false)
-    private Integer convertA4;
+    @Column(name = "convert_a4", nullable = false)
+    private Long convertA4 = 0L;
+
+    @Column(name = "total_size", nullable = false)
+    private Long totalSize = 0L;
+
+    @Column(name = "size_type", nullable = false, length = 2)
+    private String sizeType = "KB";
+
+    @Column(columnDefinition = "boolean default false")
+    private Boolean deleted = false;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
+    private User createdBy;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdBy = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
 }

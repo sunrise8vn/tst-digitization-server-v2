@@ -15,7 +15,6 @@ import com.tst.services.token.ITokenService;
 import com.tst.services.user.IUserService;
 import com.tst.utils.AppUtils;
 import com.tst.utils.MessageKeys;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +49,7 @@ public class AuthAPI {
                     .build());
         }
 
-        if (!userCreateDTO.getPassword().equals(userCreateDTO.getRetypePassword())) {
+        if (!userCreateDTO.getPassword().equals(userCreateDTO.getRetype_password())) {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .message(localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_FAILED))
                     .status(HttpStatus.BAD_REQUEST.value())
@@ -145,8 +144,8 @@ public class AuthAPI {
             );
         }
 
-        User userDetail = userService.getUserDetailsFromRefreshToken(refreshTokenDTO.getRefreshToken());
-        Token jwtToken = tokenService.refreshToken(refreshTokenDTO.getRefreshToken(), userDetail);
+        User userDetail = userService.getUserDetailsFromRefreshToken(refreshTokenDTO.getRefresh_token());
+        Token jwtToken = tokenService.refreshToken(refreshTokenDTO.getRefresh_token(), userDetail);
 
         AuthTokenResponse authTokenResponse = AuthTokenResponse.builder()
                 .accessToken(jwtToken.getToken())

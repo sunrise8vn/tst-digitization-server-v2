@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 
 import java.time.LocalDateTime;
 
+
 @MappedSuperclass
 @Getter
 @Setter

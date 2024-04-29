@@ -37,15 +37,15 @@ public class ProjectNumberBookCoverService implements IProjectNumberBookCoverSer
 
     @Override
     public ProjectNumberBookCover create(ProjectNumberBookCover projectNumberBookCover, MultipartFile coverFile) {
-        this.uploadCoverFile(coverFile, projectNumberBookCover.getFileName(), projectNumberBookCover.getFolderName());
+        this.uploadCoverFile(coverFile, projectNumberBookCover.getFileName(), projectNumberBookCover.getFolderPath());
 
         return projectNumberBookCoverRepository.save(projectNumberBookCover);
     }
 
     @Override
-    public void uploadCoverFile(MultipartFile file, String fileName, String folderName) {
+    public void uploadCoverFile(MultipartFile file, String fileName, String folderPath) {
         try {
-            Path uploadPath = Paths.get(serverRootFolder + "/" + folderName);
+            Path uploadPath = Paths.get(serverRootFolder + "/" + folderPath);
 
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
@@ -71,7 +71,7 @@ public class ProjectNumberBookCoverService implements IProjectNumberBookCoverSer
 
     @Override
     public void deleteCoverDirectory(ProjectNumberBookCover projectNumberBookCover) throws IOException {
-        Path destinationPath = Paths.get(serverRootFolder + "/" + projectNumberBookCover.getFolderName());
+        Path destinationPath = Paths.get(serverRootFolder + "/" + projectNumberBookCover.getFolderPath());
 
         FileUtils.deleteDirectory(destinationPath.toFile());
     }
