@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 
@@ -17,12 +18,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(
-    name = "project_number_books",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "unique_project_registration_date_id_code", columnNames = {"project_registration_date_id", "code"})
-    }
-)
+@Table(name = "project_number_books")
 public class ProjectNumberBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +34,34 @@ public class ProjectNumberBook {
     @OneToOne
     @JoinColumn(name = "project_number_book_cover_id", nullable = false)
     private ProjectNumberBookCover projectNumberBookCover;
+
+    @Column(nullable = false)
+    private Long a0 = 0L;
+
+    @Column(nullable = false)
+    private Long a1 = 0L;
+
+    @Column(nullable = false)
+    private Long a2 = 0L;
+
+    @Column(nullable = false)
+    private Long a3 = 0L;
+
+    @Column(nullable = false)
+    private Long a4 = 0L;
+
+    @Column(name = "convert_a4", nullable = false)
+    private Long convertA4 = 0L;
+
+    @Column(name = "total_size", nullable = false)
+    private Long totalSize = 0L;
+
+    @Column(name = "size_type", nullable = false, length = 2)
+    private String sizeType = "KB";
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10, nullable = false)
+    private EProjectNumberBookStatus status;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -55,26 +79,14 @@ public class ProjectNumberBook {
     @JoinColumn(name = "updated_by")
     private User updatedBy;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10, nullable = false)
-    private EProjectNumberBookStatus status;
+    @PrePersist
+    public void prePersist() {
+        this.createdBy = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a0;
-
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a1;
-
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a2;
-
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a3;
-
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a4;
-
-    @Column(name = "convert_a4", columnDefinition = "int default 0", nullable = false)
-    private Integer convertA4;
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedBy = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 
 }

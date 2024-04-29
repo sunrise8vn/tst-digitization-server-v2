@@ -2,6 +2,7 @@ package com.tst.models.enums;
 
 
 public enum EUserRole {
+    ROLE_SUPER_ADMIN("SUPER_ADMIN"),
     ROLE_ADMIN("ADMIN"),
     ROLE_MANAGER("MANAGER"),
     ROLE_USER("USER");

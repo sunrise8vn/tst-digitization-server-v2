@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+
 @RequiredArgsConstructor
 @Service
 public class RegistrationTypeService implements IRegistrationTypeService {
@@ -17,6 +18,11 @@ public class RegistrationTypeService implements IRegistrationTypeService {
     @Override
     public Optional<RegistrationType> findById(Long id) {
         return registrationTypeRepository.findById(id);
+    }
+
+    @Override
+    public Optional<RegistrationType> findByCode(String code) {
+        return registrationTypeRepository.findByCode(code);
     }
 
     @Override

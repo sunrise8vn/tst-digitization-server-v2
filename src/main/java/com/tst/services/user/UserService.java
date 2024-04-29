@@ -81,7 +81,7 @@ public class UserService implements IUserService {
             throw new DataExistsException(localizationUtils.getLocalizedMessage(MessageKeys.USER_IS_EXISTING));
         }
 
-        Role role = roleRepository.findById(userCreateDTO.getRoleId())
+        Role role = roleRepository.findById(userCreateDTO.getRole_id())
                 .orElseThrow(() -> new DataInputException(
                         localizationUtils.getLocalizedMessage(MessageKeys.ROLE_DOES_NOT_EXISTS)));
 

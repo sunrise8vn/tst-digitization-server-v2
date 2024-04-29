@@ -14,7 +14,7 @@ import com.tst.services.projectRegistrationType.IProjectRegistrationTypeService;
 import com.tst.services.projectWard.IProjectWardService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,9 +34,6 @@ public class ProjectNumberBookService implements IProjectNumberBookService {
     private final IProjectProvinceService projectProvinceService;
     private final IProjectService projectService;
 
-    @Value("${server.root-folder}")
-    private String serverRootFolder;
-
 
     @Override
     public Optional<ProjectNumberBook> findById(Long id) {
@@ -51,6 +48,7 @@ public class ProjectNumberBookService implements IProjectNumberBookService {
     @Override
     @Transactional
     public ProjectNumberBook create(ProjectNumberBook projectNumberBook, MultipartFile coverFile) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (coverFile == null) {
             throw new DataInputException("Tập tin pdf không được bỏ trống");
@@ -63,10 +61,24 @@ public class ProjectNumberBookService implements IProjectNumberBookService {
         } else {
             ProjectRegistrationDate projectRegistrationDate = projectNumberBook.getProjectRegistrationDate();
 
-            Boolean existProjectNumberBook = projectNumberBookRepository.existsByProjectRegistrationDateAndCode(projectRegistrationDate, projectNumberBook.getCode());
+            Boolean existProjectNumberBookNew = projectNumberBookRepository.existsByProjectRegistrationDateAndCodeAndStatus(
+                    projectRegistrationDate,
+                    projectNumberBook.getCode(),
+                    EProjectNumberBookStatus.NEW
+            );
 
-            if (existProjectNumberBook) {
-                throw new DataInputException("Quyển sổ " + projectNumberBook.getCode() + " đã được đăng ký trong năm " + projectRegistrationDate.getCode());
+            if (existProjectNumberBookNew) {
+                throw new DataInputException("Quyển sổ " + projectNumberBook.getCode() + " đăng ký năm " + projectRegistrationDate.getCode() + " đang chờ xét duyệt");
+            }
+
+            Boolean existProjectNumberBookAccept = projectNumberBookRepository.existsByProjectRegistrationDateAndCodeAndStatus(
+                    projectRegistrationDate,
+                    projectNumberBook.getCode(),
+                    EProjectNumberBookStatus.ACCEPT
+            );
+
+            if (existProjectNumberBookAccept) {
+                throw new DataInputException("Quyển sổ " + projectNumberBook.getCode() + " đã được sử dụng trong năm " + projectRegistrationDate.getCode());
             }
 
             ProjectPaperSize projectPaperSize = projectPaperSizeService.findById(
@@ -105,15 +117,13 @@ public class ProjectNumberBookService implements IProjectNumberBookService {
                 throw new DataNotFoundException("Không tìm thấy dự án đăng ký");
             });
 
-            String coverFileName = "Cover." +
-                    projectWard.getCode() + "." +
+            String coverFileName = projectWard.getCode() + "." +
                     projectRegistrationType.getCode() + "." +
                     projectPaperSize.getCode() + "." +
                     projectRegistrationDate.getCode() + "." +
-                    projectNumberBook.getCode() +
-                    ".pdf";
+                    projectNumberBook.getCode();
 
-            String coverFolderName = project.getFolder() + "/" +
+            String coverFolderPath = project.getFolder() + "/" +
                     projectProvince.getCode() + "/" +
                     projectDistrict.getCode() + "/" +
                     projectWard.getCode() + "/" +
@@ -126,12 +136,13 @@ public class ProjectNumberBookService implements IProjectNumberBookService {
 
             ProjectNumberBookCover projectNumberBookCover = new ProjectNumberBookCover()
                     .setFileName(coverFileName)
-                    .setFolderName(coverFolderName)
-                    .setFileSize(fileSize)
-                    .setSizeType("KB");
+                    .setFolderPath(coverFolderPath)
+                    .setFileSize(fileSize);
 
             projectNumberBookCover = projectNumberBookCoverService.create(projectNumberBookCover, coverFile);
 
+            projectNumberBook.setCreatedBy(user);
+            projectNumberBook.setStatus(EProjectNumberBookStatus.NEW);
             projectNumberBook.setProjectNumberBookCover(projectNumberBookCover);
 
             return projectNumberBookRepository.save(projectNumberBook);

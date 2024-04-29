@@ -22,7 +22,7 @@ public class TstDigitizationServerApplication {
     @PostConstruct
     public void init() {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
-        System.out.println("\uD83D\uDE80 Date in UTC: " + new Date());
+        logger.info("\uD83D\uDE80 Date in UTC: " + new Date());
     }
 
 }

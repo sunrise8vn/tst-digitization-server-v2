@@ -10,26 +10,61 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 @Component
 public class AppUtils {
+    private static final String YEAR_PATTERN = "\\d{4}";
+    private static final String MONTH_YEAR_PATTERN_DOT = "(0[1-9]|1[0-2])\\.\\d{4}";
+    private static final String DATE_MONTH_YEAR_PATTERN_DOT = "(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[0-2])\\.\\d{4}";
 
     public Map<String, String> mapErrorToResponse(BindingResult result) {
         List<FieldError> fieldErrors = result.getFieldErrors();
         Map<String, String> errors = new HashMap<>();
         for (FieldError fieldError : fieldErrors) {
             String field = fieldError.getField();
+            // convert to snake case
             field = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, field);
             errors.put(field, fieldError.getDefaultMessage());
         }
         return errors;
     }
 
+    public boolean isValidDateDot(String dateStr) {
+        Pattern pattern = Pattern.compile(
+                String.format("(%s)|(%s)|(%s)", YEAR_PATTERN, MONTH_YEAR_PATTERN_DOT, DATE_MONTH_YEAR_PATTERN_DOT)
+        );
+
+        Matcher matcher = pattern.matcher(dateStr);
+
+        return matcher.matches();
+    }
+
+    public String convertDayMonthYearDotToYearMonthDayKebab(String dateStr) {
+        String[] dayMonthYearArr = dateStr.split("\\.");
+
+        return dayMonthYearArr[2] + "-" + dayMonthYearArr[1] + "-" + dayMonthYearArr[0];
+    }
+
+    public String formatNumber(String input) {
+        if (input == null) {
+            return null;
+        }
+
+        // Kiểm tra xem chuỗi có phải là số và có độ dài từ 1 đến 3 ký tự
+        if (input.matches("\\d{1,3}")) {
+            // Định dạng lại chuỗi để có độ dài là 3 ký tự, thêm các số 0 vào đầu nếu cần
+            return String.format("%03d", Integer.parseInt(input));
+        } else {
+            throw new IllegalArgumentException("Dữ liệu nhập không phải là số hợp lệ hoặc có nhiều hơn 3 chữ số.");
+        }
+    }
+
     public String removePdfTypeChar(String str) {
         str = str.toLowerCase();
-        str = str.replaceAll(".pdf", "");
+        str = str.replace(".pdf", "");
 
         return str;
     }
@@ -45,9 +80,9 @@ public class AppUtils {
 
     public String removeNonAlphanumeric(String str) {
         do {
-            str = str.replace(" ","-");
+            str = str.replace(" ", "-");
             str = str.replaceAll("[^a-zA-Z0-9\\-]", "-");
-            str = str.replaceAll("--", "-");
+            str = str.replace("--", "-");
 
             while (str.charAt(0) == '-') {
                 str = str.substring(1);

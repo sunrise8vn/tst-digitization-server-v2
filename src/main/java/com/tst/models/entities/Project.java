@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 
 @NoArgsConstructor
@@ -27,22 +28,40 @@ public class Project {
     @Column(nullable = false)
     private String folder;
 
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a0;
+    @Column(nullable = false)
+    private Long a0 = 0L;
 
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a1;
+    @Column(nullable = false)
+    private Long a1 = 0L;
 
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a2;
+    @Column(nullable = false)
+    private Long a2 = 0L;
 
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a3;
+    @Column(nullable = false)
+    private Long a3 = 0L;
 
-    @Column(columnDefinition = "int default 0", nullable = false)
-    private Integer a4;
+    @Column(nullable = false)
+    private Long a4 = 0L;
 
-    @Column(name = "convert_a4", columnDefinition = "int default 0", nullable = false)
-    private Integer convertA4;
+    @Column(name = "convert_a4", nullable = false)
+    private Long convertA4 = 0L;
+
+    @Column(name = "total_size", nullable = false)
+    private Long totalSize = 0L;
+
+    @Column(name = "size_type", nullable = false, length = 2)
+    private String sizeType = "KB";
+
+    @Column(columnDefinition = "boolean default false")
+    private Boolean deleted = false;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
+    private User createdBy;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdBy = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 
 }

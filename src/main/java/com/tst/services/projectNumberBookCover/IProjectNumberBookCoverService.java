@@ -10,7 +10,7 @@ public interface IProjectNumberBookCoverService extends IGeneralService<ProjectN
 
     ProjectNumberBookCover create(ProjectNumberBookCover projectNumberBookCover, MultipartFile coverFile);
 
-    void uploadCoverFile(MultipartFile file, String fileName, String folderName);
+    void uploadCoverFile(MultipartFile file, String fileName, String folderPath);
 
     void deleteCoverDirectory(ProjectNumberBookCover projectNumberBookCover) throws IOException;
 }
