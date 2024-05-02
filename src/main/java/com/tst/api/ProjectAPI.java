@@ -10,6 +10,7 @@ import com.tst.models.entities.locationRegion.LocationWard;
 import com.tst.models.enums.EPaperSize;
 import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.models.enums.EProjectNumberBookFileStatus;
+import com.tst.models.enums.ERegistrationType;
 import com.tst.models.responses.ResponseObject;
 import com.tst.services.locationDistrict.ILocationDistrictService;
 import com.tst.services.locationProvince.ILocationProvinceService;
@@ -132,8 +133,14 @@ public class ProjectAPI {
            throw new DataInputException("ID phường/xã không tồn tại");
         });
 
+        if (!ERegistrationType.checkValue(registrationNumberBookDTO.getRegistration_type_code())) {
+            throw new DataInputException("Loại sổ đăng ký không hợp lệ");
+        }
+
+        ERegistrationType eRegistrationType = ERegistrationType.valueOf(registrationNumberBookDTO.getRegistration_type_code());
+
         RegistrationType registrationType = registrationTypeService.findByCode(
-                registrationNumberBookDTO.getRegistration_type_code()
+                eRegistrationType
         ).orElseThrow(() -> {
             throw new DataNotFoundException("Loại sổ đăng ký không tồn tại");
         });

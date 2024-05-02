@@ -16,4 +16,13 @@ public enum ERegistrationType {
     public String getValue() {
         return this.value;
     }
+
+    public static boolean checkValue(String name) {
+        for (ERegistrationType eRegistrationType : values()) {
+            if (eRegistrationType.getValue().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

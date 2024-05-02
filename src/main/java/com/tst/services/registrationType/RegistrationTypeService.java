@@ -1,6 +1,7 @@
 package com.tst.services.registrationType;
 
 import com.tst.models.entities.RegistrationType;
+import com.tst.models.enums.ERegistrationType;
 import com.tst.repositories.RegistrationTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class RegistrationTypeService implements IRegistrationTypeService {
     }
 
     @Override
-    public Optional<RegistrationType> findByCode(String code) {
+    public Optional<RegistrationType> findByCode(ERegistrationType code) {
         return registrationTypeRepository.findByCode(code);
     }
 

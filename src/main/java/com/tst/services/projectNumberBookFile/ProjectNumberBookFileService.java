@@ -2,10 +2,15 @@ package com.tst.services.projectNumberBookFile;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.models.entities.*;
+import com.tst.models.entities.extractFull.*;
+import com.tst.models.entities.extractShort.*;
+import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.EPaperSize;
 import com.tst.models.enums.EProjectNumberBookFileStatus;
 import com.tst.models.enums.ERegistrationType;
 import com.tst.repositories.*;
+import com.tst.repositories.extractFull.*;
+import com.tst.repositories.extractShort.*;
 import com.tst.services.project.IProjectService;
 import com.tst.services.projectDistrict.IProjectDistrictService;
 import com.tst.services.projectPaperSize.IProjectPaperSizeService;
@@ -42,6 +47,16 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
 
     private final ProjectNumberBookRepository projectNumberBookRepository;
     private final ProjectNumberBookFileRepository projectNumberBookFileRepository;
+    private final ParentsChildrenExtractShortRepository parentsChildrenExtractShortRepository;
+    private final ParentsChildrenExtractFullRepository parentsChildrenExtractFullRepository;
+    private final BirthExtractShortRepository birthExtractShortRepository;
+    private final BirthExtractFullRepository birthExtractFullRepository;
+    private final MarryExtractShortRepository marryExtractShortRepository;
+    private final MarryExtractFullRepository marryExtractFullRepository;
+    private final WedlockExtractShortRepository wedlockExtractShortRepository;
+    private final WedlockExtractFullRepository wedlockExtractFullRepository;
+    private final DeathExtractShortRepository deathExtractShortRepository;
+    private final DeathExtractFullRepository deathExtractFullRepository;
 
     private final IProjectService projectService;
     private final IProjectProvinceService projectProvinceService;
@@ -205,6 +220,66 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
         projectNumberBookFile.setApprovedBy(user);
         projectNumberBookFile.setStatus(EProjectNumberBookFileStatus.ACCEPT);
         projectNumberBookFileRepository.save(projectNumberBookFile);
+
+        if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.CMC)) {
+            ParentsChildrenExtractShort parentsChildrenExtractShort = new ParentsChildrenExtractShort()
+                    .setProjectNumberBookFile(projectNumberBookFile)
+                    .setStatus(EInputStatus.NEW);
+            parentsChildrenExtractShortRepository.save(parentsChildrenExtractShort);
+
+            ParentsChildrenExtractFull parentsChildrenExtractFull = new ParentsChildrenExtractFull()
+                    .setProjectNumberBookFile(projectNumberBookFile)
+                    .setStatus(EInputStatus.NEW);
+            parentsChildrenExtractFullRepository.save(parentsChildrenExtractFull);
+        }
+
+        if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.KS)) {
+            BirthExtractShort birthExtractShort = new BirthExtractShort()
+                    .setProjectNumberBookFile(projectNumberBookFile)
+                    .setStatus(EInputStatus.NEW);
+            birthExtractShortRepository.save(birthExtractShort);
+
+            BirthExtractFull birthExtractFull = new BirthExtractFull()
+                    .setProjectNumberBookFile(projectNumberBookFile)
+                    .setStatus(EInputStatus.NEW);
+            birthExtractFullRepository.save(birthExtractFull);
+        }
+
+        if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.KH)) {
+            MarryExtractShort marryExtractShort = new MarryExtractShort()
+                    .setProjectNumberBookFile(projectNumberBookFile)
+                    .setStatus(EInputStatus.NEW);
+            marryExtractShortRepository.save(marryExtractShort);
+
+            MarryExtractFull marryExtractFull = new MarryExtractFull()
+                    .setProjectNumberBookFile(projectNumberBookFile)
+                    .setStatus(EInputStatus.NEW);
+            marryExtractFullRepository.save(marryExtractFull);
+        }
+
+        if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.HN)) {
+            WedlockExtractShort wedlockExtractShort = new WedlockExtractShort()
+                    .setProjectNumberBookFile(projectNumberBookFile)
+                    .setStatus(EInputStatus.NEW);
+            wedlockExtractShortRepository.save(wedlockExtractShort);
+
+            WedlockExtractFull wedlockExtractFull = new WedlockExtractFull()
+                    .setProjectNumberBookFile(projectNumberBookFile)
+                    .setStatus(EInputStatus.NEW);
+            wedlockExtractFullRepository.save(wedlockExtractFull);
+        }
+
+        if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.KT)) {
+            DeathExtractShort deathExtractShort = new DeathExtractShort()
+                    .setProjectNumberBookFile(projectNumberBookFile)
+                    .setStatus(EInputStatus.NEW);
+            deathExtractShortRepository.save(deathExtractShort);
+
+            DeathExtractFull deathExtractFull = new DeathExtractFull()
+                    .setProjectNumberBookFile(projectNumberBookFile)
+                    .setStatus(EInputStatus.NEW);
+            deathExtractFullRepository.save(deathExtractFull);
+        }
 
         ProjectNumberBook projectNumberBook = projectNumberBookFile.getProjectNumberBook();
 
