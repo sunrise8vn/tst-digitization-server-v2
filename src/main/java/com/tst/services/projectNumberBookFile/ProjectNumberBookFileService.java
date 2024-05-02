@@ -1,10 +1,10 @@
-package com.tst.services.projectNumberBookTemp;
+package com.tst.services.projectNumberBookFile;
 
-import com.tst.TstDigitizationServerApplication;
 import com.tst.exceptions.DataInputException;
 import com.tst.models.entities.*;
 import com.tst.models.enums.EPaperSize;
-import com.tst.models.enums.EProjectNumberBookTempStatus;
+import com.tst.models.enums.EProjectNumberBookFileStatus;
+import com.tst.models.enums.ERegistrationType;
 import com.tst.repositories.*;
 import com.tst.services.project.IProjectService;
 import com.tst.services.projectDistrict.IProjectDistrictService;
@@ -37,11 +37,11 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ProjectNumberBookTempService implements IProjectNumberBookTempService {
-    private static final Logger logger = LoggerFactory.getLogger(ProjectNumberBookTempService.class);
+public class ProjectNumberBookFileService implements IProjectNumberBookFileService {
+    private static final Logger logger = LoggerFactory.getLogger(ProjectNumberBookFileService.class);
 
     private final ProjectNumberBookRepository projectNumberBookRepository;
-    private final ProjectNumberBookTempRepository projectNumberBookTempRepository;
+    private final ProjectNumberBookFileRepository projectNumberBookFileRepository;
 
     private final IProjectService projectService;
     private final IProjectProvinceService projectProvinceService;
@@ -60,18 +60,18 @@ public class ProjectNumberBookTempService implements IProjectNumberBookTempServi
 
 
     @Override
-    public Optional<ProjectNumberBookTemp> findById(Long id) {
-        return projectNumberBookTempRepository.findById(id);
+    public Optional<ProjectNumberBookFile> findById(Long id) {
+        return projectNumberBookFileRepository.findById(id);
     }
 
     @Override
-    public Optional<ProjectNumberBookTemp> findByIdAndStatus(Long id, EProjectNumberBookTempStatus status) {
-        return projectNumberBookTempRepository.findByIdAndStatus(id, status);
+    public Optional<ProjectNumberBookFile> findByIdAndStatus(Long id, EProjectNumberBookFileStatus status) {
+        return projectNumberBookFileRepository.findByIdAndStatus(id, status);
     }
 
     @Override
-    public Optional<ProjectNumberBookTemp> findByIdAndRegistrationTypeCodeAndStatus(Long id, String registrationTypeCode, EProjectNumberBookTempStatus status) {
-        return projectNumberBookTempRepository.findByIdAndRegistrationTypeCodeAndStatus(id, registrationTypeCode, status);
+    public Optional<ProjectNumberBookFile> findByIdAndRegistrationTypeCodeAndStatus(Long id, String registrationTypeCode, EProjectNumberBookFileStatus status) {
+        return projectNumberBookFileRepository.findByIdAndRegistrationTypeCodeAndStatus(id, registrationTypeCode, status);
     }
 
     @Override
@@ -107,16 +107,18 @@ public class ProjectNumberBookTempService implements IProjectNumberBookTempServi
                 try (InputStream inputStream = file.getInputStream()) {
                     Long fileSize = file.getSize() / 1024; // KB
 
-                    ProjectNumberBookTemp projectNumberBookTemp = new ProjectNumberBookTemp();
-                    projectNumberBookTemp.setFileName(fileName);
-                    projectNumberBookTemp.setFolderPath(folderPath);
+                    ProjectNumberBookFile projectNumberBookFile = new ProjectNumberBookFile();
+                    projectNumberBookFile.setFileName(fileName);
+                    projectNumberBookFile.setFolderPath(folderPath);
                     EPaperSize paperSize = projectNumberBook.getProjectRegistrationDate().getProjectPaperSize().getCode();
-                    projectNumberBookTemp.setPaperSize(paperSize);
-                    projectNumberBookTemp.setFileSize(fileSize);
-                    projectNumberBookTemp.setProjectNumberBook(projectNumberBook);
-                    projectNumberBookTemp.setStatus(EProjectNumberBookTempStatus.NEW);
+                    projectNumberBookFile.setPaperSize(paperSize);
+                    ERegistrationType registrationType = projectNumberBook.getProjectRegistrationDate().getProjectPaperSize().getProjectRegistrationType().getCode();
+                    projectNumberBookFile.setRegistrationType(registrationType);
+                    projectNumberBookFile.setFileSize(fileSize);
+                    projectNumberBookFile.setProjectNumberBook(projectNumberBook);
+                    projectNumberBookFile.setStatus(EProjectNumberBookFileStatus.NEW);
 
-                    projectNumberBookTempRepository.save(projectNumberBookTemp);
+                    projectNumberBookFileRepository.save(projectNumberBookFile);
 
                     Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
@@ -133,15 +135,14 @@ public class ProjectNumberBookTempService implements IProjectNumberBookTempServi
     }
 
     @Override
-    public ProjectNumberBookTemp save(ProjectNumberBookTemp projectNumberBookTemp) {
-        return projectNumberBookTempRepository.save(projectNumberBookTemp);
+    public ProjectNumberBookFile save(ProjectNumberBookFile projectNumberBookFile) {
+        return projectNumberBookFileRepository.save(projectNumberBookFile);
     }
-
 
     @Override
     // IOException là checked exception, nó không kích hoạt việc rollback nên cần chỉ định cho transaction.
     @Transactional(rollbackFor = IOException.class)
-    public void organization(ProjectNumberBookTemp projectNumberBookTemp, String dayMonthYear, String number) throws IOException {
+    public void organization(ProjectNumberBookFile projectNumberBookFile, String dayMonthYear, String number) throws IOException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (!appUtils.isValidDateDot(dayMonthYear)) {
@@ -153,12 +154,12 @@ public class ProjectNumberBookTempService implements IProjectNumberBookTempServi
         // Định dạng lại chuỗi để có độ dài là 3 ký tự, thêm các số 0 vào đầu nếu cần
         number = String.format("%03d", Integer.parseInt(number));
 
-        String registrationType = projectNumberBookTemp.getProjectNumberBook().getProjectRegistrationDate().getProjectPaperSize().getProjectRegistrationType().getCode();
-        String registrationDate = projectNumberBookTemp.getProjectNumberBook().getProjectRegistrationDate().getCode();
-        String numberBook = projectNumberBookTemp.getProjectNumberBook().getCode();
+        String registrationType = projectNumberBookFile.getProjectNumberBook().getProjectRegistrationDate().getProjectPaperSize().getProjectRegistrationType().getCode().getValue();
+        String registrationDate = projectNumberBookFile.getProjectNumberBook().getProjectRegistrationDate().getCode();
+        String numberBook = projectNumberBookFile.getProjectNumberBook().getCode();
 
-        String folderPath = projectNumberBookTemp.getFolderPath();
-        String oldFileName = projectNumberBookTemp.getFileName();
+        String folderPath = projectNumberBookFile.getFolderPath();
+        String oldFileName = projectNumberBookFile.getFileName();
         String sourceFile = serverRootFolder + "/" + folderPath + "/" + oldFileName;
 
         String newFileName = registrationType + "." +
@@ -167,20 +168,20 @@ public class ProjectNumberBookTempService implements IProjectNumberBookTempServi
                 dayMonthYear + "." +
                 number + ".pdf";
 
-        boolean existFileName = projectNumberBookTempRepository.existsByFileNameAndProjectNumberBook(
+        boolean existFileName = projectNumberBookFileRepository.existsByFileNameAndProjectNumberBook(
                 newFileName,
-                projectNumberBookTemp.getProjectNumberBook()
+                projectNumberBookFile.getProjectNumberBook()
         );
 
         if (existFileName) {
             throw new DataInputException("Tên tập tin đã tồn tại");
         }
 
-        projectNumberBookTemp.setFileName(newFileName);
-        projectNumberBookTemp.setOrganizedBy(user);
-        projectNumberBookTemp.setStatus(EProjectNumberBookTempStatus.ORGANIZED);
+        projectNumberBookFile.setFileName(newFileName);
+        projectNumberBookFile.setOrganizedBy(user);
+        projectNumberBookFile.setStatus(EProjectNumberBookFileStatus.ORGANIZED);
 
-        projectNumberBookTempRepository.save(projectNumberBookTemp);
+        projectNumberBookFileRepository.save(projectNumberBookFile);
 
         fileUtils.renameFile(sourceFile, newFileName);
     }
@@ -188,11 +189,11 @@ public class ProjectNumberBookTempService implements IProjectNumberBookTempServi
     @Override
     // IOException là checked exception, nó không kích hoạt việc rollback nên cần chỉ định cho transaction.
     @Transactional(rollbackFor = IOException.class)
-    public void approve(ProjectNumberBookTemp projectNumberBookTemp) throws IOException {
+    public void approve(ProjectNumberBookFile projectNumberBookFile) throws IOException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        String oldFolderPath = projectNumberBookTemp.getFolderPath();
-        String fileName = projectNumberBookTemp.getFileName();
+        String oldFolderPath = projectNumberBookFile.getFolderPath();
+        String fileName = projectNumberBookFile.getFileName();
         String sourceFile = serverRootFolder + "/" + oldFolderPath + "/" + fileName;
 
         String newFolderPath = fileUtils.moveFileUpOneDirectory(sourceFile);
@@ -200,25 +201,25 @@ public class ProjectNumberBookTempService implements IProjectNumberBookTempServi
         newFolderPath = newFolderPath.replace("storage\\", "");
         newFolderPath = newFolderPath.replace("\\", "/");
 
-        projectNumberBookTemp.setFolderPath(newFolderPath);
-        projectNumberBookTemp.setApprovedBy(user);
-        projectNumberBookTemp.setStatus(EProjectNumberBookTempStatus.ACCEPT);
-        projectNumberBookTempRepository.save(projectNumberBookTemp);
+        projectNumberBookFile.setFolderPath(newFolderPath);
+        projectNumberBookFile.setApprovedBy(user);
+        projectNumberBookFile.setStatus(EProjectNumberBookFileStatus.ACCEPT);
+        projectNumberBookFileRepository.save(projectNumberBookFile);
 
-        ProjectNumberBook projectNumberBook = projectNumberBookTemp.getProjectNumberBook();
+        ProjectNumberBook projectNumberBook = projectNumberBookFile.getProjectNumberBook();
 
         EPaperSize paperSize = projectNumberBook.getProjectRegistrationDate().getProjectPaperSize().getCode();
 
         // START cập nhật tổng số trang và dung lượng cho ProjectNumberBook
 
-        long countProjectNumberBook = projectNumberBookTempRepository.countByProjectNumberBookAndStatus(
+        long countProjectNumberBook = projectNumberBookFileRepository.countByProjectNumberBookAndStatus(
                 projectNumberBook,
-                EProjectNumberBookTempStatus.ACCEPT
+                EProjectNumberBookFileStatus.ACCEPT
         );
 
-        long totalFileSizeProjectNumberBook = projectNumberBookTempRepository.findTotalFileSizeByProjectNumberBookAndStatus(
+        long totalFileSizeProjectNumberBook = projectNumberBookFileRepository.findTotalFileSizeByProjectNumberBookAndStatus(
                 projectNumberBook,
-                EProjectNumberBookTempStatus.ACCEPT
+                EProjectNumberBookFileStatus.ACCEPT
         );
 
         long countProjectNumberBookA0 = 0L;
@@ -294,7 +295,7 @@ public class ProjectNumberBookTempService implements IProjectNumberBookTempServi
     }
 
     @Override
-    public void delete(ProjectNumberBookTemp projectNumberBookTemp) {
+    public void delete(ProjectNumberBookFile projectNumberBookFile) {
 
     }
 

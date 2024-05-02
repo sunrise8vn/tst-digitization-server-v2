@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class ProjectNumberBookTempDTO {
+public class ProjectNumberBookFileDTO {
 
     @NotNull(message = "ID quyển số là bắt buộc")
     @Pattern(regexp = "\\d+", message = "ID quyển số phải là số")

@@ -1,10 +1,19 @@
-package com.tst.models.entities;
+package com.tst.models.entities.extractShort;
 
+import com.tst.models.entities.AccessPoint;
+import com.tst.models.entities.ProjectNumberBook;
+import com.tst.models.entities.ProjectNumberBookFile;
+import com.tst.models.entities.User;
+import com.tst.models.enums.EInputStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.time.LocalDateTime;
 
 
 @NoArgsConstructor
@@ -12,17 +21,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "marries")
-public class Marry {
+@Table(name = "marry_extract_short")
+public class MarryExtractShort {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "number", length = 10)
     private String number;
-
-    @Column(name = "number_book", length = 10)
-    private String numberBook;
 
     @Column(name = "number_page", length = 10)
     private String numberPage;
@@ -32,15 +38,6 @@ public class Marry {
 
     @Column(name = "registration_type")
     private Integer registrationType;
-
-    @Column(name = "registration_place")
-    private String registrationPlace;
-
-    @Column(name = "signer", length = 50)
-    private String signer;
-
-    @Column(name = "signer_position", length = 50)
-    private String signerPosition;
 
     @Column(name = "marital_relationship_establishment_date ")
     private String maritalRelationshipEstablishmentDate;
@@ -53,21 +50,6 @@ public class Marry {
 
     @Column(name = "wedlock")
     private String wedlock;
-
-    @Column(name = "cancel_marry_note_date")
-    private String cancelMarryNoteDate;
-
-    @Column(name = "cancel_marry_base")
-    private String cancelMarryBase;
-
-    @Column(name = "marriage_recognition_note_date")
-    private String marriageRecognitionNoteDate;
-
-    @Column(name = "marriage_recognition_base")
-    private String marriageRecognitionBase;
-
-    @Column(name = "husband_full_name", length = 50)
-    private String husbandFullName;
 
     @Column(name = "husband_birthday", length = 10)
     private String husbandBirthday;
@@ -84,9 +66,6 @@ public class Marry {
     @Column(name = "husband_residence_type")
     private Integer husbandResidenceType;
 
-    @Column(name = "husband_residence")
-    private String husbandResidence;
-
     @Column(name = "husband_identification_type")
     private Integer husbandIdentificationType;
 
@@ -98,9 +77,6 @@ public class Marry {
 
     @Column(name = "husband_identification_issuance_date", length = 10)
     private String husbandIdentificationIssuanceDate;
-
-    @Column(name = "husband_identification_issuance_place")
-    private String husbandIdentificationIssuancePlace;
 
     @Column(name = "wife_full_name", length = 50)
     private String wifeFullName;
@@ -120,14 +96,8 @@ public class Marry {
     @Column(name = "wife_residence_type")
     private Integer wifeResidenceType;
 
-    @Column(name = "wife_residence")
-    private String wifeResidence;
-
     @Column(name = "wife_identification_type")
     private Integer wifeIdentificationType;
-
-    @Column(name = "wife_other_document")
-    private String wifeOtherDocument;
 
     @Column(name = "wife_identification_number", length = 50)
     private String wifeIdentificationNumber;
@@ -135,27 +105,45 @@ public class Marry {
     @Column(name = "wife_identification_issuance_date", length = 10)
     private String wifeIdentificationIssuanceDate;
 
-    @Column(name = "wife_identification_issuance_place")
-    private String wifeIdentificationIssuancePlace;
+    @ManyToOne
+    @JoinColumn(name = "access_point_id")
+    private AccessPoint accessPoint;
 
-    @Column(name = "foreign_registration_number", length = 50)
-    private String foreignRegistrationNumber;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EInputStatus status;
 
-    @Column(name = "foreign_registration_date", length = 10)
-    private String foreignRegistrationDate;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-    @Column(name = "registered_foreign_organization", length = 100)
-    private String registeredForeignOrganization;
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
 
-    @Column(name = "registered_foreign_country", length = 100)
-    private String registeredForeignCountry;
+    @Column(name = "imported_at")
+    private LocalDateTime importedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "importer")
+    private User importer;
+
+    @Column(name = "checked_at")
+    private LocalDateTime checkedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "checker")
+    private User checker;
 
     @ManyToOne
     @JoinColumn(name = "project_number_book_file_id", nullable = false)
     private ProjectNumberBookFile projectNumberBookFile;
 
-    @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
-    private Project project;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean deleted = false;
 
+    @PrePersist
+    public void prePersist() {
+        this.createdBy = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 }

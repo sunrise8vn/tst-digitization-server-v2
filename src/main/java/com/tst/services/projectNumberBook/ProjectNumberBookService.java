@@ -150,7 +150,20 @@ public class ProjectNumberBookService implements IProjectNumberBookService {
     }
 
     @Override
-    public void update(ProjectNumberBook projectNumberBook) {
+    public void updateAccept(ProjectNumberBook projectNumberBook) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        projectNumberBook.setUpdatedBy(user);
+        projectNumberBook.setStatus(EProjectNumberBookStatus.ACCEPT);
+        projectNumberBookRepository.save(projectNumberBook);
+    }
+
+    @Override
+    public void updateCancel(ProjectNumberBook projectNumberBook) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        projectNumberBook.setUpdatedBy(user);
+        projectNumberBook.setStatus(EProjectNumberBookStatus.CANCEL);
         projectNumberBookRepository.save(projectNumberBook);
     }
 

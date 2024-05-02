@@ -1,28 +1,32 @@
-package com.tst.models.entities;
+package com.tst.models.entities.extractFull;
 
+import com.tst.models.entities.AccessPoint;
+import com.tst.models.entities.ProjectNumberBookFile;
+import com.tst.models.entities.User;
+import com.tst.models.enums.EInputStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "parents_children")
-public class ParentsChildren {
+@Table(name = "parents_children_extract_full")
+public class ParentsChildrenExtractFull {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "number", length = 10)
     private String number;
-
-    @Column(name = "number_book", length = 10)
-    private String numberBook;
 
     @Column(name = "number_page", length = 10)
     private String numberPage;
@@ -144,9 +148,6 @@ public class ParentsChildren {
     @Column(name = "petitioner_identification_type")
     private Integer petitionerIdentificationType;
 
-    @Column(name = "petitioner_other_document")
-    private String petitionerOtherDocument;
-
     @Column(name = "petitioner_identification_number", length = 50)
     private String petitionerIdentificationNumber;
 
@@ -157,11 +158,44 @@ public class ParentsChildren {
     private String petitionerIdentificationIssuancePlace;
 
     @ManyToOne
+    @JoinColumn(name = "access_point_id")
+    private AccessPoint accessPoint;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EInputStatus status;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
+
+    @Column(name = "imported_at")
+    private LocalDateTime importedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "importer")
+    private User importer;
+
+    @Column(name = "checked_at")
+    private LocalDateTime checkedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "checker")
+    private User checker;
+
+    @ManyToOne
     @JoinColumn(name = "project_number_book_file_id", nullable = false)
     private ProjectNumberBookFile projectNumberBookFile;
 
-    @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
-    private Project project;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean deleted = false;
 
+    @PrePersist
+    public void prePersist() {
+        this.createdBy = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 }

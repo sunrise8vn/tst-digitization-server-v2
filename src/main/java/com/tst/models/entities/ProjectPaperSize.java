@@ -21,7 +21,7 @@ public class ProjectPaperSize {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 2, nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private EPaperSize code;
 
     @ManyToOne

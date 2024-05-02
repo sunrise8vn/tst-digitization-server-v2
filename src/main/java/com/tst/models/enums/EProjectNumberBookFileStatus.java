@@ -1,6 +1,6 @@
 package com.tst.models.enums;
 
-public enum EProjectNumberBookTempStatus {
+public enum EProjectNumberBookFileStatus {
     NEW("NEW"),
     ORGANIZED("ORGANIZED"),
     ACCEPT("ACCEPT"),
@@ -9,7 +9,7 @@ public enum EProjectNumberBookTempStatus {
 
     private final String value;
 
-    EProjectNumberBookTempStatus(String value) {
+    EProjectNumberBookFileStatus(String value) {
         this.value = value;
     }
 

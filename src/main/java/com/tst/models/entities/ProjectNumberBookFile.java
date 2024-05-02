@@ -1,7 +1,8 @@
 package com.tst.models.entities;
 
 import com.tst.models.enums.EPaperSize;
-import com.tst.models.enums.EProjectNumberBookTempStatus;
+import com.tst.models.enums.EProjectNumberBookFileStatus;
+import com.tst.models.enums.ERegistrationType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,13 +14,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "project_number_book_temp")
-public class ProjectNumberBookTemp {
+@Table(name = "project_number_book_files")
+public class ProjectNumberBookFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,7 +33,7 @@ public class ProjectNumberBookTemp {
     private String folderPath;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "paper_size", nullable = false, length = 2)
+    @Column(name = "paper_size", nullable = false)
     private EPaperSize paperSize;
 
     @Column(name = "file_size", nullable = false)
@@ -40,13 +42,17 @@ public class ProjectNumberBookTemp {
     @Column(name = "size_type", nullable = false, length = 2)
     private String sizeType = "KB";
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "registration_type", nullable = false)
+    private ERegistrationType registrationType;
+
     @ManyToOne
     @JoinColumn(name = "project_number_book_id", nullable = false)
     private ProjectNumberBook projectNumberBook;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10, nullable = false)
-    private EProjectNumberBookTempStatus status;
+    @Column(nullable = false)
+    private EProjectNumberBookFileStatus status;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

@@ -11,13 +11,10 @@ import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.repositories.*;
 import com.tst.services.projectNumberBookCover.IProjectNumberBookCoverService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 
@@ -36,10 +33,6 @@ public class ProjectService implements IProjectService {
     private final ProjectNumberBookCoverRepository projectNumberBookCoverRepository;
 
     private final IProjectNumberBookCoverService projectNumberBookCoverService;
-
-
-    @Value("${server.root-folder}")
-    private String serverRootFolder;
 
 
     @Override
@@ -87,7 +80,6 @@ public class ProjectService implements IProjectService {
         if (projectRegistrationTypeOptional.isEmpty()) {
             ProjectRegistrationType projectRegistrationType = new ProjectRegistrationType()
                     .setProjectWard(projectWard)
-                    .setRegistrationType(registrationType)
                     .setCode(registrationType.getCode());
             projectRegistrationTypeRepository.save(projectRegistrationType);
 
