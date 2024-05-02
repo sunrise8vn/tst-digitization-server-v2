@@ -9,7 +9,7 @@ import com.tst.models.entities.locationRegion.LocationProvince;
 import com.tst.models.entities.locationRegion.LocationWard;
 import com.tst.models.enums.EPaperSize;
 import com.tst.models.enums.EProjectNumberBookStatus;
-import com.tst.models.enums.EProjectNumberBookTempStatus;
+import com.tst.models.enums.EProjectNumberBookFileStatus;
 import com.tst.models.responses.ResponseObject;
 import com.tst.services.locationDistrict.ILocationDistrictService;
 import com.tst.services.locationProvince.ILocationProvinceService;
@@ -17,9 +17,7 @@ import com.tst.services.locationWard.ILocationWardService;
 import com.tst.services.project.IProjectService;
 import com.tst.services.projectNumberBook.IProjectNumberBookService;
 import com.tst.services.projectNumberBookCover.IProjectNumberBookCoverService;
-import com.tst.services.projectNumberBookTemp.IProjectNumberBookTempService;
-import com.tst.services.projectRegistrationDate.IProjectRegistrationDateService;
-import com.tst.services.projectRegistrationType.IProjectRegistrationTypeService;
+import com.tst.services.projectNumberBookFile.IProjectNumberBookFileService;
 import com.tst.services.projectWard.IProjectWardService;
 import com.tst.services.registrationType.IRegistrationTypeService;
 import com.tst.utils.AppUtils;
@@ -28,7 +26,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -47,11 +44,9 @@ public class ProjectAPI {
 
     private final IProjectService projectService;
     private final IProjectWardService projectWardService;
-    private final IProjectRegistrationTypeService projectRegistrationTypeService;
     private final IProjectNumberBookService projectNumberBookService;
     private final IProjectNumberBookCoverService projectNumberBookCoverService;
-    private final IProjectRegistrationDateService projectRegistrationDateService;
-    private final IProjectNumberBookTempService projectNumberBookTempService;
+    private final IProjectNumberBookFileService projectNumberBookFileService;
     private final IRegistrationTypeService registrationTypeService;
     private final ILocationProvinceService locationProvinceService;
     private final ILocationDistrictService locationDistrictService;
@@ -187,9 +182,9 @@ public class ProjectAPI {
 //                .build());
 //    }
 
-    @PostMapping("/number-book-temp/upload-pdf")
+    @PostMapping("/number-book-file/upload-pdf")
     public ResponseEntity<ResponseObject> uploadPdfFilesProjectNumberBook(
-            @Validated ProjectNumberBookTempDTO projectNumberBookTempDTO,
+            @Validated ProjectNumberBookFileDTO projectNumberBookFileDTO,
             BindingResult result
     ) throws IOException {
 
@@ -202,11 +197,11 @@ public class ProjectAPI {
                     .build());
         }
 
-        if (projectNumberBookTempDTO.getFiles() == null) {
+        if (projectNumberBookFileDTO.getFiles() == null) {
             throw new DataInputException("Vui lòng chọn các tệp PDF");
         }
 
-        List<MultipartFile> files = projectNumberBookTempDTO.getFiles();
+        List<MultipartFile> files = projectNumberBookFileDTO.getFiles();
         List<String> nonPdfFiles = new ArrayList<>();
 
         for (MultipartFile multipartFile : files) {
@@ -225,13 +220,13 @@ public class ProjectAPI {
         }
 
         ProjectNumberBook projectNumberBook = projectNumberBookService.findByIdAndStatus(
-                Long.parseLong(projectNumberBookTempDTO.getNumber_book_id()),
+                Long.parseLong(projectNumberBookFileDTO.getNumber_book_id()),
                 EProjectNumberBookStatus.ACCEPT
         ).orElseThrow(() -> {
             throw new DataNotFoundException("ID quyển số không tồn tại");
         });
 
-        List<String> failedFiles = projectNumberBookTempService.create(files, projectNumberBook.getProjectNumberBookCover().getFolderPath(), projectNumberBook);
+        List<String> failedFiles = projectNumberBookFileService.create(files, projectNumberBook.getProjectNumberBookCover().getFolderPath(), projectNumberBook);
 
         if (!failedFiles.isEmpty()) {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
@@ -261,12 +256,7 @@ public class ProjectAPI {
             throw new DataNotFoundException("ID quyển số không tồn tại");
         });
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        projectNumberBook.setUpdatedBy(user);
-        projectNumberBook.setStatus(EProjectNumberBookStatus.ACCEPT);
-
-        projectNumberBookService.update(projectNumberBook);
+        projectNumberBookService.updateAccept(projectNumberBook);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Quyển sổ " + projectNumberBook.getCode() + " được đưa vào sử dụng thành công")
@@ -287,12 +277,7 @@ public class ProjectAPI {
             throw new DataNotFoundException("ID quyển số không tồn tại");
         });
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        projectNumberBook.setUpdatedBy(user);
-        projectNumberBook.setStatus(EProjectNumberBookStatus.CANCEL);
-
-        projectNumberBookService.update(projectNumberBook);
+        projectNumberBookService.updateCancel(projectNumberBook);
 
         // Đăng ký mới nên folder chỉ có 1 file cover, được xóa hết thư mục mới tạo
         projectNumberBookCoverService.deleteCoverDirectory(projectNumberBook.getProjectNumberBookCover());
@@ -305,9 +290,9 @@ public class ProjectAPI {
     }
 
     // Kiểm tra và đặt tên file pdf
-    @PatchMapping("/number-book-temp/organization")
-    public ResponseEntity<ResponseObject> organizationPdfFileProjectNumberBookTemp(
-            @Validated @RequestBody ProjectNumberBookTempOrganizationDTO projectNumberBookTempOrganizationDTO,
+    @PatchMapping("/number-book-file/organization")
+    public ResponseEntity<ResponseObject> organizationPdfFileProjectNumberBookFile(
+            @Validated @RequestBody ProjectNumberBookFileOrganizationDTO projectNumberBookFileOrganizationDTO,
             BindingResult result
     ) throws IOException {
         if (result.hasErrors()) {
@@ -319,17 +304,17 @@ public class ProjectAPI {
                     .build());
         }
 
-        ProjectNumberBookTemp projectNumberBookTemp = projectNumberBookTempService.findByIdAndStatus(
-                Long.parseLong(projectNumberBookTempOrganizationDTO.getId()),
-                EProjectNumberBookTempStatus.NEW
+        ProjectNumberBookFile projectNumberBookFile = projectNumberBookFileService.findByIdAndStatus(
+                Long.parseLong(projectNumberBookFileOrganizationDTO.getId()),
+                EProjectNumberBookFileStatus.NEW
         ).orElseThrow(() -> {
             throw new DataNotFoundException("ID tập tin không tồn tại");
         });
 
-        projectNumberBookTempService.organization(
-                projectNumberBookTemp,
-                projectNumberBookTempOrganizationDTO.getDay_month_year(),
-                projectNumberBookTempOrganizationDTO.getNumber()
+        projectNumberBookFileService.organization(
+                projectNumberBookFile,
+                projectNumberBookFileOrganizationDTO.getDay_month_year(),
+                projectNumberBookFileOrganizationDTO.getNumber()
         );
 
         return ResponseEntity.ok().body(ResponseObject.builder()
@@ -340,19 +325,19 @@ public class ProjectAPI {
     }
 
     // Kiểm tra và chấp nhận tổ chức file đúng với yêu cầu, chuyển file vào đúng thư mục
-    @PatchMapping("/number-book-temp/approve/{id}")
-    public ResponseEntity<ResponseObject> approvePdfFileProjectNumberBookTemp(
+    @PatchMapping("/number-book-file/approve/{id}")
+    public ResponseEntity<ResponseObject> approvePdfFileProjectNumberBookFile(
             @PathVariable @Pattern(regexp = "\\d+", message = "ID tập tin phải là một số") String id
     ) throws IOException {
 
-        ProjectNumberBookTemp projectNumberBookTemp = projectNumberBookTempService.findByIdAndStatus(
+        ProjectNumberBookFile projectNumberBookFile = projectNumberBookFileService.findByIdAndStatus(
                 Long.parseLong(id),
-                EProjectNumberBookTempStatus.ORGANIZED
+                EProjectNumberBookFileStatus.ORGANIZED
         ).orElseThrow(() -> {
             throw new DataNotFoundException("ID tập tin không tồn tại");
         });
 
-        projectNumberBookTempService.approve(projectNumberBookTemp);
+        projectNumberBookFileService.approve(projectNumberBookFile);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Tổ chức tập tin được chấp thuận thành công")

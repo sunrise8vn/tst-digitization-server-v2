@@ -10,10 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class ProjectNumberBookTempOrganizationDTO {
-
-//    @NotBlank(message = "Loại sổ đăng ký là bắt buộc")
-//    private String registration_type_code;
+public class ProjectNumberBookFileOrganizationDTO {
 
     @NotBlank(message = "ID tập tin là bắt buộc")
     @Pattern(regexp = "\\d+", message = "ID tập tin phải là số")

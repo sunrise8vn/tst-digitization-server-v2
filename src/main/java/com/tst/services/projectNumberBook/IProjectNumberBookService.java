@@ -13,5 +13,7 @@ public interface IProjectNumberBookService extends IGeneralService<ProjectNumber
 
     ProjectNumberBook create(ProjectNumberBook projectNumberBook, MultipartFile coverFile);
 
-    void update(ProjectNumberBook projectNumberBook);
+    void updateAccept(ProjectNumberBook projectNumberBook);
+
+    void updateCancel(ProjectNumberBook projectNumberBook);
 }

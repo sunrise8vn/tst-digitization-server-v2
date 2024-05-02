@@ -1,10 +1,16 @@
-package com.tst.models.entities;
+package com.tst.models.entities.extractFull;
 
+import com.tst.models.entities.*;
+import com.tst.models.enums.EInputStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.time.LocalDateTime;
 
 
 @NoArgsConstructor
@@ -12,17 +18,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "births")
-public class Birth {
+@Table(name = "birth_extract_full")
+public class BirthExtractFull {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "number", length = 10)
     private String number;
-
-    @Column(name = "number_book", length = 10)
-    private String numberBook;
 
     @Column(name = "number_page", length = 10)
     private String numberPage;
@@ -57,9 +60,6 @@ public class Birth {
     @Column(name = "birther_birthday", length = 10)
     private String birtherBirthday;
 
-    @Column(name = "birther_birthday_word")
-    private String birtherBirthdayWord;
-
     @Column(name = "birther_birth_place")
     private String birtherBirthPlace;
 
@@ -75,41 +75,9 @@ public class Birth {
     @Column(name = "birther_nationality", length = 100)
     private String birtherNationality;
 
-    @Column(name = "birther_other_nationality", length = 100)
-    private String birtherOtherNationality;
-
-    @Column(name = "birther_birth_certificate_type", length = 100)
-    private Integer birtherBirthCertificateType;
-
-    @Column(name = "birther_missing")
-    private String birtherMissing;
-
-    @Column(name = "birther_missing_statement_note_date", length = 10)
-    private String birtherMissingStatementNoteDate;
-
-    @Column(name = "birther_missing_statement_base")
-    private String birtherMissingStatementBase;
-
-    @Column(name = "birther_missing_cancel_statement_note_date", length = 10)
-    private String birtherMissingCancelStatementNoteDate;
-
-    @Column(name = "birther_missing_cancel_statement_base", length = 50)
-    private String birtherMissingCancelStatementBase;
-
-    @Column(name = "birther_limited_behavioral_capacity")
-    private String birtherLimitedBehavioralCapacity;
-
-    @Column(name = "birther_limited_behavioral_capacity_statement_note_date", length = 10)
-    private String birtherLimitedBehavioralCapacityStatementNoteDate;
-
-    @Column(name = "birther_limited_behavioral_capacity_statement_base")
-    private String birtherLimitedBehavioralCapacityStatementBase;
-
-    @Column(name = "birther_limited_behavioral_capacity_cancel_statement_note_date", length = 10)
-    private String birtherLimitedBehavioralCapacityCancelStatementNoteDate;
-
-    @Column(name = "birther_limited_behavioral_capacity_cancel_statement_base_date", length = 10)
-    private String birtherLimitedBehavioralCapacityCancelStatementBaseDate;
+    @ManyToOne
+    @JoinColumn(name = "birth_certificate_type_id", nullable = false)
+    private BirthCertificateType birthCertificateType;
 
     @Column(name = "mom_full_name", length = 50)
     private String momFullName;
@@ -177,9 +145,6 @@ public class Birth {
     @Column(name = "petitioner_identification_type")
     private Integer petitionerIdentificationType;
 
-    @Column(name = "petitioner_other_document")
-    private String petitionerOtherDocument;
-
     @Column(name = "petitioner_identification_number", length = 50)
     private String petitionerIdentificationNumber;
 
@@ -189,24 +154,45 @@ public class Birth {
     @Column(name = "petitioner_identification_issuance_place")
     private String petitionerIdentificationIssuancePlace;
 
-    @Column(name = "foreign_registration_number", length = 50)
-    private String foreignRegistrationNumber;
+    @ManyToOne
+    @JoinColumn(name = "access_point_id")
+    private AccessPoint accessPoint;
 
-    @Column(name = "foreign_registration_date", length = 10)
-    private String foreignRegistrationDate;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EInputStatus status;
 
-    @Column(name = "registered_foreign_organization", length = 100)
-    private String registeredForeignOrganization;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-    @Column(name = "registered_foreign_country", length = 100)
-    private String registeredForeignCountry;
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
+
+    @Column(name = "imported_at")
+    private LocalDateTime importedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "importer")
+    private User importer;
+
+    @Column(name = "checked_at")
+    private LocalDateTime checkedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "checker")
+    private User checker;
 
     @ManyToOne
     @JoinColumn(name = "project_number_book_file_id", nullable = false)
     private ProjectNumberBookFile projectNumberBookFile;
 
-    @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
-    private Project project;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean deleted = false;
 
+    @PrePersist
+    public void prePersist() {
+        this.createdBy = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 }

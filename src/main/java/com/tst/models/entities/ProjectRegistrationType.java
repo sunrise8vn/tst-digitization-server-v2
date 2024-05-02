@@ -1,5 +1,6 @@
 package com.tst.models.entities;
 
+import com.tst.models.enums.ERegistrationType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,12 +20,9 @@ public class ProjectRegistrationType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 10)
-    private String code;
-
-    @ManyToOne
-    @JoinColumn(name = "registration_type_id", nullable = false)
-    private RegistrationType registrationType;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ERegistrationType code;
 
     @ManyToOne
     @JoinColumn(name = "project_ward_id", nullable = false)

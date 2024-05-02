@@ -3,6 +3,7 @@ package com.tst.repositories;
 import com.tst.models.dtos.project.PaperSizeDTO;
 import com.tst.models.entities.ProjectRegistrationType;
 import com.tst.models.entities.ProjectWard;
+import com.tst.models.enums.ERegistrationType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -26,6 +27,6 @@ public interface ProjectRegistrationTypeRepository extends JpaRepository<Project
     PaperSizeDTO findByProjectWard(ProjectWard projectWard);
 
 
-    Optional<ProjectRegistrationType> findByProjectWardAndCode(ProjectWard projectWard, String code);
+    Optional<ProjectRegistrationType> findByProjectWardAndCode(ProjectWard projectWard, ERegistrationType code);
 
 }
