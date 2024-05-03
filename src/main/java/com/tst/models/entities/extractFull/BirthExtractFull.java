@@ -188,6 +188,10 @@ public class BirthExtractFull {
     @JoinColumn(name = "project_number_book_file_id", nullable = false)
     private ProjectNumberBookFile projectNumberBookFile;
 
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
     @Column(columnDefinition = "boolean default false")
     private Boolean deleted = false;
 

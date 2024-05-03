@@ -7,9 +7,12 @@ import com.tst.services.IGeneralService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 
 public interface IUserService extends IGeneralService<User, String> {
-    User createUser(UserCreateDTO userCreateDTO);
+
+    Optional<User> findByUsername(String username);
 
     String login(String username, String password);
 
@@ -18,5 +21,7 @@ public interface IUserService extends IGeneralService<User, String> {
     User getUserDetailsFromRefreshToken(String token) throws Exception;
 
     Page<UserResponse> findAllUserResponse(String keyWord, Pageable pageable);
+
+    User createUser(UserCreateDTO userCreateDTO);
 
 }

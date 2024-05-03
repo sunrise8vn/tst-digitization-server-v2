@@ -1,6 +1,7 @@
 package com.tst.models.entities.extractFull;
 
 import com.tst.models.entities.AccessPoint;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectNumberBookFile;
 import com.tst.models.entities.User;
 import com.tst.models.enums.EInputStatus;
@@ -58,18 +59,6 @@ public class MarryExtractFull {
     @Column(name = "wedlock")
     private String wedlock;
 
-    @Column(name = "cancel_marry_note_date")
-    private String cancelMarryNoteDate;
-
-    @Column(name = "cancel_marry_base")
-    private String cancelMarryBase;
-
-    @Column(name = "marriage_recognition_note_date")
-    private String marriageRecognitionNoteDate;
-
-    @Column(name = "marriage_recognition_base")
-    private String marriageRecognitionBase;
-
     @Column(name = "husband_full_name", length = 50)
     private String husbandFullName;
 
@@ -81,9 +70,6 @@ public class MarryExtractFull {
 
     @Column(name = "husband_nationality", length = 100)
     private String husbandNationality;
-
-    @Column(name = "husband_other_nationality", length = 100)
-    private String husbandOtherNationality;
 
     @Column(name = "husband_residence_type")
     private Integer husbandResidenceType;
@@ -117,9 +103,6 @@ public class MarryExtractFull {
 
     @Column(name = "wife_nationality", length = 100)
     private String wifeNationality;
-
-    @Column(name = "wife_other_nationality", length = 100)
-    private String wifeOtherNationality;
 
     @Column(name = "wife_residence_type")
     private Integer wifeResidenceType;
@@ -175,6 +158,10 @@ public class MarryExtractFull {
     @ManyToOne
     @JoinColumn(name = "project_number_book_file_id", nullable = false)
     private ProjectNumberBookFile projectNumberBookFile;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
 
     @Column(columnDefinition = "boolean default false")
     private Boolean deleted = false;

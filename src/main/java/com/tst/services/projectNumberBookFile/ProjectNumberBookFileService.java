@@ -221,13 +221,24 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
         projectNumberBookFile.setStatus(EProjectNumberBookFileStatus.ACCEPT);
         projectNumberBookFileRepository.save(projectNumberBookFile);
 
+        Project project = projectNumberBookFile.getProjectNumberBook()
+                .getProjectRegistrationDate()
+                .getProjectPaperSize()
+                .getProjectRegistrationType()
+                .getProjectWard()
+                .getProjectDistrict()
+                .getProjectProvince()
+                .getProject();
+
         if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.CMC)) {
             ParentsChildrenExtractShort parentsChildrenExtractShort = new ParentsChildrenExtractShort()
+                    .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
                     .setStatus(EInputStatus.NEW);
             parentsChildrenExtractShortRepository.save(parentsChildrenExtractShort);
 
             ParentsChildrenExtractFull parentsChildrenExtractFull = new ParentsChildrenExtractFull()
+                    .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
                     .setStatus(EInputStatus.NEW);
             parentsChildrenExtractFullRepository.save(parentsChildrenExtractFull);
@@ -235,11 +246,13 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
 
         if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.KS)) {
             BirthExtractShort birthExtractShort = new BirthExtractShort()
+                    .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
                     .setStatus(EInputStatus.NEW);
             birthExtractShortRepository.save(birthExtractShort);
 
             BirthExtractFull birthExtractFull = new BirthExtractFull()
+                    .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
                     .setStatus(EInputStatus.NEW);
             birthExtractFullRepository.save(birthExtractFull);
@@ -247,11 +260,13 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
 
         if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.KH)) {
             MarryExtractShort marryExtractShort = new MarryExtractShort()
+                    .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
                     .setStatus(EInputStatus.NEW);
             marryExtractShortRepository.save(marryExtractShort);
 
             MarryExtractFull marryExtractFull = new MarryExtractFull()
+                    .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
                     .setStatus(EInputStatus.NEW);
             marryExtractFullRepository.save(marryExtractFull);
@@ -259,11 +274,13 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
 
         if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.HN)) {
             WedlockExtractShort wedlockExtractShort = new WedlockExtractShort()
+                    .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
                     .setStatus(EInputStatus.NEW);
             wedlockExtractShortRepository.save(wedlockExtractShort);
 
             WedlockExtractFull wedlockExtractFull = new WedlockExtractFull()
+                    .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
                     .setStatus(EInputStatus.NEW);
             wedlockExtractFullRepository.save(wedlockExtractFull);
@@ -271,11 +288,13 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
 
         if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.KT)) {
             DeathExtractShort deathExtractShort = new DeathExtractShort()
+                    .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
                     .setStatus(EInputStatus.NEW);
             deathExtractShortRepository.save(deathExtractShort);
 
             DeathExtractFull deathExtractFull = new DeathExtractFull()
+                    .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
                     .setStatus(EInputStatus.NEW);
             deathExtractFullRepository.save(deathExtractFull);
@@ -358,7 +377,6 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
         ProjectProvince projectProvince = projectDistrict.getProjectProvince();
         projectProvinceService.updatePaperCountSize(projectProvince);
 
-        Project project = projectProvince.getProject();
         projectService.updatePaperCountSize(project);
 
         Path tempFolderPath = Path.of(serverRootFolder + "/" + oldFolderPath);

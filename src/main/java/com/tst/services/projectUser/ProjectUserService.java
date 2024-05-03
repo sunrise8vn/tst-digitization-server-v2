@@ -1,6 +1,8 @@
 package com.tst.services.projectUser;
 
+import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectUser;
+import com.tst.models.entities.User;
 import com.tst.repositories.ProjectUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,11 @@ public class ProjectUserService implements IProjectUserService {
     @Override
     public Optional<ProjectUser> findById(Long id) {
         return projectUserRepository.findById(id);
+    }
+
+    @Override
+    public Optional<ProjectUser> findByProjectAndUser(Project project, User user) {
+        return projectUserRepository.findByProjectAndUser(project, user);
     }
 
     @Override

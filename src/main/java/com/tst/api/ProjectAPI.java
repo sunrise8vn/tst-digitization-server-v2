@@ -2,6 +2,7 @@ package com.tst.api;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.exceptions.DataNotFoundException;
+import com.tst.exceptions.PermissionDenyException;
 import com.tst.models.dtos.project.*;
 import com.tst.models.entities.*;
 import com.tst.models.entities.locationRegion.LocationDistrict;
@@ -12,6 +13,7 @@ import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.models.enums.EProjectNumberBookFileStatus;
 import com.tst.models.enums.ERegistrationType;
 import com.tst.models.responses.ResponseObject;
+import com.tst.services.accessPoint.IAccessPointService;
 import com.tst.services.locationDistrict.ILocationDistrictService;
 import com.tst.services.locationProvince.ILocationProvinceService;
 import com.tst.services.locationWard.ILocationWardService;
@@ -19,14 +21,17 @@ import com.tst.services.project.IProjectService;
 import com.tst.services.projectNumberBook.IProjectNumberBookService;
 import com.tst.services.projectNumberBookCover.IProjectNumberBookCoverService;
 import com.tst.services.projectNumberBookFile.IProjectNumberBookFileService;
+import com.tst.services.projectUser.IProjectUserService;
 import com.tst.services.projectWard.IProjectWardService;
 import com.tst.services.registrationType.IRegistrationTypeService;
+import com.tst.services.user.IUserService;
 import com.tst.utils.AppUtils;
 import com.tst.utils.FileUtils;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -43,6 +49,8 @@ import java.util.List;
 @Validated
 public class ProjectAPI {
 
+    private final IAccessPointService accessPointService;
+    private final IProjectUserService projectUserService;
     private final IProjectService projectService;
     private final IProjectWardService projectWardService;
     private final IProjectNumberBookService projectNumberBookService;
@@ -52,6 +60,7 @@ public class ProjectAPI {
     private final ILocationProvinceService locationProvinceService;
     private final ILocationDistrictService locationDistrictService;
     private final ILocationWardService locationWardService;
+    private final IUserService userService;
 
     private final AppUtils appUtils;
     private final FileUtils fileUtils;
@@ -246,6 +255,68 @@ public class ProjectAPI {
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Tất cả tệp đã được lưu thành công.")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .build());
+    }
+
+    // Phân phối biểu mẫu cho người dùng
+    @PostMapping("/assign-extract-form")
+    public ResponseEntity<ResponseObject> assignExtractFormToUser(
+            @Validated @RequestBody AssignExtractFormDTO assignExtractFormDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi gán phiếu nhập cho người dùng")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        if (Long.parseLong(assignExtractFormDTO.getTotal_count()) < assignExtractFormDTO.getUsers().size()) {
+            throw new DataInputException("Tổng số phiếu phân phối phải lớn hơn hoặc bằng tổng số người dùng");
+        }
+
+        Project project = projectService.findById(Long.parseLong(assignExtractFormDTO.getProject_id())).orElseThrow(() -> {
+           throw new DataNotFoundException("ID dự án không tồn tại");
+        });
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        projectUserService.findByProjectAndUser(project, user).orElseThrow(() -> {
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
+        });
+
+        List<User> users = new ArrayList<>();
+
+        for (String username : assignExtractFormDTO.getUsers()) {
+            Optional<User> userOptional = userService.findByUsername(username);
+
+            if (userOptional.isEmpty()) {
+                throw new PermissionDenyException("Tài khoản " + username + " không tồn tại");
+            }
+
+            if (users.contains(userOptional.get())) {
+                throw new DataInputException("Danh sách người dùng không được trùng nhau");
+            }
+
+            projectUserService.findByProjectAndUser(project, userOptional.get()).orElseThrow(() -> {
+                throw new PermissionDenyException("Tài khoản " + username + " không thuộc dự án này");
+            });
+
+            users.add(userOptional.get());
+        }
+
+        projectService.assignExtractFormToUser(
+                project,
+                Long.parseLong(assignExtractFormDTO.getTotal_count()),
+                users
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Gán phiếu nhập cho người dùng thành công")
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .build());

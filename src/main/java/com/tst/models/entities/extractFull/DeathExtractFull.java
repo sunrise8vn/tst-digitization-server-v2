@@ -1,9 +1,6 @@
 package com.tst.models.entities.extractFull;
 
-import com.tst.models.entities.AccessPoint;
-import com.tst.models.entities.ProjectNumberBook;
-import com.tst.models.entities.ProjectNumberBookFile;
-import com.tst.models.entities.User;
+import com.tst.models.entities.*;
 import com.tst.models.enums.EInputStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -162,6 +159,10 @@ public class DeathExtractFull {
     @ManyToOne
     @JoinColumn(name = "project_number_book_file_id", nullable = false)
     private ProjectNumberBookFile projectNumberBookFile;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
 
     @Column(columnDefinition = "boolean default false")
     private Boolean deleted = false;
