@@ -48,16 +48,16 @@ public class AccessPointHistory {
     private Long totalCount;
 
     @Column(name = "count_success_extract_short", nullable = false)
-    private Long countSuccessExtractShort;
+    private Long countSuccessExtractShort = 0L;
 
     @Column(name = "count_error_extract_short", nullable = false)
-    private Long countErrorExtractShort;
+    private Long countErrorExtractShort = 0L;
 
     @Column(name = "count_success_extract_full", nullable = false)
-    private Long countSuccessExtractFull;
+    private Long countSuccessExtractFull = 0L;
 
     @Column(name = "count_error_extract_full", nullable = false)
-    private Long countErrorExtractFull;
+    private Long countErrorExtractFull = 0L;
 
     @ManyToOne
     @JoinColumn(name = "assignees", nullable = false)
