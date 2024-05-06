@@ -5,4 +5,6 @@ import com.tst.services.IGeneralService;
 
 public interface IAccessPointService extends IGeneralService<AccessPoint, Long> {
 
+    void revokeExtractForm(AccessPoint accessPoint, Long totalCountRevoke);
+
 }
