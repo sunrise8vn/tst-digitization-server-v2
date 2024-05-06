@@ -13,7 +13,7 @@ import lombok.*;
 public class ProjectNumberBookFileOrganizationDTO {
 
     @NotBlank(message = "ID tập tin là bắt buộc")
-    @Pattern(regexp = "\\d+", message = "ID tập tin phải là số")
+    @Pattern(regexp = "^[1-9]\\d*$", message = "ID tập tin phải là số lớn hơn 0")
     private String id;
 
     @NotBlank(message = "Ngày tháng năm là bắt buộc")

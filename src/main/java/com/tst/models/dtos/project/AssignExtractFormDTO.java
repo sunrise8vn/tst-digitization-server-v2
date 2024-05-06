@@ -16,11 +16,11 @@ import java.util.List;
 public class AssignExtractFormDTO {
 
     @NotBlank(message = "ID dự án là bắt buộc")
-    @Pattern(regexp = "\\d+", message = "ID dự án phải là số")
+    @Pattern(regexp = "^[1-9]\\d*$", message = "ID dự án phải là số")
     private String project_id;
 
     @NotBlank(message = "Tổng số phiếu là bắt buộc")
-    @Pattern(regexp = "\\d+", message = "Tổng số phiếu phải là số")
+    @Pattern(regexp = "^[1-9][0-9]*[02468]$", message = "Tổng số phiếu phải là số chẵn lớn hơn 0")
     private String total_count;
 
     @NotEmpty(message = "Danh sách tài khoản người dùng là bắt buộc")

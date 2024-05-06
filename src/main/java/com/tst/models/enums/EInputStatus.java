@@ -5,6 +5,7 @@ public enum EInputStatus {
     LATER_PROCESSING("LATER_PROCESSING"),
     IMPORTED("IMPORTED"),
     MATCHING("MATCHING"),
+    NOT_MATCHING("NOT_MATCHING"),
     CHECKED("CHECKED");
 
     private final String value;

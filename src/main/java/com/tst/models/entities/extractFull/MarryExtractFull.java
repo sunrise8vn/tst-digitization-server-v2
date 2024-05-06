@@ -1,9 +1,6 @@
 package com.tst.models.entities.extractFull;
 
-import com.tst.models.entities.AccessPoint;
-import com.tst.models.entities.Project;
-import com.tst.models.entities.ProjectNumberBookFile;
-import com.tst.models.entities.User;
+import com.tst.models.entities.*;
 import com.tst.models.enums.EInputStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,7 +17,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "marry_extract_full")
+@Table(
+    name = "marry_extract_full",
+    indexes = {
+        @Index(name = "index_status", columnList = "status")
+    }
+)
 public class MarryExtractFull {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -170,4 +172,5 @@ public class MarryExtractFull {
     public void prePersist() {
         this.createdBy = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
+
 }
