@@ -59,6 +59,15 @@ public class AccessPointHistory {
     @Column(name = "count_error_extract_full", nullable = false)
     private Long countErrorExtractFull = 0L;
 
+    @Column(name = "count_revoke_extract_short", nullable = false)
+    private Long countRevokeExtractShort = 0L;
+
+    @Column(name = "count_revoke_extract_full", nullable = false)
+    private Long countRevokeExtractFull = 0L;
+
+    @Column(name = "total_count_revoke", nullable = false)
+    private Long totalCountRevoke = 0L;
+
     @ManyToOne
     @JoinColumn(name = "assignees", nullable = false)
     private User assignees;

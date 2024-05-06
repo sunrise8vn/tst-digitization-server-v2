@@ -23,7 +23,8 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
             "WHERE bes.accessPoint = :accessPoint " +
             "AND bes.status = bef.status " +
             "AND (bes.status = 'NEW' " +
-            "OR bes.status = 'LATER_PROCESSING')"
+            "OR bes.status = 'LATER_PROCESSING') " +
+            "ORDER BY bes.id DESC"
     )
     List<BirthExtractShort> findBirthSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 

@@ -23,7 +23,8 @@ public interface MarryExtractShortRepository extends JpaRepository<MarryExtractS
             "WHERE mes.accessPoint = :accessPoint " +
             "AND mes.status = mef.status " +
             "AND (mes.status = 'NEW' " +
-            "OR mes.status = 'LATER_PROCESSING')"
+            "OR mes.status = 'LATER_PROCESSING') " +
+            "ORDER BY mes.id DESC"
     )
     List<MarryExtractShort> findMarrySameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 

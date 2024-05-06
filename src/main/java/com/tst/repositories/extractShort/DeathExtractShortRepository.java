@@ -23,7 +23,8 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
             "WHERE des.accessPoint = :accessPoint " +
             "AND des.status = def.status " +
             "AND (des.status = 'NEW' " +
-            "OR des.status = 'LATER_PROCESSING')"
+            "OR des.status = 'LATER_PROCESSING') " +
+            "ORDER BY des.id DESC"
     )
     List<DeathExtractShort> findDeathSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 

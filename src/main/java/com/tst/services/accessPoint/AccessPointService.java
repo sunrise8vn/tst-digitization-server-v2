@@ -3,15 +3,14 @@ package com.tst.services.accessPoint;
 import com.tst.exceptions.DataInputException;
 import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.AccessPointHistory;
-import com.tst.models.entities.AccessPointRevoke;
 import com.tst.models.entities.extractFull.*;
 import com.tst.models.entities.extractShort.*;
 import com.tst.models.enums.EInputStatus;
 import com.tst.repositories.AccessPointHistoryRepository;
 import com.tst.repositories.AccessPointRepository;
-import com.tst.repositories.AccessPointRevokeRepository;
 import com.tst.repositories.extractFull.*;
 import com.tst.repositories.extractShort.*;
+import com.tst.services.BatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +29,6 @@ public class AccessPointService implements IAccessPointService {
 
     private final AccessPointRepository accessPointRepository;
     private final AccessPointHistoryRepository accessPointHistoryRepository;
-    private final AccessPointRevokeRepository accessPointRevokeRepository;
 
     private final ParentsChildrenExtractShortRepository parentsChildrenExtractShortRepository;
     private final ParentsChildrenExtractFullRepository parentsChildrenExtractFullRepository;
@@ -42,6 +40,8 @@ public class AccessPointService implements IAccessPointService {
     private final WedlockExtractFullRepository wedlockExtractFullRepository;
     private final DeathExtractShortRepository deathExtractShortRepository;
     private final DeathExtractFullRepository deathExtractFullRepository;
+
+    private final BatchService batchService;
 
 
     @Override
@@ -79,6 +79,10 @@ public class AccessPointService implements IAccessPointService {
             throw new DataInputException("Số lượng biểu mẫu chưa nhập chỉ còn " + totalCountRemaining);
         }
 
+        long totalCountRevoked = totalCountRevoke;
+        long totalCountExtractShortRevoked = 0L;
+        long totalCountExtractFullRevoked = 0L;
+
         Map<String, AccessPointHistory> accessPointHistoryMap = accessPointHistoryRepository.findByAccessPoint(accessPoint)
                 .stream()
                 .collect(Collectors.toMap(history -> history.getAssignees().getId(), Function.identity()));
@@ -95,213 +99,250 @@ public class AccessPointService implements IAccessPointService {
         List<DeathExtractFull> deathExtractFullsModified = new ArrayList<>();
 
         for (ParentsChildrenExtractShort item : parentsChildrenExtractShorts) {
-            if (totalCountRevoke <= 0) {
+            if (totalCountRevoked <= 0) {
                 break;
             }
 
             AccessPointHistory accessPointHistoryShort =  accessPointHistoryMap.get(item.getImporter().getId());
             accessPointHistoryShort.setCountExtractShort(accessPointHistoryShort.getCountExtractShort() - 1);
+            accessPointHistoryShort.setTotalCount(accessPointHistoryShort.getTotalCount() - 1);
+            accessPointHistoryShort.setCountRevokeExtractShort(accessPointHistoryShort.getCountRevokeExtractShort() + 1);
+            accessPointHistoryShort.setTotalCountRevoke(accessPointHistoryShort.getTotalCountRevoke() + 1);
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
             item.setAccessPoint(null);
             parentsChildrenExtractShortsModified.add(item);
 
-            totalCountRevoke--;
+            totalCountExtractShortRevoked++;
+            totalCountRevoked--;
         }
 
         for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
-            if (totalCountRevoke <= 0) {
+            if (totalCountRevoked <= 0) {
                 break;
             }
 
             AccessPointHistory accessPointHistoryFull =  accessPointHistoryMap.get(item.getImporter().getId());
             accessPointHistoryFull.setCountExtractFull(accessPointHistoryFull.getCountExtractFull() - 1);
+            accessPointHistoryFull.setTotalCount(accessPointHistoryFull.getTotalCount() - 1);
+            accessPointHistoryFull.setCountRevokeExtractFull(accessPointHistoryFull.getCountRevokeExtractFull() + 1);
+            accessPointHistoryFull.setTotalCountRevoke(accessPointHistoryFull.getTotalCountRevoke() + 1);
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
             item.setAccessPoint(null);
             parentsChildrenExtractFullsModified.add(item);
 
-            totalCountRevoke--;
+            totalCountExtractFullRevoked++;
+            totalCountRevoked--;
         }
 
         for (BirthExtractShort item : birthExtractShorts) {
-            if (totalCountRevoke <= 0) {
+            if (totalCountRevoked <= 0) {
                 break;
             }
 
             AccessPointHistory accessPointHistoryShort =  accessPointHistoryMap.get(item.getImporter().getId());
             accessPointHistoryShort.setCountExtractShort(accessPointHistoryShort.getCountExtractShort() - 1);
+            accessPointHistoryShort.setTotalCount(accessPointHistoryShort.getTotalCount() - 1);
+            accessPointHistoryShort.setCountRevokeExtractShort(accessPointHistoryShort.getCountRevokeExtractShort() + 1);
+            accessPointHistoryShort.setTotalCountRevoke(accessPointHistoryShort.getTotalCountRevoke() + 1);
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
             item.setAccessPoint(null);
             birthExtractShortsModified.add(item);
 
-            totalCountRevoke--;
+            totalCountExtractShortRevoked++;
+            totalCountRevoked--;
         }
 
         for (BirthExtractFull item : birthExtractFulls) {
-            if (totalCountRevoke <= 0) {
+            if (totalCountRevoked <= 0) {
                 break;
             }
 
             AccessPointHistory accessPointHistoryFull =  accessPointHistoryMap.get(item.getImporter().getId());
             accessPointHistoryFull.setCountExtractFull(accessPointHistoryFull.getCountExtractFull() - 1);
+            accessPointHistoryFull.setTotalCount(accessPointHistoryFull.getTotalCount() - 1);
+            accessPointHistoryFull.setCountRevokeExtractFull(accessPointHistoryFull.getCountRevokeExtractFull() + 1);
+            accessPointHistoryFull.setTotalCountRevoke(accessPointHistoryFull.getTotalCountRevoke() + 1);
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
             item.setAccessPoint(null);
             birthExtractFullsModified.add(item);
 
-            totalCountRevoke--;
+            totalCountExtractFullRevoked++;
+            totalCountRevoked--;
         }
 
         for (MarryExtractShort item : marryExtractShorts) {
-            if (totalCountRevoke <= 0) {
+            if (totalCountRevoked <= 0) {
                 break;
             }
 
             AccessPointHistory accessPointHistoryShort =  accessPointHistoryMap.get(item.getImporter().getId());
             accessPointHistoryShort.setCountExtractShort(accessPointHistoryShort.getCountExtractShort() - 1);
+            accessPointHistoryShort.setTotalCount(accessPointHistoryShort.getTotalCount() - 1);
+            accessPointHistoryShort.setCountRevokeExtractShort(accessPointHistoryShort.getCountRevokeExtractShort() + 1);
+            accessPointHistoryShort.setTotalCountRevoke(accessPointHistoryShort.getTotalCountRevoke() + 1);
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
             item.setAccessPoint(null);
             marryExtractShortsModified.add(item);
 
-            totalCountRevoke--;
+            totalCountExtractShortRevoked++;
+            totalCountRevoked--;
         }
 
         for (MarryExtractFull item : marryExtractFulls) {
-            if (totalCountRevoke <= 0) {
+            if (totalCountRevoked <= 0) {
                 break;
             }
 
             AccessPointHistory accessPointHistoryFull =  accessPointHistoryMap.get(item.getImporter().getId());
             accessPointHistoryFull.setCountExtractFull(accessPointHistoryFull.getCountExtractFull() - 1);
+            accessPointHistoryFull.setTotalCount(accessPointHistoryFull.getTotalCount() - 1);
+            accessPointHistoryFull.setCountRevokeExtractFull(accessPointHistoryFull.getCountRevokeExtractFull() + 1);
+            accessPointHistoryFull.setTotalCountRevoke(accessPointHistoryFull.getTotalCountRevoke() + 1);
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
             item.setAccessPoint(null);
             marryExtractFullsModified.add(item);
 
-            totalCountRevoke--;
+            totalCountExtractFullRevoked++;
+            totalCountRevoked--;
         }
 
         for (WedlockExtractShort item : wedlockExtractShorts) {
-            if (totalCountRevoke <= 0) {
+            if (totalCountRevoked <= 0) {
                 break;
             }
 
             AccessPointHistory accessPointHistoryShort =  accessPointHistoryMap.get(item.getImporter().getId());
             accessPointHistoryShort.setCountExtractShort(accessPointHistoryShort.getCountExtractShort() - 1);
+            accessPointHistoryShort.setTotalCount(accessPointHistoryShort.getTotalCount() - 1);
+            accessPointHistoryShort.setCountRevokeExtractShort(accessPointHistoryShort.getCountRevokeExtractShort() + 1);
+            accessPointHistoryShort.setTotalCountRevoke(accessPointHistoryShort.getTotalCountRevoke() + 1);
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
             item.setAccessPoint(null);
             wedlockExtractShortsModified.add(item);
 
-            totalCountRevoke--;
+            totalCountExtractShortRevoked++;
+            totalCountRevoked--;
         }
 
         for (WedlockExtractFull item : wedlockExtractFulls) {
-            if (totalCountRevoke <= 0) {
+            if (totalCountRevoked <= 0) {
                 break;
             }
 
             AccessPointHistory accessPointHistoryFull =  accessPointHistoryMap.get(item.getImporter().getId());
             accessPointHistoryFull.setCountExtractFull(accessPointHistoryFull.getCountExtractFull() - 1);
+            accessPointHistoryFull.setTotalCount(accessPointHistoryFull.getTotalCount() - 1);
+            accessPointHistoryFull.setCountRevokeExtractFull(accessPointHistoryFull.getCountRevokeExtractFull() + 1);
+            accessPointHistoryFull.setTotalCountRevoke(accessPointHistoryFull.getTotalCountRevoke() + 1);
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
             item.setAccessPoint(null);
             wedlockExtractFullsModified.add(item);
 
-            totalCountRevoke--;
+            totalCountExtractFullRevoked++;
+            totalCountRevoked--;
         }
 
         for (DeathExtractShort item : deathExtractShorts) {
-            if (totalCountRevoke <= 0) {
+            if (totalCountRevoked <= 0) {
                 break;
             }
 
             AccessPointHistory accessPointHistoryShort =  accessPointHistoryMap.get(item.getImporter().getId());
             accessPointHistoryShort.setCountExtractShort(accessPointHistoryShort.getCountExtractShort() - 1);
+            accessPointHistoryShort.setTotalCount(accessPointHistoryShort.getTotalCount() - 1);
+            accessPointHistoryShort.setCountRevokeExtractShort(accessPointHistoryShort.getCountRevokeExtractShort() + 1);
+            accessPointHistoryShort.setTotalCountRevoke(accessPointHistoryShort.getTotalCountRevoke() + 1);
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
             item.setAccessPoint(null);
             deathExtractShortsModified.add(item);
 
-            totalCountRevoke--;
+            totalCountExtractShortRevoked++;
+            totalCountRevoked--;
         }
 
         for (DeathExtractFull item : deathExtractFulls) {
-            if (totalCountRevoke <= 0) {
+            if (totalCountRevoked <= 0) {
                 break;
             }
 
             AccessPointHistory accessPointHistoryFull =  accessPointHistoryMap.get(item.getImporter().getId());
             accessPointHistoryFull.setCountExtractFull(accessPointHistoryFull.getCountExtractFull() - 1);
+            accessPointHistoryFull.setTotalCount(accessPointHistoryFull.getTotalCount() - 1);
+            accessPointHistoryFull.setCountRevokeExtractFull(accessPointHistoryFull.getCountRevokeExtractFull() + 1);
+            accessPointHistoryFull.setTotalCountRevoke(accessPointHistoryFull.getTotalCountRevoke() + 1);
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
             item.setAccessPoint(null);
             deathExtractFullsModified.add(item);
 
-            totalCountRevoke--;
+            totalCountExtractFullRevoked++;
+            totalCountRevoked--;
         }
 
         // Lưu tất cả các đối tượng cùng một lúc sau khi xử lý xong
         if (!parentsChildrenExtractShortsModified.isEmpty()) {
-            parentsChildrenExtractShortRepository.saveAll(parentsChildrenExtractShortsModified);
+            batchService.batchUpdate(parentsChildrenExtractShortsModified);
         }
 
         if (!parentsChildrenExtractFullsModified.isEmpty()) {
-            parentsChildrenExtractFullRepository.saveAll(parentsChildrenExtractFullsModified);
+            batchService.batchUpdate(parentsChildrenExtractFullsModified);
         }
 
         if (!birthExtractShortsModified.isEmpty()) {
-            birthExtractShortRepository.saveAll(birthExtractShortsModified);
+            batchService.batchUpdate(birthExtractShortsModified);
         }
 
         if (!birthExtractFullsModified.isEmpty()) {
-            birthExtractFullRepository.saveAll(birthExtractFullsModified);
+            batchService.batchUpdate(birthExtractFullsModified);
         }
 
         if (!marryExtractShortsModified.isEmpty()) {
-            marryExtractShortRepository.saveAll(marryExtractShortsModified);
+            batchService.batchUpdate(marryExtractShortsModified);
         }
 
         if (!marryExtractFullsModified.isEmpty()) {
-            marryExtractFullRepository.saveAll(marryExtractFullsModified);
+            batchService.batchUpdate(marryExtractFullsModified);
         }
 
         if (!wedlockExtractShortsModified.isEmpty()) {
-            wedlockExtractShortRepository.saveAll(wedlockExtractShortsModified);
+            batchService.batchUpdate(wedlockExtractShortsModified);
         }
 
         if (!wedlockExtractFullsModified.isEmpty()) {
-            wedlockExtractFullRepository.saveAll(wedlockExtractFullsModified);
+            batchService.batchUpdate(wedlockExtractFullsModified);
         }
 
         if (!deathExtractShortsModified.isEmpty()) {
-            deathExtractShortRepository.saveAll(deathExtractShortsModified);
+            batchService.batchUpdate(deathExtractShortsModified);
         }
 
         if (!deathExtractFullsModified.isEmpty()) {
-            deathExtractFullRepository.saveAll(deathExtractFullsModified);
+            batchService.batchUpdate(deathExtractFullsModified);
         }
 
-        AccessPointRevoke accessPointRevoke = new AccessPointRevoke()
-                .setAccessPoint(accessPoint)
-                .setProject(accessPoint.getProject())
-                .setTotalCountRevoke(totalCountRevoke);
-        accessPointRevokeRepository.save(accessPointRevoke);
-
+        accessPoint.setCountExtractShort(accessPoint.getCountExtractShort() - totalCountExtractShortRevoked);
+        accessPoint.setCountExtractFull(accessPoint.getCountExtractFull() - totalCountExtractFullRevoked);
         accessPoint.setTotalCount(accessPoint.getTotalCount() - totalCountRevoke);
+        accessPoint.setTotalCountRevoke(accessPoint.getTotalCountRevoke() + totalCountRevoke);
         accessPointRepository.save(accessPoint);
 
         accessPointHistoryRepository.saveAll(accessPointHistoryMap.values());

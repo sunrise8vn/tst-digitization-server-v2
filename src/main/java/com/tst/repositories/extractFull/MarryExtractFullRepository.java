@@ -25,7 +25,8 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
             "WHERE mef.accessPoint = :accessPoint " +
             "AND mef.status = mes.status " +
             "AND (mef.status = 'NEW' " +
-            "OR mef.status = 'LATER_PROCESSING')"
+            "OR mef.status = 'LATER_PROCESSING') " +
+            "ORDER BY mef.id DESC"
     )
     List<MarryExtractFull> findMarrySameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 
