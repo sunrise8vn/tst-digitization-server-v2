@@ -13,19 +13,19 @@ import lombok.*;
 public class RegistrationPointDTO {
 
     @NotBlank(message = "ID dự án là bắt buộc")
-    @Pattern(regexp = "\\d+", message = "ID dự án phải là số")
+    @Pattern(regexp = "^[1-9]\\d*$", message = "ID dự án phải là số")
     private String project_id;
 
     @NotBlank(message = "ID tỉnh/thành phố là bắt buộc")
-    @Pattern(regexp = "\\d+", message = "ID tỉnh/thành phố phải là số")
+    @Pattern(regexp = "^[1-9]\\d*$", message = "ID tỉnh/thành phố phải là số")
     private String province_id;
 
     @NotBlank(message = "ID thành phố/quận/huyện là bắt buộc")
-    @Pattern(regexp = "\\d+", message = "ID thành phố/quận/huyện phải là số")
+    @Pattern(regexp = "^[1-9]\\d*$", message = "ID thành phố/quận/huyện phải là số")
     private String district_id;
 
     @NotBlank(message = "ID phường/xã là bắt buộc")
-    @Pattern(regexp = "\\d+", message = "ID phường/xã phải là số")
+    @Pattern(regexp = "^[1-9]\\d*$", message = "ID phường/xã phải là số")
     private String ward_id;
 
 }

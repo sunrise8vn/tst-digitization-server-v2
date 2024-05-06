@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class RegistrationNumberBookDTO {
 
     @NotBlank(message = "ID phường xã là bắt buộc")
-    @Pattern(regexp = "\\d+", message = "ID phường xã phải là số")
+    @Pattern(regexp = "^[1-9]\\d*$", message = "ID phường xã phải là số")
     private String ward_id;
 
     @NotBlank(message = "Loại sổ là bắt buộc")

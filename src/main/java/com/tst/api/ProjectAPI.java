@@ -104,7 +104,12 @@ public class ProjectAPI {
             throw new DataNotFoundException("Phường/xã không tồn tại");
         });
 
-        projectService.createRegistrationPoint(project, locationProvince, locationDistrict, locationWard);
+        projectService.createRegistrationPoint(
+                project,
+                locationProvince,
+                locationDistrict,
+                locationWard
+        );
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Khởi tạo điểm đăng ký hộ tịch thành công")
@@ -198,6 +203,8 @@ public class ProjectAPI {
 //                .build());
 //    }
 
+
+    // Upload pdf lên thư mục sổ hộ tịch
     @PostMapping("/number-book-file/upload-pdf")
     public ResponseEntity<ResponseObject> uploadPdfFilesProjectNumberBook(
             @Validated ProjectNumberBookFileDTO projectNumberBookFileDTO,
@@ -242,7 +249,11 @@ public class ProjectAPI {
             throw new DataNotFoundException("ID quyển số không tồn tại");
         });
 
-        List<String> failedFiles = projectNumberBookFileService.create(files, projectNumberBook.getProjectNumberBookCover().getFolderPath(), projectNumberBook);
+        List<String> failedFiles = projectNumberBookFileService.create(
+                files,
+                projectNumberBook.getProjectNumberBookCover().getFolderPath(),
+                projectNumberBook
+        );
 
         if (!failedFiles.isEmpty()) {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
@@ -279,7 +290,9 @@ public class ProjectAPI {
             throw new DataInputException("Tổng số phiếu phân phối phải lớn hơn hoặc bằng tổng số người dùng");
         }
 
-        Project project = projectService.findById(Long.parseLong(assignExtractFormDTO.getProject_id())).orElseThrow(() -> {
+        Project project = projectService.findById(
+                Long.parseLong(assignExtractFormDTO.getProject_id())
+        ).orElseThrow(() -> {
            throw new DataNotFoundException("ID dự án không tồn tại");
         });
 
@@ -322,6 +335,26 @@ public class ProjectAPI {
                 .build());
     }
 
+    // So sánh tự động các biểu mẫu trường ngắn và trường dài đã nhập
+    @PostMapping("/auto-compare-extract-short-full/{accessPointId}")
+    public ResponseEntity<ResponseObject> assignExtractFormToUser(
+            @PathVariable @Pattern(regexp = "\\d+", message = "ID điểm truy cập phải là một số") String accessPointId
+    ) {
+        AccessPoint accessPoint = accessPointService.findById(
+                Long.parseLong(accessPointId)
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("ID điểm truy cập không tồn tại");
+        });
+
+        projectService.autoCompareExtractShortFull(accessPoint);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Đối sánh các trường nhập liệu của các biểu mẫu thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .build());
+    }
+
     // FE quản lý kiểm tra màn hình dữ liệu ảnh bìa khớp với cấu trúc thư mục thì chấp nhận
     @PatchMapping("/number-book/accept/{projectNumberBookId}")
     public ResponseEntity<ResponseObject> acceptCreateProjectNumberBook(
@@ -329,7 +362,8 @@ public class ProjectAPI {
     ) {
 
         ProjectNumberBook projectNumberBook = projectNumberBookService.findByIdAndStatus(
-                Long.parseLong(projectNumberBookId), EProjectNumberBookStatus.NEW
+                Long.parseLong(projectNumberBookId),
+                EProjectNumberBookStatus.NEW
         ).orElseThrow(() -> {
             throw new DataNotFoundException("ID quyển số không tồn tại");
         });
@@ -350,7 +384,8 @@ public class ProjectAPI {
     ) throws IOException {
 
         ProjectNumberBook projectNumberBook = projectNumberBookService.findByIdAndStatus(
-                Long.parseLong(projectNumberBookId), EProjectNumberBookStatus.NEW
+                Long.parseLong(projectNumberBookId),
+                EProjectNumberBookStatus.NEW
         ).orElseThrow(() -> {
             throw new DataNotFoundException("ID quyển số không tồn tại");
         });

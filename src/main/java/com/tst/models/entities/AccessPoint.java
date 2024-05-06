@@ -1,5 +1,6 @@
 package com.tst.models.entities;
 
+import com.tst.models.enums.EAccessPointStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +10,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 
 @NoArgsConstructor
@@ -28,6 +27,10 @@ public class AccessPoint {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EAccessPointStatus status;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
@@ -43,9 +46,6 @@ public class AccessPoint {
     @JoinColumn(name = "updated_by")
     private User updatedBy;
 
-    @Column(name = "timestamp")
-    private Long timestamp;
-
     @Column(name = "count_extract_short", nullable = false)
     private Long countExtractShort;
 
@@ -55,11 +55,20 @@ public class AccessPoint {
     @Column(name = "total_count", nullable = false)
     private Long totalCount;
 
+    @Column(name = "total_success_extract_short", nullable = false)
+    private Long totalSuccessExtractShort = 0L;
+
+    @Column(name = "total_success_extract_full", nullable = false)
+    private Long totalSuccessExtractFull = 0L;
+
+    @Column(name = "total_error_extract_short", nullable = false)
+    private Long totalErrorExtractShort = 0L;
+
+    @Column(name = "total_error_extract_full", nullable = false)
+    private Long totalErrorExtractFull = 0L;
+
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-        ZonedDateTime zdt = this.createdAt.atZone(ZoneId.of("Asia/Ho_Chi_Minh"));
-        this.timestamp = zdt.toInstant().toEpochMilli();
         this.createdBy = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 

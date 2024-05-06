@@ -1,6 +1,7 @@
 package com.tst.services.project;
 
 import com.tst.exceptions.DataInputException;
+import com.tst.models.dtos.compare.*;
 import com.tst.models.dtos.project.PaperSizeDTO;
 import com.tst.models.entities.*;
 import com.tst.models.entities.extractFull.*;
@@ -8,19 +9,24 @@ import com.tst.models.entities.extractShort.*;
 import com.tst.models.entities.locationRegion.LocationDistrict;
 import com.tst.models.entities.locationRegion.LocationProvince;
 import com.tst.models.entities.locationRegion.LocationWard;
+import com.tst.models.enums.EAccessPointStatus;
+import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.EPaperSize;
 import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.repositories.*;
 import com.tst.repositories.extractFull.*;
 import com.tst.repositories.extractShort.*;
 import com.tst.services.projectNumberBookCover.IProjectNumberBookCoverService;
+import com.tst.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -51,6 +57,9 @@ public class ProjectService implements IProjectService {
     private final DeathExtractFullRepository deathExtractFullRepository;
 
     private final IProjectNumberBookCoverService projectNumberBookCoverService;
+
+    private final ModelMapper modelMapper;
+    private final AppUtils appUtils;
 
 
     @Override
@@ -309,6 +318,7 @@ public class ProjectService implements IProjectService {
         // Khởi tạo AccessPoint để lưu vào các biểu mẫu
         AccessPoint accessPoint = new AccessPoint()
                 .setProject(project)
+                .setStatus(EAccessPointStatus.PROCESSING)
                 .setCountExtractShort(countExtractShort)
                 .setCountExtractFull(countExtractFull)
                 .setTotalCount(totalCount);
@@ -519,6 +529,345 @@ public class ProjectService implements IProjectService {
             accessPointHistoryRepository.save(accessPointHistory);
         }
 
+    }
+
+    @Override
+    @Transactional
+    public void autoCompareExtractShortFull(AccessPoint accessPoint) {
+        List<ParentsChildrenExtractShort> parentsChildrenExtractShortsModified = new ArrayList<>();
+        List<ParentsChildrenExtractFull> parentsChildrenExtractFullsModified = new ArrayList<>();
+        List<BirthExtractShort> birthExtractShortsModified = new ArrayList<>();
+        List<BirthExtractFull> birthExtractFullsModified = new ArrayList<>();
+        List<MarryExtractShort> marryExtractShortsModified = new ArrayList<>();
+        List<MarryExtractFull> marryExtractFullsModified = new ArrayList<>();
+        List<WedlockExtractShort> wedlockExtractShortsModified = new ArrayList<>();
+        List<WedlockExtractFull> wedlockExtractFullsModified = new ArrayList<>();
+        List<DeathExtractShort> deathExtractShortsModified = new ArrayList<>();
+        List<DeathExtractFull> deathExtractFullsModified = new ArrayList<>();
+
+        List<ParentsChildrenExtractShort> parentsChildrenExtractShorts = parentsChildrenExtractShortRepository.findByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+        List<BirthExtractShort> birthExtractShorts = birthExtractShortRepository.findByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+        List<MarryExtractShort> marryExtractShorts = marryExtractShortRepository.findByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+        List<WedlockExtractShort> wedlockExtractShorts = wedlockExtractShortRepository.findByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+        List<DeathExtractShort> deathExtractShorts = deathExtractShortRepository.findByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+
+        Map<String, AccessPointHistory> accessPointHistoryMap = accessPointHistoryRepository.findByAccessPoint(accessPoint)
+                .stream()
+                .collect(Collectors.toMap(history -> history.getAssignees().getId(), Function.identity()));
+
+        for (ParentsChildrenExtractShort parentsChildrenExtractShort : parentsChildrenExtractShorts) {
+            ProjectNumberBookFile projectNumberBookFile = parentsChildrenExtractShort.getProjectNumberBookFile();
+            Optional<ParentsChildrenExtractFull> parentsChildrenExtractFullOptional = parentsChildrenExtractFullRepository.findByProjectNumberBookFileAndStatusAndImporterIsNotNull(projectNumberBookFile, EInputStatus.IMPORTED);
+
+            if (parentsChildrenExtractFullOptional.isPresent()) {
+                ParentsChildrenCompareCommonDTO parentsChildrenCompareExtractFull = modelMapper.map(
+                        parentsChildrenExtractFullOptional.get(),
+                        ParentsChildrenCompareCommonDTO.class
+                );
+
+                ParentsChildrenCompareCommonDTO parentsChildrenCompareExtractShort = modelMapper.map(
+                        parentsChildrenExtractShort,
+                        ParentsChildrenCompareCommonDTO.class
+                );
+
+                if (parentsChildrenCompareExtractFull != null && parentsChildrenCompareExtractShort != null) {
+                    boolean isMatching = appUtils.compareFields(parentsChildrenCompareExtractFull, parentsChildrenCompareExtractShort);
+
+                    AccessPointHistory accessPointHistoryFull = accessPointHistoryMap.get(parentsChildrenExtractFullOptional.get().getImporter().getId());
+                    AccessPointHistory accessPointHistoryShort = accessPointHistoryMap.get(parentsChildrenExtractShort.getImporter().getId());
+
+                    if (isMatching) {
+                        // Cập nhật trạng thái 2 phiếu trùng khớp dữ liệu
+                        parentsChildrenExtractShort.setStatus(EInputStatus.MATCHING);
+                        parentsChildrenExtractFullOptional.get().setStatus(EInputStatus.MATCHING);
+
+                        // Cập nhật số lượng thành công
+                        accessPointHistoryShort.setCountSuccessExtractShort(accessPointHistoryShort.getCountSuccessExtractShort() + 1);
+                        accessPointHistoryFull.setCountSuccessExtractFull(accessPointHistoryFull.getCountSuccessExtractFull() + 1);
+
+                        accessPoint.setTotalSuccessExtractFull(accessPoint.getTotalSuccessExtractFull() + 1);
+                        accessPoint.setTotalSuccessExtractShort(accessPoint.getTotalSuccessExtractShort() + 1);
+                    } else {
+                        // Cập nhật trạng thái 2 phiếu không trùng khớp dữ liệu
+                        parentsChildrenExtractShort.setStatus(EInputStatus.NOT_MATCHING);
+                        parentsChildrenExtractFullOptional.get().setStatus(EInputStatus.NOT_MATCHING);
+
+                        // Cập nhật số lượng lỗi
+                        accessPointHistoryShort.setCountErrorExtractShort(accessPointHistoryShort.getCountErrorExtractShort() + 1);
+                        accessPointHistoryFull.setCountErrorExtractFull(accessPointHistoryFull.getCountErrorExtractFull() + 1);
+
+                        accessPoint.setTotalErrorExtractFull(accessPoint.getTotalErrorExtractFull() + 1);
+                        accessPoint.setTotalErrorExtractShort(accessPoint.getTotalErrorExtractShort() + 1);
+                    }
+
+                    // Thêm đối tượng vào danh sách sau khi xác định trạng thái
+                    parentsChildrenExtractShortsModified.add(parentsChildrenExtractShort);
+                    parentsChildrenExtractFullsModified.add(parentsChildrenExtractFullOptional.get());
+                }
+            }
+        }
+
+        for (BirthExtractShort birthExtractShort : birthExtractShorts) {
+            ProjectNumberBookFile projectNumberBookFile = birthExtractShort.getProjectNumberBookFile();
+            Optional<BirthExtractFull> birthExtractFullOptional = birthExtractFullRepository.findByProjectNumberBookFileAndStatusAndImporterIsNotNull(projectNumberBookFile, EInputStatus.IMPORTED);
+
+            if (birthExtractFullOptional.isPresent()) {
+                BirthCompareCommonDTO birthCompareExtractFull = modelMapper.map(
+                        birthExtractFullOptional.get(),
+                        BirthCompareCommonDTO.class
+                );
+
+                BirthCompareCommonDTO birthCompareExtractShort = modelMapper.map(
+                        birthExtractShort,
+                        BirthCompareCommonDTO.class
+                );
+
+                if (birthCompareExtractFull != null && birthCompareExtractShort != null) {
+                    boolean isMatching = appUtils.compareFields(birthCompareExtractFull, birthCompareExtractShort);
+
+                    AccessPointHistory accessPointHistoryFull = accessPointHistoryMap.get(birthExtractFullOptional.get().getImporter().getId());
+                    AccessPointHistory accessPointHistoryShort = accessPointHistoryMap.get(birthExtractShort.getImporter().getId());
+
+                    if (isMatching) {
+                        // Cập nhật trạng thái 2 phiếu trùng khớp dữ liệu
+                        birthExtractShort.setStatus(EInputStatus.MATCHING);
+                        birthExtractFullOptional.get().setStatus(EInputStatus.MATCHING);
+
+                        // Cập nhật số lượng thành công
+                        accessPointHistoryShort.setCountSuccessExtractShort(accessPointHistoryShort.getCountSuccessExtractShort() + 1);
+                        accessPointHistoryFull.setCountSuccessExtractFull(accessPointHistoryFull.getCountSuccessExtractFull() + 1);
+
+                        accessPoint.setTotalSuccessExtractFull(accessPoint.getTotalSuccessExtractFull() + 1);
+                        accessPoint.setTotalSuccessExtractShort(accessPoint.getTotalSuccessExtractShort() + 1);
+                    } else {
+                        // Cập nhật trạng thái 2 phiếu không trùng khớp dữ liệu
+                        birthExtractShort.setStatus(EInputStatus.NOT_MATCHING);
+                        birthExtractFullOptional.get().setStatus(EInputStatus.NOT_MATCHING);
+
+                        // Cập nhật số lượng lỗi
+                        accessPointHistoryShort.setCountErrorExtractShort(accessPointHistoryShort.getCountErrorExtractShort() + 1);
+                        accessPointHistoryFull.setCountErrorExtractFull(accessPointHistoryFull.getCountErrorExtractFull() + 1);
+
+                        accessPoint.setTotalErrorExtractFull(accessPoint.getTotalErrorExtractFull() + 1);
+                        accessPoint.setTotalErrorExtractShort(accessPoint.getTotalErrorExtractShort() + 1);
+                    }
+
+                    // Thêm đối tượng vào danh sách sau khi xác định trạng thái
+                    birthExtractShortsModified.add(birthExtractShort);
+                    birthExtractFullsModified.add(birthExtractFullOptional.get());
+                }
+            }
+        }
+
+        for (MarryExtractShort marryExtractShort : marryExtractShorts) {
+            ProjectNumberBookFile projectNumberBookFile = marryExtractShort.getProjectNumberBookFile();
+            Optional<MarryExtractFull> marryExtractFullOptional = marryExtractFullRepository.findByProjectNumberBookFileAndStatusAndImporterIsNotNull(projectNumberBookFile, EInputStatus.IMPORTED);
+
+            if (marryExtractFullOptional.isPresent()) {
+                MarryCompareCommonDTO marryCompareExtractFull = modelMapper.map(
+                        marryExtractFullOptional.get(),
+                        MarryCompareCommonDTO.class
+                );
+
+                MarryCompareCommonDTO marryCompareExtractShort = modelMapper.map(
+                        marryExtractShort,
+                        MarryCompareCommonDTO.class
+                );
+
+                if (marryCompareExtractFull != null && marryCompareExtractShort != null) {
+                    boolean isMatching = appUtils.compareFields(marryCompareExtractFull, marryCompareExtractShort);
+
+                    AccessPointHistory accessPointHistoryFull = accessPointHistoryMap.get(marryExtractFullOptional.get().getImporter().getId());
+                    AccessPointHistory accessPointHistoryShort = accessPointHistoryMap.get(marryExtractShort.getImporter().getId());
+
+                    if (isMatching) {
+                        // Cập nhật trạng thái 2 phiếu trùng khớp dữ liệu
+                        marryExtractShort.setStatus(EInputStatus.MATCHING);
+                        marryExtractFullOptional.get().setStatus(EInputStatus.MATCHING);
+
+                        // Cập nhật số lượng thành công
+                        accessPointHistoryShort.setCountSuccessExtractShort(accessPointHistoryShort.getCountSuccessExtractShort() + 1);
+                        accessPointHistoryFull.setCountSuccessExtractFull(accessPointHistoryFull.getCountSuccessExtractFull() + 1);
+
+                        accessPoint.setTotalSuccessExtractFull(accessPoint.getTotalSuccessExtractFull() + 1);
+                        accessPoint.setTotalSuccessExtractShort(accessPoint.getTotalSuccessExtractShort() + 1);
+                    } else {
+                        // Cập nhật trạng thái 2 phiếu không trùng khớp dữ liệu
+                        marryExtractShort.setStatus(EInputStatus.NOT_MATCHING);
+                        marryExtractFullOptional.get().setStatus(EInputStatus.NOT_MATCHING);
+
+                        // Cập nhật số lượng lỗi
+                        accessPointHistoryShort.setCountErrorExtractShort(accessPointHistoryShort.getCountErrorExtractShort() + 1);
+                        accessPointHistoryFull.setCountErrorExtractFull(accessPointHistoryFull.getCountErrorExtractFull() + 1);
+
+                        accessPoint.setTotalErrorExtractFull(accessPoint.getTotalErrorExtractFull() + 1);
+                        accessPoint.setTotalErrorExtractShort(accessPoint.getTotalErrorExtractShort() + 1);
+                    }
+
+                    // Thêm đối tượng vào danh sách sau khi xác định trạng thái
+                    marryExtractShortsModified.add(marryExtractShort);
+                    marryExtractFullsModified.add(marryExtractFullOptional.get());
+                }
+            }
+        }
+
+        for (WedlockExtractShort wedlockExtractShort : wedlockExtractShorts) {
+            ProjectNumberBookFile projectNumberBookFile = wedlockExtractShort.getProjectNumberBookFile();
+            Optional<WedlockExtractFull> wedlockExtractFullOptional = wedlockExtractFullRepository.findByProjectNumberBookFileAndStatusAndImporterIsNotNull(projectNumberBookFile, EInputStatus.IMPORTED);
+
+            if (wedlockExtractFullOptional.isPresent()) {
+                WedlockCompareCommonDTO wedlockCompareExtractFull = modelMapper.map(
+                        wedlockExtractFullOptional.get(),
+                        WedlockCompareCommonDTO.class
+                );
+
+                WedlockCompareCommonDTO wedlockCompareExtractShort = modelMapper.map(
+                        wedlockExtractShort,
+                        WedlockCompareCommonDTO.class
+                );
+
+                if (wedlockCompareExtractFull != null && wedlockCompareExtractShort != null) {
+                    boolean isMatching = appUtils.compareFields(wedlockCompareExtractFull, wedlockCompareExtractShort);
+
+                    AccessPointHistory accessPointHistoryFull = accessPointHistoryMap.get(wedlockExtractFullOptional.get().getImporter().getId());
+                    AccessPointHistory accessPointHistoryShort = accessPointHistoryMap.get(wedlockExtractShort.getImporter().getId());
+
+                    if (isMatching) {
+                        // Cập nhật trạng thái 2 phiếu trùng khớp dữ liệu
+                        wedlockExtractShort.setStatus(EInputStatus.MATCHING);
+                        wedlockExtractFullOptional.get().setStatus(EInputStatus.MATCHING);
+
+                        // Cập nhật số lượng thành công
+                        accessPointHistoryShort.setCountSuccessExtractShort(accessPointHistoryShort.getCountSuccessExtractShort() + 1);
+                        accessPointHistoryFull.setCountSuccessExtractFull(accessPointHistoryFull.getCountSuccessExtractFull() + 1);
+
+                        accessPoint.setTotalSuccessExtractFull(accessPoint.getTotalSuccessExtractFull() + 1);
+                        accessPoint.setTotalSuccessExtractShort(accessPoint.getTotalSuccessExtractShort() + 1);
+                    } else {
+                        // Cập nhật trạng thái 2 phiếu không trùng khớp dữ liệu
+                        wedlockExtractShort.setStatus(EInputStatus.NOT_MATCHING);
+                        wedlockExtractFullOptional.get().setStatus(EInputStatus.NOT_MATCHING);
+
+                        // Cập nhật số lượng lỗi
+                        accessPointHistoryShort.setCountErrorExtractShort(accessPointHistoryShort.getCountErrorExtractShort() + 1);
+                        accessPointHistoryFull.setCountErrorExtractFull(accessPointHistoryFull.getCountErrorExtractFull() + 1);
+
+                        accessPoint.setTotalErrorExtractFull(accessPoint.getTotalErrorExtractFull() + 1);
+                        accessPoint.setTotalErrorExtractShort(accessPoint.getTotalErrorExtractShort() + 1);
+                    }
+
+                    // Thêm đối tượng vào danh sách sau khi xác định trạng thái
+                    wedlockExtractShortsModified.add(wedlockExtractShort);
+                    wedlockExtractFullsModified.add(wedlockExtractFullOptional.get());
+                }
+            }
+        }
+
+        for (DeathExtractShort deathExtractShort : deathExtractShorts) {
+            ProjectNumberBookFile projectNumberBookFile = deathExtractShort.getProjectNumberBookFile();
+            Optional<DeathExtractFull> deathExtractFullOptional = deathExtractFullRepository.findByProjectNumberBookFileAndStatusAndImporterIsNotNull(projectNumberBookFile, EInputStatus.IMPORTED);
+
+            if (deathExtractFullOptional.isPresent()) {
+                DeathCompareCommonDTO deathCompareExtractFull = modelMapper.map(
+                        deathExtractFullOptional.get(),
+                        DeathCompareCommonDTO.class
+                );
+
+                DeathCompareCommonDTO deathCompareExtractShort = modelMapper.map(
+                        deathExtractShort,
+                        DeathCompareCommonDTO.class
+                );
+
+                if (deathCompareExtractFull != null && deathCompareExtractShort != null) {
+                    boolean isMatching = appUtils.compareFields(deathCompareExtractFull, deathCompareExtractShort);
+
+                    AccessPointHistory accessPointHistoryFull = accessPointHistoryMap.get(deathExtractFullOptional.get().getImporter().getId());
+                    AccessPointHistory accessPointHistoryShort = accessPointHistoryMap.get(deathExtractShort.getImporter().getId());
+
+                    if (isMatching) {
+                        // Cập nhật trạng thái 2 phiếu trùng khớp dữ liệu
+                        deathExtractShort.setStatus(EInputStatus.MATCHING);
+                        deathExtractFullOptional.get().setStatus(EInputStatus.MATCHING);
+
+                        // Cập nhật số lượng thành công
+                        accessPointHistoryShort.setCountSuccessExtractShort(accessPointHistoryShort.getCountSuccessExtractShort() + 1);
+                        accessPointHistoryFull.setCountSuccessExtractFull(accessPointHistoryFull.getCountSuccessExtractFull() + 1);
+
+                        accessPoint.setTotalSuccessExtractFull(accessPoint.getTotalSuccessExtractFull() + 1);
+                        accessPoint.setTotalSuccessExtractShort(accessPoint.getTotalSuccessExtractShort() + 1);
+                    } else {
+                        // Cập nhật trạng thái 2 phiếu không trùng khớp dữ liệu
+                        deathExtractShort.setStatus(EInputStatus.NOT_MATCHING);
+                        deathExtractFullOptional.get().setStatus(EInputStatus.NOT_MATCHING);
+
+                        // Cập nhật số lượng lỗi
+                        accessPointHistoryShort.setCountErrorExtractShort(accessPointHistoryShort.getCountErrorExtractShort() + 1);
+                        accessPointHistoryFull.setCountErrorExtractFull(accessPointHistoryFull.getCountErrorExtractFull() + 1);
+
+                        accessPoint.setTotalErrorExtractFull(accessPoint.getTotalErrorExtractFull() + 1);
+                        accessPoint.setTotalErrorExtractShort(accessPoint.getTotalErrorExtractShort() + 1);
+                    }
+
+                    // Thêm đối tượng vào danh sách sau khi xác định trạng thái
+                    deathExtractShortsModified.add(deathExtractShort);
+                    deathExtractFullsModified.add(deathExtractFullOptional.get());
+                }
+            }
+        }
+
+        // Lưu tất cả các đối tượng cùng một lúc sau khi xử lý xong
+        if (!parentsChildrenExtractShortsModified.isEmpty()) {
+            parentsChildrenExtractShortRepository.saveAll(parentsChildrenExtractShortsModified);
+        }
+
+        if (!parentsChildrenExtractFullsModified.isEmpty()) {
+            parentsChildrenExtractFullRepository.saveAll(parentsChildrenExtractFullsModified);
+        }
+
+        if (!birthExtractShortsModified.isEmpty()) {
+            birthExtractShortRepository.saveAll(birthExtractShortsModified);
+        }
+
+        if (!birthExtractFullsModified.isEmpty()) {
+            birthExtractFullRepository.saveAll(birthExtractFullsModified);
+        }
+
+        if (!marryExtractShortsModified.isEmpty()) {
+            marryExtractShortRepository.saveAll(marryExtractShortsModified);
+        }
+
+        if (!marryExtractFullsModified.isEmpty()) {
+            marryExtractFullRepository.saveAll(marryExtractFullsModified);
+        }
+
+        if (!wedlockExtractShortsModified.isEmpty()) {
+            wedlockExtractShortRepository.saveAll(wedlockExtractShortsModified);
+        }
+
+        if (!wedlockExtractFullsModified.isEmpty()) {
+            wedlockExtractFullRepository.saveAll(wedlockExtractFullsModified);
+        }
+
+        if (!deathExtractShortsModified.isEmpty()) {
+            deathExtractShortRepository.saveAll(deathExtractShortsModified);
+        }
+
+        if (!deathExtractFullsModified.isEmpty()) {
+            deathExtractFullRepository.saveAll(deathExtractFullsModified);
+        }
+
+        accessPointHistoryRepository.saveAll(accessPointHistoryMap.values());
+
+        long totalSuccessError = accessPoint.getTotalSuccessExtractFull() +
+                accessPoint.getTotalSuccessExtractShort() +
+                accessPoint.getTotalErrorExtractFull() +
+                accessPoint.getTotalErrorExtractShort();
+
+        if (accessPoint.getTotalCount() == totalSuccessError) {
+            accessPoint.setStatus(EAccessPointStatus.FULL);
+        }
+
+        accessPointRepository.save(accessPoint);
     }
 
     @Override

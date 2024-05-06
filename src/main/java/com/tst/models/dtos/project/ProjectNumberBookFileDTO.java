@@ -16,7 +16,7 @@ import java.util.List;
 public class ProjectNumberBookFileDTO {
 
     @NotNull(message = "ID quyển số là bắt buộc")
-    @Pattern(regexp = "\\d+", message = "ID quyển số phải là số")
+    @Pattern(regexp = "^[1-9]\\d*$", message = "ID quyển số phải là số lớn hơn 0")
     private String number_book_id;
 
     private List<MultipartFile> files;

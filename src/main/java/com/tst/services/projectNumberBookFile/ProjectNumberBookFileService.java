@@ -85,7 +85,11 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
     }
 
     @Override
-    public Optional<ProjectNumberBookFile> findByIdAndRegistrationTypeCodeAndStatus(Long id, String registrationTypeCode, EProjectNumberBookFileStatus status) {
+    public Optional<ProjectNumberBookFile> findByIdAndRegistrationTypeCodeAndStatus(
+            Long id,
+            String registrationTypeCode,
+            EProjectNumberBookFileStatus status
+    ) {
         return projectNumberBookFileRepository.findByIdAndRegistrationTypeCodeAndStatus(id, registrationTypeCode, status);
     }
 
@@ -101,7 +105,12 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
     }
 
     @Override
-    public List<String> uploadFilesAndSave(List<String> failedFiles, MultipartFile file, String folderPath, ProjectNumberBook projectNumberBook) {
+    public List<String> uploadFilesAndSave(
+            List<String> failedFiles,
+            MultipartFile file,
+            String folderPath,
+            ProjectNumberBook projectNumberBook
+    ) {
         try {
             folderPath = folderPath + "/temp";
 
@@ -122,16 +131,23 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
                 try (InputStream inputStream = file.getInputStream()) {
                     Long fileSize = file.getSize() / 1024; // KB
 
-                    ProjectNumberBookFile projectNumberBookFile = new ProjectNumberBookFile();
-                    projectNumberBookFile.setFileName(fileName);
-                    projectNumberBookFile.setFolderPath(folderPath);
-                    EPaperSize paperSize = projectNumberBook.getProjectRegistrationDate().getProjectPaperSize().getCode();
-                    projectNumberBookFile.setPaperSize(paperSize);
-                    ERegistrationType registrationType = projectNumberBook.getProjectRegistrationDate().getProjectPaperSize().getProjectRegistrationType().getCode();
-                    projectNumberBookFile.setRegistrationType(registrationType);
-                    projectNumberBookFile.setFileSize(fileSize);
-                    projectNumberBookFile.setProjectNumberBook(projectNumberBook);
-                    projectNumberBookFile.setStatus(EProjectNumberBookFileStatus.NEW);
+                    EPaperSize paperSize = projectNumberBook.getProjectRegistrationDate()
+                            .getProjectPaperSize()
+                            .getCode();
+
+                    ERegistrationType registrationType = projectNumberBook.getProjectRegistrationDate()
+                            .getProjectPaperSize()
+                            .getProjectRegistrationType()
+                            .getCode();
+
+                    ProjectNumberBookFile projectNumberBookFile = new ProjectNumberBookFile()
+                            .setFileName(fileName)
+                            .setFolderPath(folderPath)
+                            .setPaperSize(paperSize)
+                            .setRegistrationType(registrationType)
+                            .setFileSize(fileSize)
+                            .setProjectNumberBook(projectNumberBook)
+                            .setStatus(EProjectNumberBookFileStatus.NEW);
 
                     projectNumberBookFileRepository.save(projectNumberBookFile);
 
@@ -157,7 +173,11 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
     @Override
     // IOException là checked exception, nó không kích hoạt việc rollback nên cần chỉ định cho transaction.
     @Transactional(rollbackFor = IOException.class)
-    public void organization(ProjectNumberBookFile projectNumberBookFile, String dayMonthYear, String number) throws IOException {
+    public void organization(
+            ProjectNumberBookFile projectNumberBookFile,
+            String dayMonthYear,
+            String number
+    ) throws IOException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (!appUtils.isValidDateDot(dayMonthYear)) {
@@ -169,8 +189,17 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
         // Định dạng lại chuỗi để có độ dài là 3 ký tự, thêm các số 0 vào đầu nếu cần
         number = String.format("%03d", Integer.parseInt(number));
 
-        String registrationType = projectNumberBookFile.getProjectNumberBook().getProjectRegistrationDate().getProjectPaperSize().getProjectRegistrationType().getCode().getValue();
-        String registrationDate = projectNumberBookFile.getProjectNumberBook().getProjectRegistrationDate().getCode();
+        String registrationType = projectNumberBookFile.getProjectNumberBook()
+                .getProjectRegistrationDate()
+                .getProjectPaperSize()
+                .getProjectRegistrationType()
+                .getCode()
+                .getValue();
+
+        String registrationDate = projectNumberBookFile.getProjectNumberBook()
+                .getProjectRegistrationDate()
+                .getCode();
+
         String numberBook = projectNumberBookFile.getProjectNumberBook().getCode();
 
         String folderPath = projectNumberBookFile.getFolderPath();

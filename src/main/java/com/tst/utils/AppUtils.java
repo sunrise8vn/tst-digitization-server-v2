@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import java.lang.reflect.Field;
 import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.List;
@@ -104,6 +105,32 @@ public class AppUtils {
         Pattern pattern = Pattern.compile(vietnameseRegex);
 
         return pattern.matcher(input).matches();
+    }
+
+    public boolean compareFields(Object obj1, Object obj2) {
+        Field[] fields1 = obj1.getClass().getDeclaredFields();
+        Field[] fields2 = obj2.getClass().getDeclaredFields();
+
+        for (Field field1 : fields1) {
+            field1.setAccessible(true); // Cho phép truy cập các trường private
+            for (Field field2 : fields2) {
+                field2.setAccessible(true);
+                if (field1.getName().equals(field2.getName())) {
+                    try {
+                        Object value1 = field1.get(obj1);
+                        Object value2 = field2.get(obj2);
+                        if ((value1 != null && !value1.equals(value2)) || (value1 == null && value2 != null)) {
+                            return false; // Trả về false ngay lập tức nếu tìm thấy sự khác biệt
+                        }
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                        return false; // Trả về false nếu có lỗi truy cập trường
+                    }
+                }
+            }
+        }
+
+        return true; // Trả về true nếu tất cả các trường giống nhau có giá trị bằng nhau
     }
 
 }

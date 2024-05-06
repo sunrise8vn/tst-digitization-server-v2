@@ -18,7 +18,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "marry_extract_short")
+@Table(
+    name = "marry_extract_short",
+    indexes = {
+        @Index(name = "index_status", columnList = "status")
+    }
+)
 public class MarryExtractShort {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

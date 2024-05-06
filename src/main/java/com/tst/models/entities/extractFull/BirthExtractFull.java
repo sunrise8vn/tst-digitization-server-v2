@@ -75,9 +75,8 @@ public class BirthExtractFull {
     @Column(name = "birther_nationality", length = 100)
     private String birtherNationality;
 
-    @ManyToOne
-    @JoinColumn(name = "birth_certificate_type_id", nullable = false)
-    private BirthCertificateType birthCertificateType;
+    @Column(name = "birth_certificate_type")
+    private Integer birthCertificateType;
 
     @Column(name = "mom_full_name", length = 50)
     private String momFullName;

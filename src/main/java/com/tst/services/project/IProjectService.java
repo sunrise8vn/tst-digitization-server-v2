@@ -32,4 +32,6 @@ public interface IProjectService extends IGeneralService<Project, Long> {
 
     void assignExtractFormToUser(Project project, Long totalCount, List<User> users);
 
+    void  autoCompareExtractShortFull(AccessPoint accessPoint);
+
 }
