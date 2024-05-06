@@ -18,13 +18,18 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "birth_extract_full")
+@Table(
+    name = "birth_extract_full",
+    indexes = {
+        @Index(name = "index_status", columnList = "status")
+    }
+)
 public class BirthExtractFull {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "number", length = 10)
+    @Column(name = "number", length = 20)
     private String number;
 
     @Column(name = "number_page", length = 10)

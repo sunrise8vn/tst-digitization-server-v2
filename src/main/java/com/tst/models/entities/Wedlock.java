@@ -18,7 +18,7 @@ public class Wedlock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "number", length = 10)
+    @Column(name = "number", length = 20)
     private String number;
 
     @Column(name = "number_book", length = 10)
