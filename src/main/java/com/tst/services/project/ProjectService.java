@@ -16,6 +16,7 @@ import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.repositories.*;
 import com.tst.repositories.extractFull.*;
 import com.tst.repositories.extractShort.*;
+import com.tst.services.BatchService;
 import com.tst.services.projectNumberBookCover.IProjectNumberBookCoverService;
 import com.tst.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +61,7 @@ public class ProjectService implements IProjectService {
 
     private final ModelMapper modelMapper;
     private final AppUtils appUtils;
+    private final BatchService batchService;
 
 
     @Override
@@ -315,6 +317,17 @@ public class ProjectService implements IProjectService {
         long countExtractShort = 0L;
         long countExtractFull = 0L;
 
+        List<ParentsChildrenExtractShort> parentsChildrenExtractShortsModified = new ArrayList<>();
+        List<ParentsChildrenExtractFull> parentsChildrenExtractFullsModified = new ArrayList<>();
+        List<BirthExtractShort> birthExtractShortsModified = new ArrayList<>();
+        List<BirthExtractFull> birthExtractFullsModified = new ArrayList<>();
+        List<MarryExtractShort> marryExtractShortsModified = new ArrayList<>();
+        List<MarryExtractFull> marryExtractFullsModified = new ArrayList<>();
+        List<WedlockExtractShort> wedlockExtractShortsModified = new ArrayList<>();
+        List<WedlockExtractFull> wedlockExtractFullsModified = new ArrayList<>();
+        List<DeathExtractShort> deathExtractShortsModified = new ArrayList<>();
+        List<DeathExtractFull> deathExtractFullsModified = new ArrayList<>();
+
         // Khởi tạo AccessPoint để lưu vào các biểu mẫu
         AccessPoint accessPoint = new AccessPoint()
                 .setProject(project)
@@ -353,7 +366,8 @@ public class ProjectService implements IProjectService {
             if (formsToAssign > 0) {
                 item.setAccessPoint(accessPoint);
                 item.setImporter(users.get(userIndex));
-                parentsChildrenExtractShortRepository.save(item);
+                parentsChildrenExtractShortsModified.add(item);
+
                 formsToAssign--;
                 countExtractShortPerUser[userIndex]++;
                 countExtractShort++;
@@ -370,7 +384,8 @@ public class ProjectService implements IProjectService {
             if (formsToAssign > 0) {
                 item.setAccessPoint(accessPoint);
                 item.setImporter(users.get(userIndex));
-                parentsChildrenExtractFullRepository.save(item);
+                parentsChildrenExtractFullsModified.add(item);
+
                 formsToAssign--;
                 countExtractFullPerUser[userIndex]++;
                 countExtractFull++;
@@ -387,7 +402,8 @@ public class ProjectService implements IProjectService {
             if (formsToAssign > 0) {
                 item.setAccessPoint(accessPoint);
                 item.setImporter(users.get(userIndex));
-                birthExtractShortRepository.save(item);
+                birthExtractShortsModified.add(item);
+
                 formsToAssign--;
                 countExtractShortPerUser[userIndex]++;
                 countExtractShort++;
@@ -404,7 +420,8 @@ public class ProjectService implements IProjectService {
             if (formsToAssign > 0) {
                 item.setAccessPoint(accessPoint);
                 item.setImporter(users.get(userIndex));
-                birthExtractFullRepository.save(item);
+                birthExtractFullsModified.add(item);
+
                 formsToAssign--;
                 countExtractFullPerUser[userIndex]++;
                 countExtractFull++;
@@ -421,7 +438,8 @@ public class ProjectService implements IProjectService {
             if (formsToAssign > 0) {
                 item.setAccessPoint(accessPoint);
                 item.setImporter(users.get(userIndex));
-                marryExtractShortRepository.save(item);
+                marryExtractShortsModified.add(item);
+
                 formsToAssign--;
                 countExtractShortPerUser[userIndex]++;
                 countExtractShort++;
@@ -438,7 +456,8 @@ public class ProjectService implements IProjectService {
             if (formsToAssign > 0) {
                 item.setAccessPoint(accessPoint);
                 item.setImporter(users.get(userIndex));
-                marryExtractFullRepository.save(item);
+                marryExtractFullsModified.add(item);
+
                 formsToAssign--;
                 countExtractFullPerUser[userIndex]++;
                 countExtractFull++;
@@ -455,7 +474,8 @@ public class ProjectService implements IProjectService {
             if (formsToAssign > 0) {
                 item.setAccessPoint(accessPoint);
                 item.setImporter(users.get(userIndex));
-                wedlockExtractShortRepository.save(item);
+                wedlockExtractShortsModified.add(item);
+
                 formsToAssign--;
                 countExtractShortPerUser[userIndex]++;
                 countExtractShort++;
@@ -472,7 +492,8 @@ public class ProjectService implements IProjectService {
             if (formsToAssign > 0) {
                 item.setAccessPoint(accessPoint);
                 item.setImporter(users.get(userIndex));
-                wedlockExtractFullRepository.save(item);
+                wedlockExtractFullsModified.add(item);
+
                 formsToAssign--;
                 countExtractFullPerUser[userIndex]++;
                 countExtractFull++;
@@ -489,7 +510,8 @@ public class ProjectService implements IProjectService {
             if (formsToAssign > 0) {
                 item.setAccessPoint(accessPoint);
                 item.setImporter(users.get(userIndex));
-                deathExtractShortRepository.save(item);
+                deathExtractShortsModified.add(item);
+
                 formsToAssign--;
                 countExtractShortPerUser[userIndex]++;
                 countExtractShort++;
@@ -506,17 +528,62 @@ public class ProjectService implements IProjectService {
             if (formsToAssign > 0) {
                 item.setAccessPoint(accessPoint);
                 item.setImporter(users.get(userIndex));
-                deathExtractFullRepository.save(item);
+                deathExtractFullsModified.add(item);
+
                 formsToAssign--;
                 countExtractFullPerUser[userIndex]++;
                 countExtractFull++;
             }
         }
 
+        // Lưu tất cả các đối tượng cùng một lúc sau khi xử lý xong
+        if (!parentsChildrenExtractShortsModified.isEmpty()) {
+            batchService.batchUpdate(parentsChildrenExtractShortsModified);
+        }
+
+        if (!parentsChildrenExtractFullsModified.isEmpty()) {
+            batchService.batchUpdate(parentsChildrenExtractFullsModified);
+        }
+
+        if (!birthExtractShortsModified.isEmpty()) {
+            batchService.batchUpdate(birthExtractShortsModified);
+        }
+
+        if (!birthExtractFullsModified.isEmpty()) {
+            batchService.batchUpdate(birthExtractFullsModified);
+        }
+
+        if (!marryExtractShortsModified.isEmpty()) {
+            batchService.batchUpdate(marryExtractShortsModified);
+        }
+
+        if (!marryExtractFullsModified.isEmpty()) {
+            batchService.batchUpdate(marryExtractFullsModified);
+        }
+
+        if (!wedlockExtractShortsModified.isEmpty()) {
+            batchService.batchUpdate(wedlockExtractShortsModified);
+        }
+
+        if (!wedlockExtractFullsModified.isEmpty()) {
+            batchService.batchUpdate(wedlockExtractFullsModified);
+        }
+
+        if (!deathExtractShortsModified.isEmpty()) {
+            batchService.batchUpdate(deathExtractShortsModified);
+        }
+
+        if (!deathExtractFullsModified.isEmpty()) {
+            batchService.batchUpdate(deathExtractFullsModified);
+        }
+
         // Cập nhật số lượng các biểu mẫu được phân phối cho AccessPoint
         accessPoint.setCountExtractShort(countExtractShort);
         accessPoint.setCountExtractFull(countExtractFull);
         accessPointRepository.save(accessPoint);
+
+        // Lưu danh sách số lượng biểu mẫu phân phối cho từng user
+        List<AccessPointHistory> accessPointHistories = new ArrayList<>();
 
         for (int i = 0; i < totalUsers; i++) {
             AccessPointHistory accessPointHistory = new AccessPointHistory()
@@ -526,8 +593,10 @@ public class ProjectService implements IProjectService {
                     .setCountExtractFull(countExtractFullPerUser[i])
                     .setAssignees(users.get(i))
                     .setTotalCount(countExtractPerUser[i]);
-            accessPointHistoryRepository.save(accessPointHistory);
+            accessPointHistories.add(accessPointHistory);
         }
+
+        batchService.batchCreate(accessPointHistories);
 
     }
 
@@ -817,43 +886,43 @@ public class ProjectService implements IProjectService {
 
         // Lưu tất cả các đối tượng cùng một lúc sau khi xử lý xong
         if (!parentsChildrenExtractShortsModified.isEmpty()) {
-            parentsChildrenExtractShortRepository.saveAll(parentsChildrenExtractShortsModified);
+            batchService.batchUpdate(parentsChildrenExtractShortsModified);
         }
 
         if (!parentsChildrenExtractFullsModified.isEmpty()) {
-            parentsChildrenExtractFullRepository.saveAll(parentsChildrenExtractFullsModified);
+            batchService.batchUpdate(parentsChildrenExtractFullsModified);
         }
 
         if (!birthExtractShortsModified.isEmpty()) {
-            birthExtractShortRepository.saveAll(birthExtractShortsModified);
+            batchService.batchUpdate(birthExtractShortsModified);
         }
 
         if (!birthExtractFullsModified.isEmpty()) {
-            birthExtractFullRepository.saveAll(birthExtractFullsModified);
+            batchService.batchUpdate(birthExtractFullsModified);
         }
 
         if (!marryExtractShortsModified.isEmpty()) {
-            marryExtractShortRepository.saveAll(marryExtractShortsModified);
+            batchService.batchUpdate(marryExtractShortsModified);
         }
 
         if (!marryExtractFullsModified.isEmpty()) {
-            marryExtractFullRepository.saveAll(marryExtractFullsModified);
+            batchService.batchUpdate(marryExtractFullsModified);
         }
 
         if (!wedlockExtractShortsModified.isEmpty()) {
-            wedlockExtractShortRepository.saveAll(wedlockExtractShortsModified);
+            batchService.batchUpdate(wedlockExtractShortsModified);
         }
 
         if (!wedlockExtractFullsModified.isEmpty()) {
-            wedlockExtractFullRepository.saveAll(wedlockExtractFullsModified);
+            batchService.batchUpdate(wedlockExtractFullsModified);
         }
 
         if (!deathExtractShortsModified.isEmpty()) {
-            deathExtractShortRepository.saveAll(deathExtractShortsModified);
+            batchService.batchUpdate(deathExtractShortsModified);
         }
 
         if (!deathExtractFullsModified.isEmpty()) {
-            deathExtractFullRepository.saveAll(deathExtractFullsModified);
+            batchService.batchUpdate(deathExtractFullsModified);
         }
 
         accessPointHistoryRepository.saveAll(accessPointHistoryMap.values());

@@ -25,7 +25,8 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
             "WHERE bef.accessPoint = :accessPoint " +
             "AND bef.status = bes.status " +
             "AND (bef.status = 'NEW' " +
-            "OR bef.status = 'LATER_PROCESSING')"
+            "OR bef.status = 'LATER_PROCESSING') " +
+            "ORDER BY bef.id DESC"
     )
     List<BirthExtractFull> findBirthSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 

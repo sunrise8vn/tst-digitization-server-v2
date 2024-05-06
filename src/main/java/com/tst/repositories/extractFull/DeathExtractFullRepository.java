@@ -25,7 +25,8 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
             "WHERE def.accessPoint = :accessPoint " +
             "AND def.status = des.status " +
             "AND (def.status = 'NEW' " +
-            "OR def.status = 'LATER_PROCESSING')"
+            "OR def.status = 'LATER_PROCESSING') " +
+            "ORDER BY def.id DESC"
     )
     List<DeathExtractFull> findDeathSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 

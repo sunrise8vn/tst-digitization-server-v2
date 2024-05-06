@@ -25,7 +25,8 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
             "WHERE wef.accessPoint = :accessPoint " +
             "AND wef.status = wes.status " +
             "AND (wef.status = 'NEW' " +
-            "OR wef.status = 'LATER_PROCESSING')"
+            "OR wef.status = 'LATER_PROCESSING') " +
+            "ORDER BY wef.id DESC"
     )
     List<WedlockExtractFull> findWedlockSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 

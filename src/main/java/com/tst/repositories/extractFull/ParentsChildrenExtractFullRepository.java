@@ -25,7 +25,8 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
             "WHERE pcef.accessPoint = :accessPoint " +
             "AND pcef.status = pces.status " +
             "AND (pcef.status = 'NEW' " +
-            "OR pcef.status = 'LATER_PROCESSING')"
+            "OR pcef.status = 'LATER_PROCESSING') " +
+            "ORDER BY pcef.id DESC"
     )
     List<ParentsChildrenExtractFull> findParentsChildrenSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 

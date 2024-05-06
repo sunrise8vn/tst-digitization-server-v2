@@ -23,7 +23,8 @@ public interface ParentsChildrenExtractShortRepository extends JpaRepository<Par
             "WHERE pces.accessPoint = :accessPoint " +
             "AND pces.status = pcef.status " +
             "AND (pces.status = 'NEW' " +
-            "OR pces.status = 'LATER_PROCESSING')"
+            "OR pces.status = 'LATER_PROCESSING') " +
+            "ORDER BY pces.id DESC"
     )
     List<ParentsChildrenExtractShort> findParentsChildrenSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 

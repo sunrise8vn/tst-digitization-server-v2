@@ -67,6 +67,9 @@ public class AccessPoint {
     @Column(name = "total_error_extract_full", nullable = false)
     private Long totalErrorExtractFull = 0L;
 
+    @Column(name = "total_count_revoke", nullable = false)
+    private Long totalCountRevoke = 0L;
+
     @PrePersist
     public void prePersist() {
         this.createdBy = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
