@@ -3,6 +3,7 @@ package com.tst.api;
 import com.tst.exceptions.DataInputException;
 import com.tst.exceptions.DataNotFoundException;
 import com.tst.exceptions.PermissionDenyException;
+import com.tst.models.dtos.accessPoint.AccessPointRevokeDTO;
 import com.tst.models.dtos.project.*;
 import com.tst.models.entities.*;
 import com.tst.models.entities.locationRegion.LocationDistrict;
@@ -350,6 +351,37 @@ public class ProjectAPI {
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Đối sánh các trường nhập liệu của các biểu mẫu thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .build());
+    }
+
+    // Thu hồi biểu mẫu chưa nhập
+    @PostMapping("/revoke-extract-form")
+    public ResponseEntity<ResponseObject> revokeExtractForm(
+            @Validated @RequestBody AccessPointRevokeDTO accessPointRevokeDTO,
+            BindingResult result
+    ) {
+
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi thu hồi các biểu mẫu chưa nhập")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        AccessPoint accessPoint = accessPointService.findById(
+                Long.parseLong(accessPointRevokeDTO.getAccess_point_id())
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("ID điểm truy cập không tồn tại");
+        });
+
+        accessPointService.revokeExtractForm(accessPoint, Long.parseLong(accessPointRevokeDTO.getTotal_count_revoke()));
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Thu hồi các biểu mẫu chưa nhập thành công")
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .build());
