@@ -20,13 +20,18 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "parents_children_extract_full")
+@Table(
+    name = "parents_children_extract_full",
+    indexes = {
+        @Index(name = "index_status", columnList = "status")
+    }
+)
 public class ParentsChildrenExtractFull {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "number", length = 10)
+    @Column(name = "number", length = 20)
     private String number;
 
     @Column(name = "number_page", length = 10)
