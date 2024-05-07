@@ -21,6 +21,9 @@ public class IdentificationType {
     @Column(name = "code", unique = true, length = 5)
     private String code;
 
+    @Column(name = "code_value", unique = true, length = 5)
+    private String codeValue;
+
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 }

@@ -2,8 +2,13 @@ package com.tst.models.responses.extractShort;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import jakarta.persistence.Column;
+import com.tst.models.responses.typeList.IdentificationTypeResponse;
+import com.tst.models.responses.typeList.MaritalStatusResponse;
+import com.tst.models.responses.typeList.RegistrationTypeDetailResponse;
+import com.tst.models.responses.typeList.ResidenceTypeResponse;
 import lombok.*;
+
+import java.util.List;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
@@ -16,24 +21,24 @@ public class MarryExtractShortResponse {
     private String number;
     private String numberPage;
     private String registrationDate;
-    private String registrationType;
+    private List<RegistrationTypeDetailResponse> registrationType;
     private String maritalRelationshipEstablishmentDate;
     private String implementer;
     private String note;
-    private String wedlock;
+    private List<MaritalStatusResponse> maritalStatus;
     private String husbandBirthday;
     private String husbandNation;
     private String husbandNationality;
-    private String husbandResidenceType;
-    private String husbandIdentificationType;
+    private List<ResidenceTypeResponse> husbandResidenceType;
+    private List<IdentificationTypeResponse> husbandIdentificationType;
     private String husbandIdentificationNumber;
     private String husbandIdentificationIssuanceDate;
     private String wifeFullName;
     private String wifeBirthday;
     private String wifeNation;
     private String wifeNationality;
-    private String wifeResidenceType;
-    private String wifeIdentificationType;
+    private List<ResidenceTypeResponse> wifeResidenceType;
+    private List<IdentificationTypeResponse> wifeIdentificationType;
     private String wifeIdentificationNumber;
     private String wifeIdentificationIssuanceDate;
 }

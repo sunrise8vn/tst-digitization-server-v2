@@ -2,7 +2,13 @@ package com.tst.models.responses.extractFull;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.tst.models.responses.typeList.IdentificationTypeResponse;
+import com.tst.models.responses.typeList.MaritalStatusResponse;
+import com.tst.models.responses.typeList.RegistrationTypeDetailResponse;
+import com.tst.models.responses.typeList.ResidenceTypeResponse;
 import lombok.*;
+
+import java.util.List;
 
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -16,21 +22,21 @@ public class MarryExtractFullResponse {
     private String number;
     private String numberPage;
     private String registrationDate;
-    private String registrationType;
+    private List<RegistrationTypeDetailResponse> registrationType;
     private String registrationPlace;
     private String signer;
     private String signerPosition;
     private String maritalRelationshipEstablishmentDate;
     private String implementer;
     private String note;
-    private String wedlock;
+    private List<MaritalStatusResponse> maritalStatus;
     private String husbandFullName;
     private String husbandBirthday;
     private String husbandNation;
     private String husbandNationality;
-    private String husbandResidenceType;
+    private List<ResidenceTypeResponse> husbandResidenceType;
     private String husbandResidence;
-    private String husbandIdentificationType;
+    private List<IdentificationTypeResponse> husbandIdentificationType;
     private String husbandOtherDocument;
     private String husbandIdentificationNumber;
     private String husbandIdentificationIssuanceDate;
@@ -39,9 +45,9 @@ public class MarryExtractFullResponse {
     private String wifeBirthday;
     private String wifeNation;
     private String wifeNationality;
-    private String wifeResidenceType;
+    private List<ResidenceTypeResponse> wifeResidenceType;
     private String wifeResidence;
-    private String wifeIdentificationType;
+    private List<IdentificationTypeResponse> wifeIdentificationType;
     private String wifeOtherDocument;
     private String wifeIdentificationNumber;
     private String wifeIdentificationIssuanceDate;

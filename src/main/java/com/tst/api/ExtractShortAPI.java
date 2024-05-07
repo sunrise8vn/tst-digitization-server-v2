@@ -5,13 +5,23 @@ import com.tst.exceptions.PermissionDenyException;
 import com.tst.models.dtos.extractShort.*;
 import com.tst.models.entities.extractShort.*;
 import com.tst.models.enums.EInputStatus;
+import com.tst.models.enums.ERegistrationType;
 import com.tst.models.responses.extractShort.*;
 import com.tst.models.entities.User;
 import com.tst.models.responses.ResponseObject;
+import com.tst.models.responses.typeList.*;
+import com.tst.services.birthCertificateType.IBirthCertificateTypeService;
 import com.tst.services.birthExtractShort.IBirthExtractShortService;
+import com.tst.services.confirmationType.IConfirmationTypeService;
 import com.tst.services.deathExtractShort.IDeathExtractShortService;
+import com.tst.services.deathNoticeType.IDeathNoticeTypeService;
+import com.tst.services.genderType.IGenderTypeService;
+import com.tst.services.identificationType.IIdentificationTypeService;
+import com.tst.services.maritalStatusType.IMaritalStatusTypeService;
 import com.tst.services.marryExtractShort.IMarryExtractShortService;
 import com.tst.services.parentsChildrenExtractShort.IParentsChildrenExtractShortService;
+import com.tst.services.registrationTypeDetail.IRegistrationTypeDetailService;
+import com.tst.services.residenceType.IResidenceTypeService;
 import com.tst.services.user.IUserService;
 import com.tst.services.wedlockExtractShort.IWedlockExtractShortService;
 import com.tst.utils.AppUtils;
@@ -24,12 +34,23 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("${api.prefix}/extract-short")
 @RequiredArgsConstructor
 @Validated
 public class ExtractShortAPI {
+
+    private final IRegistrationTypeDetailService registrationTypeDetailService;
+    private final IGenderTypeService genderTypeService;
+    private final IBirthCertificateTypeService birthCertificateTypeService;
+    private final IResidenceTypeService residenceTypeService;
+    private final IIdentificationTypeService identificationTypeService;
+    private final IConfirmationTypeService confirmationTypeService;
+    private final IMaritalStatusTypeService maritalStatusTypeService;
+    private final IDeathNoticeTypeService deathNoticeTypeService;
 
     private final IParentsChildrenExtractShortService parentsChildrenExtractShortService;
     private final IBirthExtractShortService birthExtractShortService;
@@ -55,7 +76,7 @@ public class ExtractShortAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!parentsChildrenExtractShort.getImporter().getId().equals(user.getId())) {
+        if (parentsChildrenExtractShort.getImporter() == null || !parentsChildrenExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
         }
 
@@ -63,6 +84,21 @@ public class ExtractShortAPI {
                 parentsChildrenExtractShort,
                 ParentsChildrenExtractShortResponse.class
         );
+
+        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.CMC);
+        parentsChildrenExtractShortResponse.setRegistrationType(registrationTypeDetailResponses);
+
+        List<ConfirmationTypeResponse> confirmationTypeResponses = confirmationTypeService.findAllConfirmationTypeResponse();
+        parentsChildrenExtractShortResponse.setConfirmationType(confirmationTypeResponses);
+
+        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+        parentsChildrenExtractShortResponse.setParentResidenceType(residenceTypeResponses);
+        parentsChildrenExtractShortResponse.setChildResidenceType(residenceTypeResponses);
+
+        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+        parentsChildrenExtractShortResponse.setParentIdentificationType(identificationTypeResponses);
+        parentsChildrenExtractShortResponse.setChildIdentificationType(identificationTypeResponses);
+        parentsChildrenExtractShortResponse.setPetitionerIdentificationType(identificationTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường ngắn của biểu mẫu cha mẹ con thành công")
@@ -85,7 +121,7 @@ public class ExtractShortAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!birthExtractShort.getImporter().getId().equals(user.getId())) {
+        if (birthExtractShort.getImporter() == null || !birthExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
         }
 
@@ -93,6 +129,24 @@ public class ExtractShortAPI {
                 birthExtractShort,
                 BirthExtractShortResponse.class
         );
+
+        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.KS);
+        birthExtractShortResponse.setRegistrationType(registrationTypeDetailResponses);
+
+        List<GenderTypeResponse> genderTypeResponses = genderTypeService.findAllGenderTypeResponse();
+        birthExtractShortResponse.setBirtherGender(genderTypeResponses);
+
+        List<BirthCertificateTypeResponse> birthCertificateTypeResponses = birthCertificateTypeService.findAllBirthCertificateTypeResponse();
+        birthExtractShortResponse.setBirthCertificateType(birthCertificateTypeResponses);
+
+        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+        birthExtractShortResponse.setMomResidenceType(residenceTypeResponses);
+        birthExtractShortResponse.setDadResidenceType(residenceTypeResponses);
+
+        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+        birthExtractShortResponse.setMomIdentificationType(identificationTypeResponses);
+        birthExtractShortResponse.setDadIdentificationType(identificationTypeResponses);
+        birthExtractShortResponse.setPetitionerIdentificationType(identificationTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường ngắn của biểu mẫu khai sinh thành công")
@@ -115,7 +169,7 @@ public class ExtractShortAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!marryExtractShort.getImporter().getId().equals(user.getId())) {
+        if (marryExtractShort.getImporter() == null || !marryExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
         }
 
@@ -123,6 +177,20 @@ public class ExtractShortAPI {
                 marryExtractShort,
                 MarryExtractShortResponse.class
         );
+
+        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.KH);
+        marryExtractShortResponse.setRegistrationType(registrationTypeDetailResponses);
+
+        List<MaritalStatusResponse> maritalStatusResponses = maritalStatusTypeService.findAllMaritalStatusResponse();
+        marryExtractShortResponse.setMaritalStatus(maritalStatusResponses);
+
+        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+        marryExtractShortResponse.setHusbandResidenceType(residenceTypeResponses);
+        marryExtractShortResponse.setWifeResidenceType(residenceTypeResponses);
+
+        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+        marryExtractShortResponse.setHusbandIdentificationType(identificationTypeResponses);
+        marryExtractShortResponse.setWifeIdentificationType(identificationTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường ngắn của biểu mẫu kết hôn thành công")
@@ -145,7 +213,7 @@ public class ExtractShortAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!wedlockExtractShort.getImporter().getId().equals(user.getId())) {
+        if (wedlockExtractShort.getImporter() == null || !wedlockExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
         }
 
@@ -153,6 +221,16 @@ public class ExtractShortAPI {
                 wedlockExtractShort,
                 WedlockExtractShortResponse.class
         );
+
+        List<GenderTypeResponse> genderTypeResponses = genderTypeService.findAllGenderTypeResponse();
+        wedlockExtractShortResponse.setConfirmerGender(genderTypeResponses);
+
+        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+        wedlockExtractShortResponse.setConfirmerResidenceType(residenceTypeResponses);
+
+        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+        wedlockExtractShortResponse.setConfirmerIdentificationType(identificationTypeResponses);
+        wedlockExtractShortResponse.setPetitionerIdentificationType(identificationTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường ngắn của biểu mẫu tình trạng hôn nhân thành công")
@@ -175,7 +253,7 @@ public class ExtractShortAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!deathExtractShort.getImporter().getId().equals(user.getId())) {
+        if (deathExtractShort.getImporter() == null || !deathExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
         }
 
@@ -183,6 +261,22 @@ public class ExtractShortAPI {
                 deathExtractShort,
                 DeathExtractShortResponse.class
         );
+
+        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.KT);
+        deathExtractShortResponse.setRegistrationType(registrationTypeDetailResponses);
+
+        List<GenderTypeResponse> genderTypeResponses = genderTypeService.findAllGenderTypeResponse();
+        deathExtractShortResponse.setDeadManGender(genderTypeResponses);
+
+        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+        deathExtractShortResponse.setDeadManResidenceType(residenceTypeResponses);
+
+        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+        deathExtractShortResponse.setDeadManIdentificationType(identificationTypeResponses);
+        deathExtractShortResponse.setPetitionerIdentificationType(identificationTypeResponses);
+
+        List<DeathNoticeTypeResponse> deathNoticeTypeResponses = deathNoticeTypeService.findAllDeathNoticeTypeResponse();
+        deathExtractShortResponse.setDeathNoticeType(deathNoticeTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường ngắn của biểu mẫu khai tử thành công")
@@ -215,7 +309,7 @@ public class ExtractShortAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!parentsChildrenExtractShort.getImporter().getId().equals(user.getId())) {
+        if (parentsChildrenExtractShort.getImporter() == null || !parentsChildrenExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được quyền nhập liệu cho biểu mẫu này");
         }
 
@@ -251,7 +345,7 @@ public class ExtractShortAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!birthExtractShort.getImporter().getId().equals(user.getId())) {
+        if (birthExtractShort.getImporter() == null || !birthExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được quyền nhập liệu cho biểu mẫu này");
         }
 
@@ -287,7 +381,7 @@ public class ExtractShortAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!marryExtractShort.getImporter().getId().equals(user.getId())) {
+        if (marryExtractShort.getImporter() == null || !marryExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được quyền nhập liệu cho biểu mẫu này");
         }
 
@@ -323,7 +417,7 @@ public class ExtractShortAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!wedlockExtractShort.getImporter().getId().equals(user.getId())) {
+        if (wedlockExtractShort.getImporter() == null || !wedlockExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được quyền nhập liệu cho biểu mẫu này");
         }
 
@@ -359,7 +453,7 @@ public class ExtractShortAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!deathExtractShort.getImporter().getId().equals(user.getId())) {
+        if (deathExtractShort.getImporter() == null || !deathExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được quyền nhập liệu cho biểu mẫu này");
         }
 
