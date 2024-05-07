@@ -42,10 +42,10 @@ public class ParentsChildrenExtractShort {
     private String registrationDate;
 
     @Column(name = "registration_type")
-    private Integer registrationType;
+    private String registrationType;
 
     @Column(name = "confirmation_type ")
-    private Integer confirmationType;
+    private String confirmationType;
 
     @Column(name = "signer", length = 50)
     private String signer;
@@ -75,10 +75,10 @@ public class ParentsChildrenExtractShort {
     private String parentOtherNationality;
 
     @Column(name = "parent_residence_type")
-    private Integer parentResidenceType;
+    private String parentResidenceType;
 
     @Column(name = "parent_identification_type")
-    private Integer parentIdentificationType;
+    private String parentIdentificationType;
 
     @Column(name = "parent_other_document")
     private String parentOtherDocument;
@@ -105,10 +105,10 @@ public class ParentsChildrenExtractShort {
     private String childOtherNationality;
 
     @Column(name = "child_residence_type")
-    private Integer childResidenceType;
+    private String childResidenceType;
 
     @Column(name = "child_identification_type")
-    private Integer childIdentificationType;
+    private String childIdentificationType;
 
     @Column(name = "child_other_document")
     private String childOtherDocument;
@@ -129,7 +129,7 @@ public class ParentsChildrenExtractShort {
     private String petitionerReceiverRelationship;
 
     @Column(name = "petitioner_identification_type")
-    private Integer petitionerIdentificationType;
+    private String petitionerIdentificationType;
 
     @Column(name = "petitioner_identification_number", length = 50)
     private String petitionerIdentificationNumber;

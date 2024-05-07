@@ -39,7 +39,7 @@ public class MarryExtractShort {
     private String registrationDate;
 
     @Column(name = "registration_type")
-    private Integer registrationType;
+    private String registrationType;
 
     @Column(name = "marital_relationship_establishment_date ")
     private String maritalRelationshipEstablishmentDate;
@@ -62,17 +62,11 @@ public class MarryExtractShort {
     @Column(name = "husband_nationality", length = 100)
     private String husbandNationality;
 
-    @Column(name = "husband_other_nationality", length = 100)
-    private String husbandOtherNationality;
-
     @Column(name = "husband_residence_type")
-    private Integer husbandResidenceType;
+    private String husbandResidenceType;
 
     @Column(name = "husband_identification_type")
-    private Integer husbandIdentificationType;
-
-    @Column(name = "husband_other_document")
-    private String husbandOtherDocument;
+    private String husbandIdentificationType;
 
     @Column(name = "husband_identification_number", length = 50)
     private String husbandIdentificationNumber;
@@ -92,14 +86,11 @@ public class MarryExtractShort {
     @Column(name = "wife_nationality", length = 100)
     private String wifeNationality;
 
-    @Column(name = "wife_other_nationality", length = 100)
-    private String wifeOtherNationality;
-
     @Column(name = "wife_residence_type")
-    private Integer wifeResidenceType;
+    private String wifeResidenceType;
 
     @Column(name = "wife_identification_type")
-    private Integer wifeIdentificationType;
+    private String wifeIdentificationType;
 
     @Column(name = "wife_identification_number", length = 50)
     private String wifeIdentificationNumber;

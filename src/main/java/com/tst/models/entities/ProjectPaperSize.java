@@ -14,14 +14,22 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Getter
 @Setter
 @Entity
-@Table(name = "project_paper_sizes")
+@Table(
+    name = "project_paper_sizes",
+    uniqueConstraints = {
+        @UniqueConstraint(
+            name = "unique_code_project_registration_type_id",
+            columnNames = {"code", "project_registration_type_id"}
+        )
+    }
+)
 public class ProjectPaperSize {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private EPaperSize code;
 
     @ManyToOne
