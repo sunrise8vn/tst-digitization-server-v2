@@ -6,6 +6,7 @@ import com.tst.models.entities.extractShort.MarryExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
 import com.tst.repositories.IdentificationTypeRepository;
+import com.tst.repositories.MaritalStatusTypeRepository;
 import com.tst.repositories.RegistrationTypeDetailRepository;
 import com.tst.repositories.ResidenceTypeRepository;
 import com.tst.repositories.extractShort.MarryExtractShortRepository;
@@ -21,7 +22,7 @@ import java.util.Optional;
 public class MarryExtractShortService implements IMarryExtractShortService {
 
     private final MarryExtractShortRepository marryExtractShortRepository;
-
+    private final MaritalStatusTypeRepository maritalStatusTypeRepository;
     private final RegistrationTypeDetailRepository registrationTypeDetailRepository;
     private final ResidenceTypeRepository residenceTypeRepository;
     private final IdentificationTypeRepository identificationTypeRepository;
@@ -46,6 +47,12 @@ public class MarryExtractShortService implements IMarryExtractShortService {
                 ERegistrationType.KH
         ).orElseThrow(() -> {
             throw new DataNotFoundException("Loại đăng ký không tồn tại");
+        });
+
+        maritalStatusTypeRepository.findByCode(
+                marryExtractShortDTO.getMaritalStatus()
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("Tình trạng hôn nhân không tồn tại");
         });
 
         residenceTypeRepository.findByCode(

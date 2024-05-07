@@ -51,8 +51,8 @@ public class Marry {
     @Column(name = "note")
     private String note;
 
-    @Column(name = "wedlock")
-    private String wedlock;
+    @Column(name = "marital_status")
+    private String maritalStatus;
 
     @Column(name = "cancel_marry_note_date")
     private String cancelMarryNoteDate;

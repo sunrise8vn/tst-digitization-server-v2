@@ -1,17 +1,22 @@
-package com.tst.models.dtos.compare;
+package com.tst.models.responses.extractFull;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class BirthCompareCommonDTO {
+public class BirthExtractFullResponse {
+    private Long id;
     private String number;
     private String numberPage;
     private String registrationDate;
     private String registrationType;
+    private String registrationPlace;
     private String signer;
     private String signerPosition;
     private String implementer;
@@ -19,6 +24,9 @@ public class BirthCompareCommonDTO {
     private String birtherFullName;
     private String birtherGender;
     private String birtherBirthday;
+    private String birtherBirthPlace;
+    private String birtherBirthPlaceAdministrativeUnit;
+    private String birtherHomeTown;
     private String birtherNation;
     private String birtherNationality;
     private String birthCertificateType;
@@ -28,6 +36,7 @@ public class BirthCompareCommonDTO {
     private String momNationality;
     private String momOtherNationality;
     private String momResidenceType;
+    private String momResidence;
     private String momIdentificationType;
     private String momIdentificationNumber;
     private String dadFullName;
@@ -36,12 +45,13 @@ public class BirthCompareCommonDTO {
     private String dadNationality;
     private String dadOtherNationality;
     private String dadResidenceType;
+    private String dadResidence;
     private String dadIdentificationType;
     private String dadIdentificationNumber;
     private String petitionerFullName;
     private String petitionerRelationship;
-    private String petitionerReceiverRelationship;
     private String petitionerIdentificationType;
     private String petitionerIdentificationNumber;
     private String petitionerIdentificationIssuanceDate;
+    private String petitionerIdentificationIssuancePlace;
 }

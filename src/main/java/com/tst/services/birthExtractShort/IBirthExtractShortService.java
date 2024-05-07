@@ -17,4 +17,5 @@ public interface IBirthExtractShortService extends IGeneralService<BirthExtractS
             BirthExtractShort birthExtractShort,
             BirthExtractShortDTO birthExtractShortDTO
     );
+
 }

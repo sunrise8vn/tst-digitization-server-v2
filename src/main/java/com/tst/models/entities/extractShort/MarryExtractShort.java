@@ -50,8 +50,8 @@ public class MarryExtractShort {
     @Column(name = "note")
     private String note;
 
-    @Column(name = "wedlock")
-    private String wedlock;
+    @Column(name = "marital_status")
+    private String maritalStatus;
 
     @Column(name = "husband_birthday", length = 10)
     private String husbandBirthday;

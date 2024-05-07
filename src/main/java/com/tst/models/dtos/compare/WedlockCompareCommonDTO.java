@@ -16,13 +16,13 @@ public class WedlockCompareCommonDTO {
     private String implementer;
     private String note;
     private String confirmerFullName;
-    private Integer confirmerGender;
+    private String confirmerGender;
     private String confirmerBirthday;
     private String confirmerNation;
     private String confirmerNationality;
     private String confirmerOtherNationality;
-    private Integer confirmerResidenceType;
-    private Integer confirmerIdentificationType;
+    private String confirmerResidenceType;
+    private String confirmerIdentificationType;
     private String confirmerOtherDocument;
     private String confirmerIdentificationNumber;
     private String confirmerIdentificationIssuanceDate;
@@ -30,7 +30,7 @@ public class WedlockCompareCommonDTO {
     private String confirmerPeriodResidenceTo;
     private String petitionerFullName;
     private String petitionerRelationship;
-    private Integer petitionerIdentificationType;
+    private String petitionerIdentificationType;
     private String petitionerIdentificationNumber;
     private String petitionerIdentificationIssuanceDate;
 }
