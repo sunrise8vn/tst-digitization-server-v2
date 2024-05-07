@@ -12,6 +12,8 @@ import java.util.Optional;
 
 public interface IUserService extends IGeneralService<User, String> {
 
+    User getAuthenticatedUser();
+
     Optional<User> findByUsername(String username);
 
     String login(String username, String password);

@@ -53,7 +53,7 @@ public class WedlockExtractShort {
     private String confirmerFullName;
 
     @Column(name = "confirmer_gender")
-    private Integer confirmerGender;
+    private String confirmerGender;
 
     @Column(name = "confirmer_birthday", length = 10)
     private String confirmerBirthday;
@@ -68,10 +68,10 @@ public class WedlockExtractShort {
     private String confirmerOtherNationality;
 
     @Column(name = "confirmer_residence_type")
-    private Integer confirmerResidenceType;
+    private String confirmerResidenceType;
 
     @Column(name = "confirmer_identification_type")
-    private Integer confirmerIdentificationType;
+    private String confirmerIdentificationType;
 
     @Column(name = "confirmer_other_document")
     private String confirmerOtherDocument;
@@ -95,7 +95,7 @@ public class WedlockExtractShort {
     private String petitionerRelationship;
 
     @Column(name = "petitioner_identification_type")
-    private Integer petitionerIdentificationType;
+    private String petitionerIdentificationType;
 
     @Column(name = "petitioner_identification_number", length = 50)
     private String petitionerIdentificationNumber;

@@ -31,7 +31,7 @@ public class Death {
     private String registrationDate;
 
     @Column(name = "registration_type")
-    private Integer registrationType;
+    private String registrationType;
 
     @Column(name = "registration_place")
     private String registrationPlace;
@@ -52,7 +52,7 @@ public class Death {
     private String deadManFullName;
 
     @Column(name = "dead_man_gender")
-    private Integer deadManGender;
+    private String deadManGender;
 
     @Column(name = "dead_man_birthday", length = 10)
     private String deadManBirthday;
@@ -67,13 +67,13 @@ public class Death {
     private String deadManOtherNationality;
 
     @Column(name = "dead_man_residence_type")
-    private Integer deadManResidenceType;
+    private String deadManResidenceType;
 
     @Column(name = "dead_man_residence")
     private String deadManResidence;
 
     @Column(name = "dead_man_identification_type")
-    private Integer deadManIdentificationType;
+    private String deadManIdentificationType;
 
     @Column(name = "dead_man_other_document")
     private String deadManOtherDocument;
@@ -118,7 +118,7 @@ public class Death {
     private String deadManDeathCancelStatementBase;
 
     @Column(name = "death_notice_type")
-    private Integer deathNoticeType;
+    private String deathNoticeType;
 
     @Column(name = "death_notice_number")
     private String deathNoticeNumber;
@@ -136,7 +136,7 @@ public class Death {
     private String petitionerRelationship;
 
     @Column(name = "petitioner_identification_type")
-    private Integer petitionerIdentificationType;
+    private String petitionerIdentificationType;
 
     @Column(name = "petitioner_other_document")
     private String petitionerOtherDocument;

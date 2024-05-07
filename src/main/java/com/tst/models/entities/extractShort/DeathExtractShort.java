@@ -39,7 +39,7 @@ public class DeathExtractShort {
     private String registrationDate;
 
     @Column(name = "registration_type")
-    private Integer registrationType;
+    private String registrationType;
 
     @Column(name = "signer_position", length = 50)
     private String signerPosition;
@@ -54,7 +54,7 @@ public class DeathExtractShort {
     private String deadManFullName;
 
     @Column(name = "dead_man_gender")
-    private Integer deadManGender;
+    private String deadManGender;
 
     @Column(name = "dead_man_birthday", length = 10)
     private String deadManBirthday;
@@ -66,10 +66,10 @@ public class DeathExtractShort {
     private String deadManNationality;
 
     @Column(name = "dead_man_residence_type")
-    private Integer deadManResidenceType;
+    private String deadManResidenceType;
 
     @Column(name = "dead_man_identification_type")
-    private Integer deadManIdentificationType;
+    private String deadManIdentificationType;
 
     @Column(name = "dead_man_identification_number", length = 50)
     private String deadManIdentificationNumber;
@@ -84,7 +84,7 @@ public class DeathExtractShort {
     private String deadManDeadTime;
 
     @Column(name = "death_notice_type")
-    private Integer deathNoticeType;
+    private String deathNoticeType;
 
     @Column(name = "death_notice_number")
     private String deathNoticeNumber;
@@ -99,7 +99,7 @@ public class DeathExtractShort {
     private String petitionerRelationship;
 
     @Column(name = "petitioner_identification_type")
-    private Integer petitionerIdentificationType;
+    private String petitionerIdentificationType;
 
     @Column(name = "petitioner_identification_number", length = 50)
     private String petitionerIdentificationNumber;

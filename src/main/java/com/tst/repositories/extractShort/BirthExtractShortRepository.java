@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BirthExtractShortRepository extends JpaRepository<BirthExtractShort, Long> {
 
@@ -27,5 +28,8 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
             "ORDER BY bes.id DESC"
     )
     List<BirthExtractShort> findBirthSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
+
+
+    Optional<BirthExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
 }

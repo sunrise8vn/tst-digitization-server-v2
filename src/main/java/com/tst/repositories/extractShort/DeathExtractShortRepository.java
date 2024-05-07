@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DeathExtractShortRepository extends JpaRepository<DeathExtractShort, Long> {
 
@@ -27,5 +28,8 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
             "ORDER BY des.id DESC"
     )
     List<DeathExtractShort> findDeathSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
+
+
+    Optional<DeathExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
 }

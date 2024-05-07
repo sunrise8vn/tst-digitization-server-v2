@@ -31,7 +31,7 @@ public class Marry {
     private String registrationDate;
 
     @Column(name = "registration_type")
-    private Integer registrationType;
+    private String registrationType;
 
     @Column(name = "registration_place")
     private String registrationPlace;
@@ -82,13 +82,13 @@ public class Marry {
     private String husbandOtherNationality;
 
     @Column(name = "husband_residence_type")
-    private Integer husbandResidenceType;
+    private String husbandResidenceType;
 
     @Column(name = "husband_residence")
     private String husbandResidence;
 
     @Column(name = "husband_identification_type")
-    private Integer husbandIdentificationType;
+    private String husbandIdentificationType;
 
     @Column(name = "husband_other_document")
     private String husbandOtherDocument;
@@ -118,13 +118,13 @@ public class Marry {
     private String wifeOtherNationality;
 
     @Column(name = "wife_residence_type")
-    private Integer wifeResidenceType;
+    private String wifeResidenceType;
 
     @Column(name = "wife_residence")
     private String wifeResidence;
 
     @Column(name = "wife_identification_type")
-    private Integer wifeIdentificationType;
+    private String wifeIdentificationType;
 
     @Column(name = "wife_other_document")
     private String wifeOtherDocument;

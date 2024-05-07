@@ -32,7 +32,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -204,7 +203,6 @@ public class ProjectAPI {
 //                .build());
 //    }
 
-
     // Upload pdf lên thư mục sổ hộ tịch
     @PostMapping("/number-book-file/upload-pdf")
     public ResponseEntity<ResponseObject> uploadPdfFilesProjectNumberBook(
@@ -297,7 +295,7 @@ public class ProjectAPI {
            throw new DataNotFoundException("ID dự án không tồn tại");
         });
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getAuthenticatedUser();
 
         projectUserService.findByProjectAndUser(project, user).orElseThrow(() -> {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
@@ -469,7 +467,9 @@ public class ProjectAPI {
                 .build());
     }
 
-    // Kiểm tra và chấp nhận tổ chức file đúng với yêu cầu, chuyển file vào đúng thư mục
+    // Kiểm tra và chấp nhận tổ chức file đúng với yêu cầu,
+    // chuyển file vào đúng thư mục,
+    // tạo mới record vào 2 bảng tương ứng với RegistrationType
     @PatchMapping("/number-book-file/approve/{id}")
     public ResponseEntity<ResponseObject> approvePdfFileProjectNumberBookFile(
             @PathVariable @Pattern(regexp = "\\d+", message = "ID tập tin phải là một số") String id

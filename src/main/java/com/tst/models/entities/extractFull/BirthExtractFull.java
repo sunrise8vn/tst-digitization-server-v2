@@ -39,7 +39,7 @@ public class BirthExtractFull {
     private String registrationDate;
 
     @Column(name = "registration_type")
-    private Integer registrationType;
+    private String registrationType;
 
     @Column(name = "registration_place")
     private String registrationPlace;
@@ -60,7 +60,7 @@ public class BirthExtractFull {
     private String birtherFullName;
 
     @Column(name = "birther_gender")
-    private Integer birtherGender;
+    private String birtherGender;
 
     @Column(name = "birther_birthday", length = 10)
     private String birtherBirthday;
@@ -81,7 +81,7 @@ public class BirthExtractFull {
     private String birtherNationality;
 
     @Column(name = "birth_certificate_type")
-    private Integer birthCertificateType;
+    private String birthCertificateType;
 
     @Column(name = "mom_full_name", length = 50)
     private String momFullName;
@@ -99,13 +99,13 @@ public class BirthExtractFull {
     private String momOtherNationality;
 
     @Column(name = "mom_residence_type")
-    private Integer momResidenceType;
+    private String momResidenceType;
 
     @Column(name = "mom_residence")
     private String momResidence;
 
     @Column(name = "mom_identification_type")
-    private Integer momIdentificationType;
+    private String momIdentificationType;
 
     @Column(name = "mom_identification_number", length = 50)
     private String momIdentificationNumber;
@@ -126,13 +126,13 @@ public class BirthExtractFull {
     private String dadOtherNationality;
 
     @Column(name = "dad_residence_type")
-    private Integer dadResidenceType;
+    private String dadResidenceType;
 
     @Column(name = "dad_residence")
     private String dadResidence;
 
     @Column(name = "dad_identification_type")
-    private Integer dadIdentificationType;
+    private String dadIdentificationType;
 
     @Column(name = "dad_identification_number", length = 50)
     private String dadIdentificationNumber;
@@ -143,11 +143,8 @@ public class BirthExtractFull {
     @Column(name = "petitioner_relationship")
     private String petitionerRelationship;
 
-    @Column(name = "petitioner_receiver_relationship")
-    private String petitionerReceiverRelationship;
-
     @Column(name = "petitioner_identification_type")
-    private Integer petitionerIdentificationType;
+    private String petitionerIdentificationType;
 
     @Column(name = "petitioner_identification_number", length = 50)
     private String petitionerIdentificationNumber;

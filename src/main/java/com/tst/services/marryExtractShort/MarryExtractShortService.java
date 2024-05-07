@@ -1,8 +1,16 @@
 package com.tst.services.marryExtractShort;
 
+import com.tst.exceptions.DataNotFoundException;
+import com.tst.models.dtos.extractShort.MarryExtractShortDTO;
 import com.tst.models.entities.extractShort.MarryExtractShort;
+import com.tst.models.enums.EInputStatus;
+import com.tst.models.enums.ERegistrationType;
+import com.tst.repositories.IdentificationTypeRepository;
+import com.tst.repositories.RegistrationTypeDetailRepository;
+import com.tst.repositories.ResidenceTypeRepository;
 import com.tst.repositories.extractShort.MarryExtractShortRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,10 +22,64 @@ public class MarryExtractShortService implements IMarryExtractShortService {
 
     private final MarryExtractShortRepository marryExtractShortRepository;
 
+    private final RegistrationTypeDetailRepository registrationTypeDetailRepository;
+    private final ResidenceTypeRepository residenceTypeRepository;
+    private final IdentificationTypeRepository identificationTypeRepository;
+
+    private final ModelMapper modelMapper;
+
 
     @Override
     public Optional<MarryExtractShort> findById(Long id) {
         return marryExtractShortRepository.findById(id);
+    }
+
+    @Override
+    public Optional<MarryExtractShort> findByIdAndStatus(Long id, EInputStatus status) {
+        return marryExtractShortRepository.findByIdAndStatus(id, status);
+    }
+
+    @Override
+    public void update(MarryExtractShort marryExtractShort, MarryExtractShortDTO marryExtractShortDTO) {
+        registrationTypeDetailRepository.findByCodeAndERegistrationType(
+                marryExtractShortDTO.getRegistrationType(),
+                ERegistrationType.KH
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("Loại đăng ký không tồn tại");
+        });
+
+        residenceTypeRepository.findByCode(
+                marryExtractShortDTO.getHusbandResidenceType()
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("Loại cư trú của người chồng không tồn tại");
+        });
+
+        identificationTypeRepository.findByCode(
+                marryExtractShortDTO.getHusbandIdentificationType()
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("Loại giấy tờ tùy thân của người chồng không tồn tại");
+        });
+
+        residenceTypeRepository.findByCode(
+                marryExtractShortDTO.getWifeResidenceType()
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("Loại cư trú của người vợ không tồn tại");
+        });
+
+        identificationTypeRepository.findByCode(
+                marryExtractShortDTO.getWifeIdentificationType()
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("Loại giấy tờ tùy thân của người vợ không tồn tại");
+        });
+
+        modelMapper.map(
+                marryExtractShortDTO,
+                marryExtractShort
+        );
+
+        marryExtractShort.setStatus(EInputStatus.IMPORTED);
+
+        marryExtractShortRepository.save(marryExtractShort);
     }
 
     @Override

@@ -44,10 +44,10 @@ public class ParentsChildrenExtractFull {
     private String registrationDate;
 
     @Column(name = "registration_type")
-    private Integer registrationType;
+    private String registrationType;
 
     @Column(name = "confirmation_type ")
-    private Integer confirmationType;
+    private String confirmationType;
 
     @Column(name = "registration_place")
     private String registrationPlace;
@@ -83,13 +83,13 @@ public class ParentsChildrenExtractFull {
     private String parentHomeTown;
 
     @Column(name = "parent_residence_type")
-    private Integer parentResidenceType;
+    private String parentResidenceType;
 
     @Column(name = "parent_residence")
     private String parentResidence;
 
     @Column(name = "parent_identification_type")
-    private Integer parentIdentificationType;
+    private String parentIdentificationType;
 
     @Column(name = "parent_other_document")
     private String parentOtherDocument;
@@ -122,13 +122,13 @@ public class ParentsChildrenExtractFull {
     private String childHomeTown;
 
     @Column(name = "child_residence_type")
-    private Integer childResidenceType;
+    private String childResidenceType;
 
     @Column(name = "child_residence")
     private String childResidence;
 
     @Column(name = "child_identification_type")
-    private Integer childIdentificationType;
+    private String childIdentificationType;
 
     @Column(name = "child_other_document")
     private String childOtherDocument;
@@ -152,7 +152,7 @@ public class ParentsChildrenExtractFull {
     private String petitionerReceiverRelationship;
 
     @Column(name = "petitioner_identification_type")
-    private Integer petitionerIdentificationType;
+    private String petitionerIdentificationType;
 
     @Column(name = "petitioner_identification_number", length = 50)
     private String petitionerIdentificationNumber;

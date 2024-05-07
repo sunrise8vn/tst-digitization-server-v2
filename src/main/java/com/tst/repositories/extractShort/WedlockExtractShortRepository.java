@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WedlockExtractShortRepository extends JpaRepository<WedlockExtractShort, Long> {
 
@@ -27,5 +28,8 @@ public interface WedlockExtractShortRepository extends JpaRepository<WedlockExtr
             "ORDER BY wes.id DESC"
     )
     List<WedlockExtractShort> findWedlockSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
+
+
+    Optional<WedlockExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
 }
