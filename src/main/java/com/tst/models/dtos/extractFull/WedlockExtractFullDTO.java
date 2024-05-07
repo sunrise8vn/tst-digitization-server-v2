@@ -1,9 +1,10 @@
-package com.tst.models.dtos.extractShort;
+package com.tst.models.dtos.extractFull;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
@@ -11,12 +12,14 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class WedlockExtractShortDTO {
+public class WedlockExtractFullDTO {
     @Pattern(regexp = "^\\d*$", message = "ID phải là số")
     private String id;
+
     private String number;
     private String numberPage;
     private String registrationDate;
+    private String issuancePlace;
     private String signer;
     private String signerPosition;
     private String implementer;
@@ -34,6 +37,8 @@ public class WedlockExtractShortDTO {
     @Pattern(regexp = "^\\d*$", message = "Loại cư trú của người xác nhận phải là số")
     private String confirmerResidenceType;
 
+    private String confirmerResidence;
+
     @Pattern(regexp = "^\\d*$", message = "Loại giấy tờ tùy thân của người xác nhận phải là số")
     private String confirmerIdentificationType;
 
@@ -43,8 +48,16 @@ public class WedlockExtractShortDTO {
     private String confirmerIdentificationNumber;
 
     private String confirmerIdentificationIssuanceDate;
+    private String confirmerIdentificationIssuancePlace;
+    private String confirmerPeriodResidenceAt;
     private String confirmerPeriodResidenceFrom;
     private String confirmerPeriodResidenceTo;
+    private String confirmerMaritalStatus;
+
+    @Pattern(regexp = "^\\d*$", message = "Loại mục đích sử dụng của người xác nhận phải là số")
+    private String confirmerIntendedUseType;
+
+    private String confirmerIntendedUse;
     private String petitionerFullName;
     private String petitionerRelationship;
 
@@ -55,4 +68,5 @@ public class WedlockExtractShortDTO {
     private String petitionerIdentificationNumber;
 
     private String petitionerIdentificationIssuanceDate;
+    private String petitionerIdentificationIssuancePlace;
 }

@@ -13,8 +13,8 @@ public class ParentsChildrenCompareCommonDTO {
     private String numberPage;
     private String decisionNo;
     private String registrationDate;
-    private Integer registrationType;
-    private Integer confirmationType;
+    private String registrationType;
+    private String confirmationType;
     private String signer;
     private String signerPosition;
     private String implementer;
@@ -24,8 +24,8 @@ public class ParentsChildrenCompareCommonDTO {
     private String parentNation;
     private String parentNationality;
     private String parentOtherNationality;
-    private Integer parentResidenceType;
-    private Integer parentIdentificationType;
+    private String parentResidenceType;
+    private String parentIdentificationType;
     private String parentOtherDocument;
     private String parentIdentificationNumber;
     private String parentIdentificationIssuanceDate;
@@ -34,15 +34,15 @@ public class ParentsChildrenCompareCommonDTO {
     private String childNation;
     private String childNationality;
     private String childOtherNationality;
-    private Integer childResidenceType;
-    private Integer childIdentificationType;
+    private String childResidenceType;
+    private String childIdentificationType;
     private String childOtherDocument;
     private String childIdentificationNumber;
     private String childIdentificationIssuanceDate;
     private String petitionerFullName;
     private String petitionerRecipientRelationship;
     private String petitionerReceiverRelationship;
-    private Integer petitionerIdentificationType;
+    private String petitionerIdentificationType;
     private String petitionerIdentificationNumber;
     private String petitionerIdentificationIssuanceDate;
 

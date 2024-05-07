@@ -93,8 +93,8 @@ public class Wedlock {
     @Column(name = "confirmer_period_residence_to", length = 10)
     private String confirmerPeriodResidenceTo;
 
-    @Column(name = "confirmer_wedlock")
-    private String confirmerWedlock;
+    @Column(name = "confirmer_marital_status")
+    private String confirmerMaritalStatus;
 
     @Column(name = "confirmer_intended_use_type")
     private String confirmerIntendedUseType;

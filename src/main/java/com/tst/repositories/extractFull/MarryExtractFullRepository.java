@@ -30,4 +30,7 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
     )
     List<MarryExtractFull> findMarrySameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 
+
+    Optional<MarryExtractFull> findByIdAndStatus(Long id, EInputStatus status);
+
 }

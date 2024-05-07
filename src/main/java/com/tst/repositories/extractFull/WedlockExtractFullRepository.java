@@ -30,4 +30,7 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
     )
     List<WedlockExtractFull> findWedlockSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 
+
+    Optional<WedlockExtractFull> findByIdAndStatus(Long id, EInputStatus status);
+
 }

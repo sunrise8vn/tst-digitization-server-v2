@@ -30,4 +30,7 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
     )
     List<ParentsChildrenExtractFull> findParentsChildrenSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 
+
+    Optional<ParentsChildrenExtractFull> findByIdAndStatus(Long id, EInputStatus status);
+
 }

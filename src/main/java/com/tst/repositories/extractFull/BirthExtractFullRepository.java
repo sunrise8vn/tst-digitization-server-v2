@@ -30,4 +30,7 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
     )
     List<BirthExtractFull> findBirthSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 
+
+    Optional<BirthExtractFull> findByIdAndStatus(Long id, EInputStatus status);
+
 }

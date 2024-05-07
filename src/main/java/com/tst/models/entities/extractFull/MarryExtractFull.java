@@ -58,8 +58,8 @@ public class MarryExtractFull {
     @Column(name = "note")
     private String note;
 
-    @Column(name = "wedlock")
-    private String wedlock;
+    @Column(name = "marital_status")
+    private String maritalStatus;
 
     @Column(name = "husband_full_name", length = 50)
     private String husbandFullName;

@@ -30,4 +30,7 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
     )
     List<DeathExtractFull> findDeathSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 
+
+    Optional<DeathExtractFull> findByIdAndStatus(Long id, EInputStatus status);
+
 }
