@@ -4,10 +4,7 @@ import com.tst.exceptions.DataNotFoundException;
 import com.tst.models.dtos.extractFull.WedlockExtractFullDTO;
 import com.tst.models.entities.extractFull.WedlockExtractFull;
 import com.tst.models.enums.EInputStatus;
-import com.tst.repositories.IdentificationTypeRepository;
-import com.tst.repositories.IntendedUseTypeRepository;
-import com.tst.repositories.MaritalStatusTypeRepository;
-import com.tst.repositories.ResidenceTypeRepository;
+import com.tst.repositories.*;
 import com.tst.repositories.extractFull.WedlockExtractFullRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,7 +18,7 @@ import java.util.Optional;
 public class WedlockExtractFullService implements IWedlockExtractFullService {
 
     private final WedlockExtractFullRepository wedlockExtractFullRepository;
-    private final MaritalStatusTypeRepository maritalStatusTypeRepository;
+    private final GenderTypeRepository genderTypeRepository;
     private final IntendedUseTypeRepository intendedUseTypeRepository;
 
     private final ResidenceTypeRepository residenceTypeRepository;
@@ -42,7 +39,7 @@ public class WedlockExtractFullService implements IWedlockExtractFullService {
 
     @Override
     public void update(WedlockExtractFull wedlockExtractFull, WedlockExtractFullDTO wedlockExtractFullDTO) {
-        maritalStatusTypeRepository.findByCode(
+        genderTypeRepository.findByCode(
                 wedlockExtractFullDTO.getConfirmerGender()
         ).orElseThrow(() -> {
             throw new DataNotFoundException("Giới tính của người xác nhận không tồn tại");

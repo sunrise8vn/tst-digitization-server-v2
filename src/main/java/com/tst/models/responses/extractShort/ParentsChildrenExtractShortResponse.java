@@ -2,7 +2,13 @@ package com.tst.models.responses.extractShort;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.tst.models.responses.typeList.ConfirmationTypeResponse;
+import com.tst.models.responses.typeList.IdentificationTypeResponse;
+import com.tst.models.responses.typeList.RegistrationTypeDetailResponse;
+import com.tst.models.responses.typeList.ResidenceTypeResponse;
 import lombok.*;
+
+import java.util.List;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
@@ -16,8 +22,8 @@ public class ParentsChildrenExtractShortResponse {
     private String numberPage;
     private String decisionNo;
     private String registrationDate;
-    private String registrationType;
-    private String confirmationType;
+    private List<RegistrationTypeDetailResponse> registrationType;
+    private List<ConfirmationTypeResponse> confirmationType;
     private String signer;
     private String signerPosition;
     private String implementer;
@@ -27,8 +33,8 @@ public class ParentsChildrenExtractShortResponse {
     private String parentNation;
     private String parentNationality;
     private String parentOtherNationality;
-    private String parentResidenceType;
-    private String parentIdentificationType;
+    private List<ResidenceTypeResponse> parentResidenceType;
+    private List<IdentificationTypeResponse> parentIdentificationType;
     private String parentOtherDocument;
     private String parentIdentificationNumber;
     private String parentIdentificationIssuanceDate;
@@ -37,15 +43,15 @@ public class ParentsChildrenExtractShortResponse {
     private String childNation;
     private String childNationality;
     private String childOtherNationality;
-    private String childResidenceType;
-    private String childIdentificationType;
+    private List<ResidenceTypeResponse> childResidenceType;
+    private List<IdentificationTypeResponse> childIdentificationType;
     private String childOtherDocument;
     private String childIdentificationNumber;
     private String childIdentificationIssuanceDate;
     private String petitionerFullName;
     private String petitionerRecipientRelationship;
     private String petitionerReceiverRelationship;
-    private String petitionerIdentificationType;
+    private List<IdentificationTypeResponse> petitionerIdentificationType;
     private String petitionerIdentificationNumber;
     private String petitionerIdentificationIssuanceDate;
 

@@ -4,8 +4,8 @@ import com.tst.exceptions.DataNotFoundException;
 import com.tst.models.dtos.extractShort.WedlockExtractShortDTO;
 import com.tst.models.entities.extractShort.WedlockExtractShort;
 import com.tst.models.enums.EInputStatus;
+import com.tst.repositories.GenderTypeRepository;
 import com.tst.repositories.IdentificationTypeRepository;
-import com.tst.repositories.MaritalStatusTypeRepository;
 import com.tst.repositories.ResidenceTypeRepository;
 import com.tst.repositories.extractShort.WedlockExtractShortRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +20,7 @@ import java.util.Optional;
 public class WedlockExtractShortService implements IWedlockExtractShortService {
 
     private final WedlockExtractShortRepository wedlockExtractShortRepository;
-    private final MaritalStatusTypeRepository maritalStatusTypeRepository;
-
+    private final GenderTypeRepository genderTypeRepository;
     private final ResidenceTypeRepository residenceTypeRepository;
     private final IdentificationTypeRepository identificationTypeRepository;
 
@@ -40,7 +39,7 @@ public class WedlockExtractShortService implements IWedlockExtractShortService {
 
     @Override
     public void update(WedlockExtractShort wedlockExtractShort, WedlockExtractShortDTO wedlockExtractShortDTO) {
-        maritalStatusTypeRepository.findByCode(
+        genderTypeRepository.findByCode(
                 wedlockExtractShortDTO.getConfirmerGender()
         ).orElseThrow(() -> {
             throw new DataNotFoundException("Giới tính của người xác nhận không tồn tại");

@@ -6,12 +6,23 @@ import com.tst.models.dtos.extractFull.*;
 import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.*;
 import com.tst.models.enums.EInputStatus;
+import com.tst.models.enums.ERegistrationType;
 import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.extractFull.*;
+import com.tst.models.responses.typeList.*;
+import com.tst.services.birthCertificateType.IBirthCertificateTypeService;
 import com.tst.services.birthExtractFull.IBirthExtractFullService;
+import com.tst.services.confirmationType.IConfirmationTypeService;
 import com.tst.services.deathExtractFull.IDeathExtractFullService;
+import com.tst.services.deathNoticeType.IDeathNoticeTypeService;
+import com.tst.services.genderType.IGenderTypeService;
+import com.tst.services.identificationType.IIdentificationTypeService;
+import com.tst.services.intendedUseType.IIntendedUseTypeService;
+import com.tst.services.maritalStatusType.IMaritalStatusTypeService;
 import com.tst.services.marryExtractFull.IMarryExtractFullService;
 import com.tst.services.parentsChildrenExtractFull.IParentsChildrenExtractFullService;
+import com.tst.services.registrationTypeDetail.IRegistrationTypeDetailService;
+import com.tst.services.residenceType.IResidenceTypeService;
 import com.tst.services.user.IUserService;
 import com.tst.services.wedlockExtractFull.IWedlockExtractFullService;
 import com.tst.utils.AppUtils;
@@ -24,12 +35,24 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("${api.prefix}/extract-full")
 @RequiredArgsConstructor
 @Validated
 public class ExtractFullAPI {
+
+    private final IRegistrationTypeDetailService registrationTypeDetailService;
+    private final IGenderTypeService genderTypeService;
+    private final IBirthCertificateTypeService birthCertificateTypeService;
+    private final IResidenceTypeService residenceTypeService;
+    private final IIdentificationTypeService identificationTypeService;
+    private final IConfirmationTypeService confirmationTypeService;
+    private final IMaritalStatusTypeService maritalStatusTypeService;
+    private final IIntendedUseTypeService intendedUseTypeService;
+    private final IDeathNoticeTypeService deathNoticeTypeService;
 
     private final IParentsChildrenExtractFullService parentsChildrenExtractFullService;
     private final IBirthExtractFullService birthExtractFullService;
@@ -55,7 +78,7 @@ public class ExtractFullAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!parentsChildrenExtractFull.getImporter().getId().equals(user.getId())) {
+        if (parentsChildrenExtractFull.getImporter() == null || !parentsChildrenExtractFull.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
         }
 
@@ -63,6 +86,21 @@ public class ExtractFullAPI {
                 parentsChildrenExtractFull,
                 ParentsChildrenExtractFullResponse.class
         );
+
+        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.CMC);
+        parentsChildrenExtractFullResponse.setRegistrationType(registrationTypeDetailResponses);
+
+        List<ConfirmationTypeResponse> confirmationTypeResponses = confirmationTypeService.findAllConfirmationTypeResponse();
+        parentsChildrenExtractFullResponse.setConfirmationType(confirmationTypeResponses);
+
+        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+        parentsChildrenExtractFullResponse.setParentResidenceType(residenceTypeResponses);
+        parentsChildrenExtractFullResponse.setChildResidenceType(residenceTypeResponses);
+
+        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+        parentsChildrenExtractFullResponse.setParentIdentificationType(identificationTypeResponses);
+        parentsChildrenExtractFullResponse.setChildIdentificationType(identificationTypeResponses);
+        parentsChildrenExtractFullResponse.setPetitionerIdentificationType(identificationTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường dài của biểu mẫu cha mẹ con thành công")
@@ -85,7 +123,7 @@ public class ExtractFullAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!birthExtractFull.getImporter().getId().equals(user.getId())) {
+        if (birthExtractFull.getImporter() == null || !birthExtractFull.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
         }
 
@@ -93,6 +131,24 @@ public class ExtractFullAPI {
                 birthExtractFull,
                 BirthExtractFullResponse.class
         );
+
+        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.KS);
+        birthExtractFullResponse.setRegistrationType(registrationTypeDetailResponses);
+
+        List<GenderTypeResponse> genderTypeResponses = genderTypeService.findAllGenderTypeResponse();
+        birthExtractFullResponse.setBirtherGender(genderTypeResponses);
+
+        List<BirthCertificateTypeResponse> birthCertificateTypeResponses = birthCertificateTypeService.findAllBirthCertificateTypeResponse();
+        birthExtractFullResponse.setBirthCertificateType(birthCertificateTypeResponses);
+
+        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+        birthExtractFullResponse.setMomResidenceType(residenceTypeResponses);
+        birthExtractFullResponse.setDadResidenceType(residenceTypeResponses);
+
+        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+        birthExtractFullResponse.setMomIdentificationType(identificationTypeResponses);
+        birthExtractFullResponse.setDadIdentificationType(identificationTypeResponses);
+        birthExtractFullResponse.setPetitionerIdentificationType(identificationTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường dài của biểu mẫu khai sinh thành công")
@@ -115,7 +171,7 @@ public class ExtractFullAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!marryExtractFull.getImporter().getId().equals(user.getId())) {
+        if (marryExtractFull.getImporter() == null || !marryExtractFull.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
         }
 
@@ -123,6 +179,20 @@ public class ExtractFullAPI {
                 marryExtractFull,
                 MarryExtractFullResponse.class
         );
+
+        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.KH);
+        marryExtractFullResponse.setRegistrationType(registrationTypeDetailResponses);
+
+        List<MaritalStatusResponse> maritalStatusResponses = maritalStatusTypeService.findAllMaritalStatusResponse();
+        marryExtractFullResponse.setMaritalStatus(maritalStatusResponses);
+
+        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+        marryExtractFullResponse.setHusbandResidenceType(residenceTypeResponses);
+        marryExtractFullResponse.setWifeResidenceType(residenceTypeResponses);
+
+        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+        marryExtractFullResponse.setHusbandIdentificationType(identificationTypeResponses);
+        marryExtractFullResponse.setWifeIdentificationType(identificationTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường dài của biểu mẫu kết hôn thành công")
@@ -145,7 +215,7 @@ public class ExtractFullAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!wedlockExtractFull.getImporter().getId().equals(user.getId())) {
+        if (wedlockExtractFull.getImporter() == null || !wedlockExtractFull.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
         }
 
@@ -153,6 +223,19 @@ public class ExtractFullAPI {
                 wedlockExtractFull,
                 WedlockExtractFullResponse.class
         );
+
+        List<GenderTypeResponse> genderTypeResponses = genderTypeService.findAllGenderTypeResponse();
+        wedlockExtractFullResponse.setConfirmerGender(genderTypeResponses);
+
+        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+        wedlockExtractFullResponse.setConfirmerResidenceType(residenceTypeResponses);
+
+        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+        wedlockExtractFullResponse.setConfirmerIdentificationType(identificationTypeResponses);
+        wedlockExtractFullResponse.setPetitionerIdentificationType(identificationTypeResponses);
+
+        List<IntendedUseTypeResponse> intendedUseTypeResponses = intendedUseTypeService.findAllIntendedUseTypeResponse();
+        wedlockExtractFullResponse.setConfirmerIntendedUseType(intendedUseTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường dài của biểu mẫu tình trạng hôn nhân thành công")
@@ -175,7 +258,7 @@ public class ExtractFullAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!deathExtractFull.getImporter().getId().equals(user.getId())) {
+        if (deathExtractFull.getImporter() == null || !deathExtractFull.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
         }
 
@@ -183,6 +266,22 @@ public class ExtractFullAPI {
                 deathExtractFull,
                 DeathExtractFullResponse.class
         );
+
+        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.KT);
+        deathExtractFullResponse.setRegistrationType(registrationTypeDetailResponses);
+
+        List<GenderTypeResponse> genderTypeResponses = genderTypeService.findAllGenderTypeResponse();
+        deathExtractFullResponse.setDeadManGender(genderTypeResponses);
+
+        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+        deathExtractFullResponse.setDeadManResidenceType(residenceTypeResponses);
+
+        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+        deathExtractFullResponse.setDeadManIdentificationType(identificationTypeResponses);
+        deathExtractFullResponse.setPetitionerIdentificationType(identificationTypeResponses);
+
+        List<DeathNoticeTypeResponse> deathNoticeTypeResponses = deathNoticeTypeService.findAllDeathNoticeTypeResponse();
+        deathExtractFullResponse.setDeathNoticeType(deathNoticeTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường dài của biểu mẫu khai tử thành công")
@@ -215,7 +314,7 @@ public class ExtractFullAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!parentsChildrenExtractFull.getImporter().getId().equals(user.getId())) {
+        if (parentsChildrenExtractFull.getImporter() == null || !parentsChildrenExtractFull.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được quyền nhập liệu cho biểu mẫu này");
         }
 
@@ -251,7 +350,7 @@ public class ExtractFullAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!birthExtractFull.getImporter().getId().equals(user.getId())) {
+        if (birthExtractFull.getImporter() == null || !birthExtractFull.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được quyền nhập liệu cho biểu mẫu này");
         }
 
@@ -287,8 +386,8 @@ public class ExtractFullAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!marryExtractFull.getImporter().getId().equals(user.getId())) {
-            throw new PermissionDenyException("Bạn không được quyền nhập liệu cho biểu mẫu này");
+        if (marryExtractFull.getImporter() == null || !marryExtractFull.getImporter().getId().equals(user.getId())) {
+            throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
         }
 
         marryExtractFullService.update(marryExtractFull, marryExtractFullDTO);
@@ -323,7 +422,7 @@ public class ExtractFullAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!wedlockExtractFull.getImporter().getId().equals(user.getId())) {
+        if (wedlockExtractFull.getImporter() == null || !wedlockExtractFull.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được quyền nhập liệu cho biểu mẫu này");
         }
 
@@ -359,7 +458,7 @@ public class ExtractFullAPI {
             throw new DataNotFoundException("ID biểu mẫu không tồn tại");
         });
 
-        if (!deathExtractFull.getImporter().getId().equals(user.getId())) {
+        if (deathExtractFull.getImporter() == null || !deathExtractFull.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được quyền nhập liệu cho biểu mẫu này");
         }
 

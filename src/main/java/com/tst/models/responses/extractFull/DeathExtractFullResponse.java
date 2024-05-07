@@ -2,7 +2,10 @@ package com.tst.models.responses.extractFull;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.tst.models.responses.typeList.*;
 import lombok.*;
+
+import java.util.List;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
@@ -15,20 +18,20 @@ public class DeathExtractFullResponse {
     private String number;
     private String numberPage;
     private String registrationDate;
-    private String registrationType;
+    private List<RegistrationTypeDetailResponse> registrationType;
     private String registrationPlace;
     private String signer;
     private String signerPosition;
     private String implementer;
     private String note;
     private String deadManFullName;
-    private String deadManGender;
+    private List<GenderTypeResponse> deadManGender;
     private String deadManBirthday;
     private String deadManNation;
     private String deadManNationality;
-    private String deadManResidenceType;
+    private List<ResidenceTypeResponse> deadManResidenceType;
     private String deadManResidence;
-    private String deadManIdentificationType;
+    private List<IdentificationTypeResponse> deadManIdentificationType;
     private String deadManIdentificationNumber;
     private String deadManIdentificationIssuanceDate;
     private String deadManIdentificationIssuancePlace;
@@ -36,13 +39,13 @@ public class DeathExtractFullResponse {
     private String deadManDeadTime;
     private String deadManDeadPlace;
     private String deadManDeadReason;
-    private String deathNoticeType;
+    private List<DeathNoticeTypeResponse> deathNoticeType;
     private String deathNoticeNumber;
     private String deathNoticeDate;
     private String deathNoticeIssuancePlace;
     private String petitionerFullName;
     private String petitionerRelationship;
-    private String petitionerIdentificationType;
+    private List<IdentificationTypeResponse> petitionerIdentificationType;
     private String petitionerIdentificationNumber;
     private String petitionerIdentificationIssuanceDate;
     private String petitionerIdentificationIssuancePlace;
