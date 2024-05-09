@@ -317,6 +317,7 @@ public class ProjectService implements IProjectService {
         long countExtractShort = 0L;
         long countExtractFull = 0L;
 
+        //  Khởi tạo danh sách các đối tượng đã cập nhật để lưu vào db
         List<ParentsChildrenExtractShort> parentsChildrenExtractShortsModified = new ArrayList<>();
         List<ParentsChildrenExtractFull> parentsChildrenExtractFullsModified = new ArrayList<>();
         List<BirthExtractShort> birthExtractShortsModified = new ArrayList<>();
@@ -328,6 +329,26 @@ public class ProjectService implements IProjectService {
         List<DeathExtractShort> deathExtractShortsModified = new ArrayList<>();
         List<DeathExtractFull> deathExtractFullsModified = new ArrayList<>();
 
+        Map<Long, ParentsChildrenExtractFull> parentsChildrenExtractFullMap = parentsChildrenExtractFulls
+                .stream()
+                .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
+        Map<Long, BirthExtractFull> birthExtractFullMap = birthExtractFulls
+                .stream()
+                .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
+        Map<Long, MarryExtractFull> marryExtractFullMap = marryExtractFulls
+                .stream()
+                .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
+        Map<Long, WedlockExtractFull> wedlockExtractFullMap = wedlockExtractFulls
+                .stream()
+                .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
+        Map<Long, DeathExtractFull> deathExtractFullMap = deathExtractFulls
+                .stream()
+                .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
         // Khởi tạo AccessPoint để lưu vào các biểu mẫu
         AccessPoint accessPoint = new AccessPoint()
                 .setProject(project)
@@ -336,6 +357,9 @@ public class ProjectService implements IProjectService {
                 .setCountExtractFull(countExtractFull)
                 .setTotalCount(totalCount);
         accessPointRepository.save(accessPoint);
+
+        // Sắp xếp ngẫu nhiên danh sách users
+        Collections.shuffle(users);
 
         int totalUsers = users.size();
         long[] countExtractPerUser = new long[totalUsers];
@@ -353,185 +377,660 @@ public class ProjectService implements IProjectService {
         long[] countExtractShortPerUser = new long[totalUsers];
         long[] countExtractFullPerUser = new long[totalUsers];
 
-        int userIndex = 0; // Index của người dùng hiện tại
-        long formsToAssign = countExtractPerUser[userIndex]; // Số lượng biểu mẫu cần phân phối cho người dùng hiện tại
+        int userIndexShort = 0; // Index của user trường ngắn
+        int userIndexFull = userIndexShort + 1; // Index của user trường dài
 
-        // Phân phối ParentsChildrenExtractShort
+        long formsToAssignShort = countExtractPerUser[userIndexShort]; // Số lượng biểu mẫu cần phân phối cho user trường ngắn hiện tại
+        long formsToAssignFull = countExtractPerUser[userIndexFull]; // Số lượng biểu mẫu cần phân phối cho user trường dài hiện tại
+        
+        long totalCountRemaining = totalCount / 2;
+
+        // Phân phối ParentsChildrenExtractShort và ParentsChildrenExtractFull
         for (ParentsChildrenExtractShort item : parentsChildrenExtractShorts) {
-            if (formsToAssign == 0 && userIndex + 1 < totalUsers) {
-                userIndex++;
-                formsToAssign = countExtractPerUser[userIndex];
+            if (totalCountRemaining == 0) {
+                break;
             }
+            
+            totalCountRemaining--;
 
-            if (formsToAssign > 0) {
+            if (formsToAssignShort > 0 && formsToAssignFull > 0) {
                 item.setAccessPoint(accessPoint);
-                item.setImporter(users.get(userIndex));
+                item.setImporter(users.get(userIndexShort));
                 parentsChildrenExtractShortsModified.add(item);
 
-                formsToAssign--;
-                countExtractShortPerUser[userIndex]++;
+                ParentsChildrenExtractFull parentsChildrenExtractFull = parentsChildrenExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                parentsChildrenExtractFull.setAccessPoint(accessPoint);
+                parentsChildrenExtractFull.setImporter(users.get(userIndexFull));
+                parentsChildrenExtractFullsModified.add(parentsChildrenExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
                 countExtractShort++;
-            }
-        }
 
-        // Phân phối ParentsChildrenExtractFull
-        for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
-            if (formsToAssign == 0 && userIndex + 1 < totalUsers) {
-                userIndex++;
-                formsToAssign = countExtractPerUser[userIndex];
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
             }
 
-            if (formsToAssign > 0) {
+            if (formsToAssignShort > 0 && formsToAssignFull == 0) {
+                while (countExtractPerUser[userIndexFull] == 0 && userIndexFull + 1 < totalUsers) {
+                    userIndexFull++;
+                }
+
+                formsToAssignFull = countExtractPerUser[userIndexFull];
+
                 item.setAccessPoint(accessPoint);
-                item.setImporter(users.get(userIndex));
-                parentsChildrenExtractFullsModified.add(item);
+                item.setImporter(users.get(userIndexShort));
+                parentsChildrenExtractShortsModified.add(item);
 
-                formsToAssign--;
-                countExtractFullPerUser[userIndex]++;
+                ParentsChildrenExtractFull parentsChildrenExtractFull = parentsChildrenExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                parentsChildrenExtractFull.setAccessPoint(accessPoint);
+                parentsChildrenExtractFull.setImporter(users.get(userIndexFull));
+                parentsChildrenExtractFullsModified.add(parentsChildrenExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
+            }
+            
+            if (formsToAssignShort == 0 && formsToAssignFull > 0) {
+                while (countExtractPerUser[userIndexShort] == 0 && userIndexShort + 1 < totalUsers) {
+                    userIndexShort++;
+                }
+
+                formsToAssignShort = countExtractPerUser[userIndexShort];
+                
+                item.setAccessPoint(accessPoint);
+                item.setImporter(users.get(userIndexShort));
+                parentsChildrenExtractShortsModified.add(item);
+
+                ParentsChildrenExtractFull parentsChildrenExtractFull = parentsChildrenExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                parentsChildrenExtractFull.setAccessPoint(accessPoint);
+                parentsChildrenExtractFull.setImporter(users.get(userIndexFull));
+                parentsChildrenExtractFullsModified.add(parentsChildrenExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
+            }
+
+            if (formsToAssignShort == 0 && formsToAssignFull == 0) {
+                while (countExtractPerUser[userIndexShort] == 0 && userIndexShort + 1 < totalUsers) {
+                    userIndexShort++;
+                }
+
+                while (countExtractPerUser[userIndexFull] == 0 || userIndexShort == userIndexFull) {
+                    userIndexFull++;
+                }
+
+                formsToAssignShort = countExtractPerUser[userIndexShort];
+                formsToAssignFull = countExtractPerUser[userIndexFull];
+
+                item.setAccessPoint(accessPoint);
+                item.setImporter(users.get(userIndexShort));
+                parentsChildrenExtractShortsModified.add(item);
+
+                ParentsChildrenExtractFull parentsChildrenExtractFull = parentsChildrenExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                parentsChildrenExtractFull.setAccessPoint(accessPoint);
+                parentsChildrenExtractFull.setImporter(users.get(userIndexFull));
+                parentsChildrenExtractFullsModified.add(parentsChildrenExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
                 countExtractFull++;
             }
         }
 
-        // Phân phối BirthExtractShort
+        // Phân phối BirthExtractShort và BirthExtractFull
         for (BirthExtractShort item : birthExtractShorts) {
-            if (formsToAssign == 0 && userIndex + 1 < totalUsers) {
-                userIndex++;
-                formsToAssign = countExtractPerUser[userIndex];
+            if (totalCountRemaining == 0) {
+                break;
             }
 
-            if (formsToAssign > 0) {
+            totalCountRemaining--;
+
+            if (formsToAssignShort > 0 && formsToAssignFull > 0) {
                 item.setAccessPoint(accessPoint);
-                item.setImporter(users.get(userIndex));
+                item.setImporter(users.get(userIndexShort));
                 birthExtractShortsModified.add(item);
 
-                formsToAssign--;
-                countExtractShortPerUser[userIndex]++;
+                BirthExtractFull birthExtractFull = birthExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                birthExtractFull.setAccessPoint(accessPoint);
+                birthExtractFull.setImporter(users.get(userIndexFull));
+                birthExtractFullsModified.add(birthExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
                 countExtractShort++;
-            }
-        }
 
-        // Phân phối BirthExtractFull
-        for (BirthExtractFull item : birthExtractFulls) {
-            if (formsToAssign == 0 && userIndex + 1 < totalUsers) {
-                userIndex++;
-                formsToAssign = countExtractPerUser[userIndex];
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
             }
 
-            if (formsToAssign > 0) {
+            if (formsToAssignShort > 0 && formsToAssignFull == 0) {
+                while (countExtractPerUser[userIndexFull] == 0 && userIndexFull + 1 < totalUsers) {
+                    userIndexFull++;
+                }
+
+                formsToAssignFull = countExtractPerUser[userIndexFull];
+
                 item.setAccessPoint(accessPoint);
-                item.setImporter(users.get(userIndex));
-                birthExtractFullsModified.add(item);
+                item.setImporter(users.get(userIndexShort));
+                birthExtractShortsModified.add(item);
 
-                formsToAssign--;
-                countExtractFullPerUser[userIndex]++;
+                BirthExtractFull birthExtractFull = birthExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                birthExtractFull.setAccessPoint(accessPoint);
+                birthExtractFull.setImporter(users.get(userIndexFull));
+                birthExtractFullsModified.add(birthExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
+            }
+            
+            if (formsToAssignShort == 0 && formsToAssignFull > 0) {
+                while (countExtractPerUser[userIndexShort] == 0 && userIndexShort + 1 < totalUsers) {
+                    userIndexShort++;
+                }
+
+                formsToAssignShort = countExtractPerUser[userIndexShort];
+
+                item.setAccessPoint(accessPoint);
+                item.setImporter(users.get(userIndexShort));
+                birthExtractShortsModified.add(item);
+
+                BirthExtractFull birthExtractFull = birthExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                birthExtractFull.setAccessPoint(accessPoint);
+                birthExtractFull.setImporter(users.get(userIndexFull));
+                birthExtractFullsModified.add(birthExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
+            }
+
+            if (formsToAssignShort == 0 && formsToAssignFull == 0) {
+                while (countExtractPerUser[userIndexShort] == 0 && userIndexShort + 1 < totalUsers) {
+                    userIndexShort++;
+                }
+
+                while (countExtractPerUser[userIndexFull] == 0 || userIndexShort == userIndexFull) {
+                    userIndexFull++;
+                }
+
+                formsToAssignShort = countExtractPerUser[userIndexShort];
+                formsToAssignFull = countExtractPerUser[userIndexFull];
+
+                item.setAccessPoint(accessPoint);
+                item.setImporter(users.get(userIndexShort));
+                birthExtractShortsModified.add(item);
+
+                BirthExtractFull birthExtractFull = birthExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                birthExtractFull.setAccessPoint(accessPoint);
+                birthExtractFull.setImporter(users.get(userIndexFull));
+                birthExtractFullsModified.add(birthExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
                 countExtractFull++;
             }
         }
 
-        // Phân phối MarryExtractShort
+        // Phân phối MarryExtractShort và MarryExtractFull
         for (MarryExtractShort item : marryExtractShorts) {
-            if (formsToAssign == 0 && userIndex + 1 < totalUsers) {
-                userIndex++;
-                formsToAssign = countExtractPerUser[userIndex];
+            if (totalCountRemaining == 0) {
+                break;
             }
 
-            if (formsToAssign > 0) {
+            totalCountRemaining--;
+
+            if (formsToAssignShort > 0 && formsToAssignFull > 0) {
                 item.setAccessPoint(accessPoint);
-                item.setImporter(users.get(userIndex));
+                item.setImporter(users.get(userIndexShort));
                 marryExtractShortsModified.add(item);
 
-                formsToAssign--;
-                countExtractShortPerUser[userIndex]++;
+                MarryExtractFull marryExtractFull = marryExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                marryExtractFull.setAccessPoint(accessPoint);
+                marryExtractFull.setImporter(users.get(userIndexFull));
+                marryExtractFullsModified.add(marryExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
                 countExtractShort++;
-            }
-        }
 
-        // Phân phối MarryExtractFull
-        for (MarryExtractFull item : marryExtractFulls) {
-            if (formsToAssign == 0 && userIndex + 1 < totalUsers) {
-                userIndex++;
-                formsToAssign = countExtractPerUser[userIndex];
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
             }
 
-            if (formsToAssign > 0) {
+            if (formsToAssignShort > 0 && formsToAssignFull == 0) {
+                while (countExtractPerUser[userIndexFull] == 0 && userIndexFull + 1 < totalUsers) {
+                    userIndexFull++;
+                }
+
+                formsToAssignFull = countExtractPerUser[userIndexFull];
+
                 item.setAccessPoint(accessPoint);
-                item.setImporter(users.get(userIndex));
-                marryExtractFullsModified.add(item);
+                item.setImporter(users.get(userIndexShort));
+                marryExtractShortsModified.add(item);
 
-                formsToAssign--;
-                countExtractFullPerUser[userIndex]++;
+                MarryExtractFull marryExtractFull = marryExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                marryExtractFull.setAccessPoint(accessPoint);
+                marryExtractFull.setImporter(users.get(userIndexFull));
+                marryExtractFullsModified.add(marryExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
+            }
+            
+            if (formsToAssignShort == 0 && formsToAssignFull > 0) {
+                while (countExtractPerUser[userIndexShort] == 0 && userIndexShort + 1 < totalUsers) {
+                    userIndexShort++;
+                }
+
+                formsToAssignShort = countExtractPerUser[userIndexShort];
+                
+                item.setAccessPoint(accessPoint);
+                item.setImporter(users.get(userIndexShort));
+                marryExtractShortsModified.add(item);
+
+                MarryExtractFull marryExtractFull = marryExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                marryExtractFull.setAccessPoint(accessPoint);
+                marryExtractFull.setImporter(users.get(userIndexFull));
+                marryExtractFullsModified.add(marryExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
+            }
+            
+            if (formsToAssignShort == 0 && formsToAssignFull == 0) {
+                while (countExtractPerUser[userIndexShort] == 0 && userIndexShort + 1 < totalUsers) {
+                    userIndexShort++;
+                }
+
+                while (countExtractPerUser[userIndexFull] == 0 || userIndexShort == userIndexFull) {
+                    userIndexFull++;
+                }
+
+                formsToAssignShort = countExtractPerUser[userIndexShort];
+                formsToAssignFull = countExtractPerUser[userIndexFull];
+
+                item.setAccessPoint(accessPoint);
+                item.setImporter(users.get(userIndexShort));
+                marryExtractShortsModified.add(item);
+
+                MarryExtractFull marryExtractFull = marryExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                marryExtractFull.setAccessPoint(accessPoint);
+                marryExtractFull.setImporter(users.get(userIndexFull));
+                marryExtractFullsModified.add(marryExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
                 countExtractFull++;
             }
         }
 
-        // Phân phối WedlockExtractShort
+        // Phân phối WedlockExtractShort và WedlockExtractFull
         for (WedlockExtractShort item : wedlockExtractShorts) {
-            if (formsToAssign == 0 && userIndex + 1 < totalUsers) {
-                userIndex++;
-                formsToAssign = countExtractPerUser[userIndex];
+            if (totalCountRemaining == 0) {
+                break;
             }
 
-            if (formsToAssign > 0) {
+            totalCountRemaining--;
+
+            if (formsToAssignShort > 0 && formsToAssignFull > 0) {
                 item.setAccessPoint(accessPoint);
-                item.setImporter(users.get(userIndex));
+                item.setImporter(users.get(userIndexShort));
                 wedlockExtractShortsModified.add(item);
 
-                formsToAssign--;
-                countExtractShortPerUser[userIndex]++;
+                WedlockExtractFull wedlockExtractFull = wedlockExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                wedlockExtractFull.setAccessPoint(accessPoint);
+                wedlockExtractFull.setImporter(users.get(userIndexFull));
+                wedlockExtractFullsModified.add(wedlockExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
                 countExtractShort++;
-            }
-        }
 
-        // Phân phối WedlockExtractFull
-        for (WedlockExtractFull item : wedlockExtractFulls) {
-            if (formsToAssign == 0 && userIndex + 1 < totalUsers) {
-                userIndex++;
-                formsToAssign = countExtractPerUser[userIndex];
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
             }
 
-            if (formsToAssign > 0) {
+            if (formsToAssignShort > 0 && formsToAssignFull == 0) {
+                while (countExtractPerUser[userIndexFull] == 0 && userIndexFull + 1 < totalUsers) {
+                    userIndexFull++;
+                }
+
+                formsToAssignFull = countExtractPerUser[userIndexFull];
+
                 item.setAccessPoint(accessPoint);
-                item.setImporter(users.get(userIndex));
-                wedlockExtractFullsModified.add(item);
+                item.setImporter(users.get(userIndexShort));
+                wedlockExtractShortsModified.add(item);
 
-                formsToAssign--;
-                countExtractFullPerUser[userIndex]++;
+                WedlockExtractFull wedlockExtractFull = wedlockExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                wedlockExtractFull.setAccessPoint(accessPoint);
+                wedlockExtractFull.setImporter(users.get(userIndexFull));
+                wedlockExtractFullsModified.add(wedlockExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
+            }
+
+            if (formsToAssignShort == 0 && formsToAssignFull > 0) {
+                while (countExtractPerUser[userIndexShort] == 0 && userIndexShort + 1 < totalUsers) {
+                    userIndexShort++;
+                }
+
+                formsToAssignShort = countExtractPerUser[userIndexShort];
+
+                item.setAccessPoint(accessPoint);
+                item.setImporter(users.get(userIndexShort));
+                wedlockExtractShortsModified.add(item);
+
+                WedlockExtractFull wedlockExtractFull = wedlockExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                wedlockExtractFull.setAccessPoint(accessPoint);
+                wedlockExtractFull.setImporter(users.get(userIndexFull));
+                wedlockExtractFullsModified.add(wedlockExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
+            }
+
+            if (formsToAssignShort == 0 && formsToAssignFull == 0) {
+                while (countExtractPerUser[userIndexShort] == 0 && userIndexShort + 1 < totalUsers) {
+                    userIndexShort++;
+                }
+
+                while (countExtractPerUser[userIndexFull] == 0 || userIndexShort == userIndexFull) {
+                    userIndexFull++;
+                }
+
+                formsToAssignShort = countExtractPerUser[userIndexShort];
+                formsToAssignFull = countExtractPerUser[userIndexFull];
+
+                item.setAccessPoint(accessPoint);
+                item.setImporter(users.get(userIndexShort));
+                wedlockExtractShortsModified.add(item);
+
+                WedlockExtractFull wedlockExtractFull = wedlockExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                wedlockExtractFull.setAccessPoint(accessPoint);
+                wedlockExtractFull.setImporter(users.get(userIndexFull));
+                wedlockExtractFullsModified.add(wedlockExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
                 countExtractFull++;
             }
         }
 
-        // Phân phối DeathExtractShort
+        // Phân phối DeathExtractShort và DeathExtractFull
         for (DeathExtractShort item : deathExtractShorts) {
-            if (formsToAssign == 0 && userIndex + 1 < totalUsers) {
-                userIndex++;
-                formsToAssign = countExtractPerUser[userIndex];
+            if (totalCountRemaining == 0) {
+                break;
             }
 
-            if (formsToAssign > 0) {
+            totalCountRemaining--;
+
+            if (formsToAssignShort > 0 && formsToAssignFull > 0) {
                 item.setAccessPoint(accessPoint);
-                item.setImporter(users.get(userIndex));
+                item.setImporter(users.get(userIndexShort));
                 deathExtractShortsModified.add(item);
 
-                formsToAssign--;
-                countExtractShortPerUser[userIndex]++;
+                DeathExtractFull deathExtractFull = deathExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                deathExtractFull.setAccessPoint(accessPoint);
+                deathExtractFull.setImporter(users.get(userIndexFull));
+                deathExtractFullsModified.add(deathExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
                 countExtractShort++;
-            }
-        }
 
-        // Phân phối DeathExtractFull
-        for (DeathExtractFull item : deathExtractFulls) {
-            if (formsToAssign == 0 && userIndex + 1 < totalUsers) {
-                userIndex++;
-                formsToAssign = countExtractPerUser[userIndex];
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
             }
 
-            if (formsToAssign > 0) {
+            if (formsToAssignShort > 0 && formsToAssignFull == 0) {
+                while (countExtractPerUser[userIndexFull] == 0 && userIndexFull + 1 < totalUsers) {
+                    userIndexFull++;
+                }
+
+                formsToAssignFull = countExtractPerUser[userIndexFull];
+
                 item.setAccessPoint(accessPoint);
-                item.setImporter(users.get(userIndex));
-                deathExtractFullsModified.add(item);
+                item.setImporter(users.get(userIndexShort));
+                deathExtractShortsModified.add(item);
 
-                formsToAssign--;
-                countExtractFullPerUser[userIndex]++;
+                DeathExtractFull deathExtractFull = deathExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                deathExtractFull.setAccessPoint(accessPoint);
+                deathExtractFull.setImporter(users.get(userIndexFull));
+                deathExtractFullsModified.add(deathExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
+            }
+
+            if (formsToAssignShort == 0 && formsToAssignFull > 0) {
+                while (countExtractPerUser[userIndexShort] == 0 && userIndexShort + 1 < totalUsers) {
+                    userIndexShort++;
+                }
+
+                formsToAssignShort = countExtractPerUser[userIndexShort];
+
+                item.setAccessPoint(accessPoint);
+                item.setImporter(users.get(userIndexShort));
+                deathExtractShortsModified.add(item);
+
+                DeathExtractFull deathExtractFull = deathExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                deathExtractFull.setAccessPoint(accessPoint);
+                deathExtractFull.setImporter(users.get(userIndexFull));
+                deathExtractFullsModified.add(deathExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
+                countExtractFull++;
+
+                continue;
+            }
+
+            if (formsToAssignShort == 0 && formsToAssignFull == 0) {
+                while (countExtractPerUser[userIndexShort] == 0 && userIndexShort + 1 < totalUsers) {
+                    userIndexShort++;
+                }
+
+                while (countExtractPerUser[userIndexFull] == 0 || userIndexShort == userIndexFull) {
+                    userIndexFull++;
+                }
+
+                formsToAssignShort = countExtractPerUser[userIndexShort];
+                formsToAssignFull = countExtractPerUser[userIndexFull];
+
+                item.setAccessPoint(accessPoint);
+                item.setImporter(users.get(userIndexShort));
+                deathExtractShortsModified.add(item);
+
+                DeathExtractFull deathExtractFull = deathExtractFullMap.get(item.getProjectNumberBookFile().getId());
+                deathExtractFull.setAccessPoint(accessPoint);
+                deathExtractFull.setImporter(users.get(userIndexFull));
+                deathExtractFullsModified.add(deathExtractFull);
+
+                formsToAssignShort--;
+                countExtractPerUser[userIndexShort]--;
+
+                formsToAssignFull--;
+                countExtractPerUser[userIndexFull]--;
+
+                countExtractShortPerUser[userIndexShort]++;
+                countExtractShort++;
+
+                countExtractFullPerUser[userIndexFull]++;
                 countExtractFull++;
             }
         }
