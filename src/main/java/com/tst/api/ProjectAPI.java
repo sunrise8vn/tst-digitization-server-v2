@@ -301,6 +301,10 @@ public class ProjectAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
+        if (assignExtractFormDTO.getUsers().size() < 2) {
+            throw new DataInputException("Số người dùng được phân phối ít nhất là 2");
+        }
+
         List<User> users = new ArrayList<>();
 
         for (String username : assignExtractFormDTO.getUsers()) {

@@ -111,6 +111,7 @@ public class AccessPointService implements IAccessPointService {
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
+            item.setImportedAt(null);
             item.setAccessPoint(null);
             parentsChildrenExtractShortsModified.add(item);
 
@@ -131,6 +132,7 @@ public class AccessPointService implements IAccessPointService {
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
+            item.setImportedAt(null);
             item.setAccessPoint(null);
             parentsChildrenExtractFullsModified.add(item);
 
@@ -151,6 +153,7 @@ public class AccessPointService implements IAccessPointService {
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
+            item.setImportedAt(null);
             item.setAccessPoint(null);
             birthExtractShortsModified.add(item);
 
@@ -171,6 +174,7 @@ public class AccessPointService implements IAccessPointService {
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
+            item.setImportedAt(null);
             item.setAccessPoint(null);
             birthExtractFullsModified.add(item);
 
@@ -191,6 +195,7 @@ public class AccessPointService implements IAccessPointService {
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
+            item.setImportedAt(null);
             item.setAccessPoint(null);
             marryExtractShortsModified.add(item);
 
@@ -211,6 +216,7 @@ public class AccessPointService implements IAccessPointService {
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
+            item.setImportedAt(null);
             item.setAccessPoint(null);
             marryExtractFullsModified.add(item);
 
@@ -231,6 +237,7 @@ public class AccessPointService implements IAccessPointService {
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
+            item.setImportedAt(null);
             item.setAccessPoint(null);
             wedlockExtractShortsModified.add(item);
 
@@ -251,6 +258,7 @@ public class AccessPointService implements IAccessPointService {
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
+            item.setImportedAt(null);
             item.setAccessPoint(null);
             wedlockExtractFullsModified.add(item);
 
@@ -271,6 +279,7 @@ public class AccessPointService implements IAccessPointService {
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
+            item.setImportedAt(null);
             item.setAccessPoint(null);
             deathExtractShortsModified.add(item);
 
@@ -291,6 +300,7 @@ public class AccessPointService implements IAccessPointService {
 
             item.setStatus(EInputStatus.NEW);
             item.setImporter(null);
+            item.setImportedAt(null);
             item.setAccessPoint(null);
             deathExtractFullsModified.add(item);
 

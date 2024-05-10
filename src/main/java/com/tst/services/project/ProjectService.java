@@ -9,10 +9,9 @@ import com.tst.models.entities.extractShort.*;
 import com.tst.models.entities.locationRegion.LocationDistrict;
 import com.tst.models.entities.locationRegion.LocationProvince;
 import com.tst.models.entities.locationRegion.LocationWard;
-import com.tst.models.enums.EAccessPointStatus;
-import com.tst.models.enums.EInputStatus;
-import com.tst.models.enums.EPaperSize;
-import com.tst.models.enums.EProjectNumberBookStatus;
+import com.tst.models.enums.*;
+import com.tst.models.responses.extractFull.ExtractFullResponse;
+import com.tst.models.responses.extractShort.ExtractShortResponse;
 import com.tst.repositories.*;
 import com.tst.repositories.extractFull.*;
 import com.tst.repositories.extractShort.*;
@@ -67,6 +66,662 @@ public class ProjectService implements IProjectService {
     @Override
     public Optional<Project> findById(Long id) {
         return projectRepository.findById(id);
+    }
+
+    @Override
+    public List<ExtractShortResponse> findAllNewExtractShortResponse(Project project, User importer) {
+        List<ExtractShortResponse> extractShortResponses = new ArrayList<>();
+
+        List<ParentsChildrenExtractShort> parentsChildrenExtractShorts = parentsChildrenExtractShortRepository.findByProjectAndImporterAndStatusNew(project, importer);
+
+        List<BirthExtractShort> birthExtractShorts = birthExtractShortRepository.findByProjectAndImporterAndStatusNew(project, importer);
+
+        List<MarryExtractShort> marryExtractShorts = marryExtractShortRepository.findByProjectAndImporterAndStatusNew(project, importer);
+
+        List<WedlockExtractShort> wedlockExtractShorts = wedlockExtractShortRepository.findByProjectAndImporterAndStatusNew(project, importer);
+
+        List<DeathExtractShort> deathExtractShorts = deathExtractShortRepository.findByProjectAndImporterAndStatusNew(project, importer);
+
+        for (ParentsChildrenExtractShort item : parentsChildrenExtractShorts) {
+            String inputStatus = "Chưa nhập";
+            String checkedStatus = "";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        for (BirthExtractShort item : birthExtractShorts) {
+            String inputStatus = "Chưa nhập";
+            String checkedStatus = "";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        for (MarryExtractShort item : marryExtractShorts) {
+            String inputStatus = "Chưa nhập";
+            String checkedStatus = "";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        for (WedlockExtractShort item : wedlockExtractShorts) {
+            String inputStatus = "Chưa nhập";
+            String checkedStatus = "";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        for (DeathExtractShort item : deathExtractShorts) {
+            String inputStatus = "Chưa nhập";
+            String checkedStatus = "";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        return extractShortResponses;
+    }
+
+    @Override
+    public List<ExtractFullResponse> findAllNewExtractFullResponse(Project project, User importer) {
+        List<ExtractFullResponse> extractFullResponses = new ArrayList<>();
+
+        List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findByProjectAndImporterAndStatusNew(project, importer);
+
+        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findByProjectAndImporterAndStatusNew(project, importer);
+
+        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findByProjectAndImporterAndStatusNew(project, importer);
+
+        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findByProjectAndImporterAndStatusNew(project, importer);
+
+        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findByProjectAndImporterAndStatusNew(project, importer);
+
+        for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
+            String inputStatus = "Chưa nhập";
+            String checkedStatus = "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (BirthExtractFull item : birthExtractFulls) {
+            String inputStatus = "Chưa nhập";
+            String checkedStatus = "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (MarryExtractFull item : marryExtractFulls) {
+            String inputStatus = "Chưa nhập";
+            String checkedStatus = "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (WedlockExtractFull item : wedlockExtractFulls) {
+            String inputStatus = "Chưa nhập";
+            String checkedStatus = "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (DeathExtractFull item : deathExtractFulls) {
+            String inputStatus = "Chưa nhập";
+            String checkedStatus = "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        return extractFullResponses;
+    }
+
+    @Override
+    public List<ExtractShortResponse> findAllLaterExtractShortResponse(Project project, User importer) {
+        List<ExtractShortResponse> extractShortResponses = new ArrayList<>();
+
+        List<ParentsChildrenExtractShort> parentsChildrenExtractShorts = parentsChildrenExtractShortRepository.findByProjectAndImporterAndStatusLater(project, importer);
+
+        List<BirthExtractShort> birthExtractShorts = birthExtractShortRepository.findByProjectAndImporterAndStatusLater(project, importer);
+
+        List<MarryExtractShort> marryExtractShorts = marryExtractShortRepository.findByProjectAndImporterAndStatusLater(project, importer);
+
+        List<WedlockExtractShort> wedlockExtractShorts = wedlockExtractShortRepository.findByProjectAndImporterAndStatusLater(project, importer);
+
+        List<DeathExtractShort> deathExtractShorts = deathExtractShortRepository.findByProjectAndImporterAndStatusLater(project, importer);
+
+
+        for (ParentsChildrenExtractShort item : parentsChildrenExtractShorts) {
+            String inputStatus = "Xử lý sau";
+            String checkedStatus = "";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        for (BirthExtractShort item : birthExtractShorts) {
+            String inputStatus = "Xử lý sau";
+            String checkedStatus = "";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        for (MarryExtractShort item : marryExtractShorts) {
+            String inputStatus = "Xử lý sau";
+            String checkedStatus = "";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        for (WedlockExtractShort item : wedlockExtractShorts) {
+            String inputStatus = "Xử lý sau";
+            String checkedStatus = "";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        for (DeathExtractShort item : deathExtractShorts) {
+            String inputStatus = "Xử lý sau";
+            String checkedStatus = "";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        return extractShortResponses;
+    }
+
+    @Override
+    public List<ExtractFullResponse> findAllLaterExtractFullResponse(Project project, User importer) {
+        List<ExtractFullResponse> extractFullResponses = new ArrayList<>();
+
+        List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findByProjectAndImporterAndStatusLater(project, importer);
+
+        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findByProjectAndImporterAndStatusLater(project, importer);
+
+        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findByProjectAndImporterAndStatusLater(project, importer);
+
+        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findByProjectAndImporterAndStatusLater(project, importer);
+
+        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findByProjectAndImporterAndStatusLater(project, importer);
+
+
+        for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
+            String inputStatus = "Xử lý sau";
+            String checkedStatus = "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (BirthExtractFull item : birthExtractFulls) {
+            String inputStatus = "Xử lý sau";
+            String checkedStatus = "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (MarryExtractFull item : marryExtractFulls) {
+            String inputStatus = "Xử lý sau";
+            String checkedStatus = "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (WedlockExtractFull item : wedlockExtractFulls) {
+            String inputStatus = "Xử lý sau";
+            String checkedStatus = "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (DeathExtractFull item : deathExtractFulls) {
+            String inputStatus = "Xử lý sau";
+            String checkedStatus = "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        return extractFullResponses;
+    }
+
+    @Override
+    public List<ExtractShortResponse> findAllImportedExtractShortResponse(Project project, User importer) {
+        List<ExtractShortResponse> extractShortResponses = new ArrayList<>();
+
+        List<ParentsChildrenExtractShort> parentsChildrenExtractShorts = parentsChildrenExtractShortRepository.findByProjectAndImporterAndStatusImported(project, importer);
+
+        List<BirthExtractShort> birthExtractShorts = birthExtractShortRepository.findByProjectAndImporterAndStatusImported(project, importer);
+
+        List<MarryExtractShort> marryExtractShorts = marryExtractShortRepository.findByProjectAndImporterAndStatusImported(project, importer);
+
+        List<WedlockExtractShort> wedlockExtractShorts = wedlockExtractShortRepository.findByProjectAndImporterAndStatusImported(project, importer);
+
+        List<DeathExtractShort> deathExtractShorts = deathExtractShortRepository.findByProjectAndImporterAndStatusImported(project, importer);
+
+
+        for (ParentsChildrenExtractShort item : parentsChildrenExtractShorts) {
+            String inputStatus = "Đã nhập";
+            String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
+                    ? ""
+                    : item.getStatus() == EInputStatus.MATCHING
+                    ? "Đúng"
+                    : "Sai";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        for (BirthExtractShort item : birthExtractShorts) {
+            String inputStatus = "Đã nhập";
+            String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
+                    ? ""
+                    : item.getStatus() == EInputStatus.MATCHING
+                    ? "Đúng"
+                    : "Sai";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        for (MarryExtractShort item : marryExtractShorts) {
+            String inputStatus = "Đã nhập";
+            String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
+                    ? ""
+                    : item.getStatus() == EInputStatus.MATCHING
+                    ? "Đúng"
+                    : "Sai";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        for (WedlockExtractShort item : wedlockExtractShorts) {
+            String inputStatus = "Đã nhập";
+            String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
+                    ? ""
+                    : item.getStatus() == EInputStatus.MATCHING
+                    ? "Đúng"
+                    : "Sai";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        for (DeathExtractShort item : deathExtractShorts) {
+            String inputStatus = "Đã nhập";
+            String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
+                    ? ""
+                    : item.getStatus() == EInputStatus.MATCHING
+                    ? "Đúng"
+                    : "Sai";
+
+            ExtractShortResponse extractShortResponse = new ExtractShortResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractShortResponses.add(extractShortResponse);
+        }
+
+        return extractShortResponses;
+    }
+
+    @Override
+    public List<ExtractFullResponse> findAllImportedExtractFullResponse(Project project, User importer) {
+        List<ExtractFullResponse> extractFullResponses = new ArrayList<>();
+
+        List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findByProjectAndImporterAndStatusImported(project, importer);
+
+        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findByProjectAndImporterAndStatusImported(project, importer);
+
+        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findByProjectAndImporterAndStatusImported(project, importer);
+
+        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findByProjectAndImporterAndStatusImported(project, importer);
+
+        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findByProjectAndImporterAndStatusImported(project, importer);
+
+
+        for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
+            String inputStatus = "Đã nhập";
+            String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
+                    ? ""
+                    : item.getStatus() == EInputStatus.MATCHING
+                    ? "Đúng"
+                    : "Sai";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (BirthExtractFull item : birthExtractFulls) {
+            String inputStatus = "Đã nhập";
+            String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
+                    ? ""
+                    : item.getStatus() == EInputStatus.MATCHING
+                    ? "Đúng"
+                    : "Sai";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (MarryExtractFull item : marryExtractFulls) {
+            String inputStatus = "Đã nhập";
+            String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
+                    ? ""
+                    : item.getStatus() == EInputStatus.MATCHING
+                    ? "Đúng"
+                    : "Sai";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (WedlockExtractFull item : wedlockExtractFulls) {
+            String inputStatus = "Đã nhập";
+            String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
+                    ? ""
+                    : item.getStatus() == EInputStatus.MATCHING
+                    ? "Đúng"
+                    : "Sai";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (DeathExtractFull item : deathExtractFulls) {
+            String inputStatus = "Đã nhập";
+            String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
+                    ? ""
+                    : item.getStatus() == EInputStatus.MATCHING
+                    ? "Đúng"
+                    : "Sai";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(inputStatus)
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(checkedStatus)
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        return extractFullResponses;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.tst.repositories.extractShort;
 
 import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.User;
 import com.tst.models.entities.extractShort.MarryExtractShort;
 import com.tst.models.enums.EInputStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,9 +13,46 @@ import java.util.Optional;
 
 public interface MarryExtractShortRepository extends JpaRepository<MarryExtractShort, Long> {
 
+    Optional<MarryExtractShort> findByIdAndStatus(Long id, EInputStatus status);
+
     List<MarryExtractShort> findByProjectAndImporterIsNull(Project project);
 
     List<MarryExtractShort> findByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+
+    @Query("SELECT mes " +
+            "FROM MarryExtractShort AS mes " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON mes.projectNumberBookFile = pnbf " +
+            "WHERE mes.project = :project " +
+            "AND mes.importer = :importer " +
+            "AND mes.status = 'NEW'"
+    )
+    List<MarryExtractShort> findByProjectAndImporterAndStatusNew(Project project, User importer);
+
+
+    @Query("SELECT mes " +
+            "FROM MarryExtractShort AS mes " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON mes.projectNumberBookFile = pnbf " +
+            "WHERE mes.project = :project " +
+            "AND mes.importer = :importer " +
+            "AND mes.status = 'LATER_PROCESSING'"
+    )
+    List<MarryExtractShort> findByProjectAndImporterAndStatusLater(Project project, User importer);
+
+
+    @Query("SELECT mes " +
+            "FROM MarryExtractShort AS mes " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON mes.projectNumberBookFile = pnbf " +
+            "WHERE mes.project = :project " +
+            "AND mes.importer = :importer " +
+            "AND (mes.status = 'IMPORTED' " +
+            "OR mes.status = 'MATCHING' " +
+            "OR mes.status = 'NOT_MATCHING')"
+    )
+    List<MarryExtractShort> findByProjectAndImporterAndStatusImported(Project project, User importer);
 
 
     @Query("SELECT mes " +
@@ -28,8 +66,5 @@ public interface MarryExtractShortRepository extends JpaRepository<MarryExtractS
             "ORDER BY mes.id DESC"
     )
     List<MarryExtractShort> findMarrySameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
-
-
-    Optional<MarryExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
 }

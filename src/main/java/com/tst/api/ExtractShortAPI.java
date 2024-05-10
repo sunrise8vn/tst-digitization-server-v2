@@ -3,6 +3,7 @@ package com.tst.api;
 import com.tst.exceptions.DataNotFoundException;
 import com.tst.exceptions.PermissionDenyException;
 import com.tst.models.dtos.extractShort.*;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractShort.*;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
@@ -20,6 +21,7 @@ import com.tst.services.identificationType.IIdentificationTypeService;
 import com.tst.services.maritalStatusType.IMaritalStatusTypeService;
 import com.tst.services.marryExtractShort.IMarryExtractShortService;
 import com.tst.services.parentsChildrenExtractShort.IParentsChildrenExtractShortService;
+import com.tst.services.project.IProjectService;
 import com.tst.services.registrationTypeDetail.IRegistrationTypeDetailService;
 import com.tst.services.residenceType.IResidenceTypeService;
 import com.tst.services.user.IUserService;
@@ -43,6 +45,7 @@ import java.util.List;
 @Validated
 public class ExtractShortAPI {
 
+    private final IProjectService projectService;
     private final IRegistrationTypeDetailService registrationTypeDetailService;
     private final IGenderTypeService genderTypeService;
     private final IBirthCertificateTypeService birthCertificateTypeService;
@@ -62,6 +65,72 @@ public class ExtractShortAPI {
     private final AppUtils appUtils;
     private final ModelMapper modelMapper;
 
+
+    @GetMapping("/new/{projectId}")
+    public ResponseEntity<ResponseObject> getAllExtractShortNew(
+            @PathVariable @Pattern(regexp = "^[1-9]\\d*$", message = "ID dự án phải là một số") String projectId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("Dự án không tồn tại");
+        });
+
+        User importer = userService.getAuthenticatedUser();
+
+        List<ExtractShortResponse> extractShortResponses = projectService.findAllNewExtractShortResponse(project, importer);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu danh sách trường ngắn chưa nhập thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(extractShortResponses)
+                .build());
+    }
+
+    @GetMapping("/later/{projectId}")
+    public ResponseEntity<ResponseObject> getAllExtractShortLater(
+            @PathVariable @Pattern(regexp = "^[1-9]\\d*$", message = "ID dự án phải là một số") String projectId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("Dự án không tồn tại");
+        });
+
+        User importer = userService.getAuthenticatedUser();
+
+        List<ExtractShortResponse> extractShortResponses = projectService.findAllLaterExtractShortResponse(project, importer);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu danh sách trường ngắn xử lý sau thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(extractShortResponses)
+                .build());
+    }
+
+    @GetMapping("/imported/{projectId}")
+    public ResponseEntity<ResponseObject> getAllExtractShortImported(
+            @PathVariable @Pattern(regexp = "^[1-9]\\d*$", message = "ID dự án phải là một số") String projectId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("Dự án không tồn tại");
+        });
+
+        User importer = userService.getAuthenticatedUser();
+
+        List<ExtractShortResponse> extractShortResponses = projectService.findAllImportedExtractShortResponse(project, importer);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu danh sách trường ngắn đã nhập thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(extractShortResponses)
+                .build());
+    }
 
     @GetMapping("/parents-children/new/{id}")
     public ResponseEntity<ResponseObject> getParentsChildrenExtractShort(
