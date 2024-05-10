@@ -1091,7 +1091,7 @@ public class ProjectService implements IProjectService {
                     .setCountExtractShort(countExtractShortPerUser[i])
                     .setCountExtractFull(countExtractFullPerUser[i])
                     .setAssignees(users.get(i))
-                    .setTotalCount(countExtractPerUser[i]);
+                    .setTotalCount(countExtractShortPerUser[i] + countExtractFullPerUser[i]);
             accessPointHistories.add(accessPointHistory);
         }
 

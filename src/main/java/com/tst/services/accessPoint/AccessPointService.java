@@ -85,7 +85,7 @@ public class AccessPointService implements IAccessPointService {
 
         Map<String, AccessPointHistory> accessPointHistoryMap = accessPointHistoryRepository.findByAccessPoint(accessPoint)
                 .stream()
-                .collect(Collectors.toMap(history -> history.getAssignees().getId(), Function.identity()));
+                .collect(Collectors.toMap(item -> item.getAssignees().getId(), Function.identity()));
 
         List<ParentsChildrenExtractShort> parentsChildrenExtractShortsModified = new ArrayList<>();
         List<ParentsChildrenExtractFull> parentsChildrenExtractFullsModified = new ArrayList<>();
