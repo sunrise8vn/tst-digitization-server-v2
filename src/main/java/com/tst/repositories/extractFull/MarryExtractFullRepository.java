@@ -3,6 +3,7 @@ package com.tst.repositories.extractFull;
 import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectNumberBookFile;
+import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.MarryExtractFull;
 import com.tst.models.enums.EInputStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,9 +14,46 @@ import java.util.Optional;
 
 public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFull, Long> {
 
-    List<MarryExtractFull> findByProjectAndImporterIsNull(Project project);
+    Optional<MarryExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
     Optional<MarryExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
+
+    List<MarryExtractFull> findByProjectAndImporterIsNull(Project project);
+
+
+    @Query("SELECT mef " +
+            "FROM MarryExtractFull AS mef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON mef.projectNumberBookFile = pnbf " +
+            "WHERE mef.project = :project " +
+            "AND mef.importer = :importer " +
+            "AND mef.status = 'NEW'"
+    )
+    List<MarryExtractFull> findByProjectAndImporterAndStatusNew(Project project, User importer);
+
+
+    @Query("SELECT mef " +
+            "FROM MarryExtractFull AS mef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON mef.projectNumberBookFile = pnbf " +
+            "WHERE mef.project = :project " +
+            "AND mef.importer = :importer " +
+            "AND mef.status = 'LATER_PROCESSING'"
+    )
+    List<MarryExtractFull> findByProjectAndImporterAndStatusLater(Project project, User importer);
+
+
+    @Query("SELECT mef " +
+            "FROM MarryExtractFull AS mef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON mef.projectNumberBookFile = pnbf " +
+            "WHERE mef.project = :project " +
+            "AND mef.importer = :importer " +
+            "AND (mef.status = 'IMPORTED' " +
+            "OR mef.status = 'MATCHING' " +
+            "OR mef.status = 'NOT_MATCHING')"
+    )
+    List<MarryExtractFull> findByProjectAndImporterAndStatusImported(Project project, User importer);
 
 
     @Query("SELECT mef " +
@@ -29,8 +67,5 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
             "ORDER BY mef.id DESC"
     )
     List<MarryExtractFull> findMarrySameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
-
-
-    Optional<MarryExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
 }

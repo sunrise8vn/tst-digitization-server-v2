@@ -3,6 +3,7 @@ package com.tst.api;
 import com.tst.exceptions.DataNotFoundException;
 import com.tst.exceptions.PermissionDenyException;
 import com.tst.models.dtos.extractFull.*;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.*;
 import com.tst.models.enums.EInputStatus;
@@ -21,6 +22,7 @@ import com.tst.services.intendedUseType.IIntendedUseTypeService;
 import com.tst.services.maritalStatusType.IMaritalStatusTypeService;
 import com.tst.services.marryExtractFull.IMarryExtractFullService;
 import com.tst.services.parentsChildrenExtractFull.IParentsChildrenExtractFullService;
+import com.tst.services.project.IProjectService;
 import com.tst.services.registrationTypeDetail.IRegistrationTypeDetailService;
 import com.tst.services.residenceType.IResidenceTypeService;
 import com.tst.services.user.IUserService;
@@ -44,6 +46,7 @@ import java.util.List;
 @Validated
 public class ExtractFullAPI {
 
+    private final IProjectService projectService;
     private final IRegistrationTypeDetailService registrationTypeDetailService;
     private final IGenderTypeService genderTypeService;
     private final IBirthCertificateTypeService birthCertificateTypeService;
@@ -64,6 +67,72 @@ public class ExtractFullAPI {
     private final AppUtils appUtils;
     private final ModelMapper modelMapper;
 
+
+    @GetMapping("/new/{projectId}")
+    public ResponseEntity<ResponseObject> getAllExtractFullNew(
+            @PathVariable @Pattern(regexp = "^[1-9]\\d*$", message = "ID dự án phải là một số") String projectId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("Dự án không tồn tại");
+        });
+
+        User importer = userService.getAuthenticatedUser();
+
+        List<ExtractFullResponse> extractFullResponses = projectService.findAllNewExtractFullResponse(project, importer);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu danh sách trường dài chưa nhập thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(extractFullResponses)
+                .build());
+    }
+
+    @GetMapping("/later/{projectId}")
+    public ResponseEntity<ResponseObject> getAllExtractFullLater(
+            @PathVariable @Pattern(regexp = "^[1-9]\\d*$", message = "ID dự án phải là một số") String projectId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("Dự án không tồn tại");
+        });
+
+        User importer = userService.getAuthenticatedUser();
+
+        List<ExtractFullResponse> extractFullResponses = projectService.findAllLaterExtractFullResponse(project, importer);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu danh sách trường dài xử lý sau thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(extractFullResponses)
+                .build());
+    }
+
+    @GetMapping("/imported/{projectId}")
+    public ResponseEntity<ResponseObject> getAllExtractFullImported(
+            @PathVariable @Pattern(regexp = "^[1-9]\\d*$", message = "ID dự án phải là một số") String projectId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("Dự án không tồn tại");
+        });
+
+        User importer = userService.getAuthenticatedUser();
+
+        List<ExtractFullResponse> extractFullResponses = projectService.findAllImportedExtractFullResponse(project, importer);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu danh sách trường dài đã nhập thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(extractFullResponses)
+                .build());
+    }
 
     @GetMapping("/parents-children/new/{id}")
     public ResponseEntity<ResponseObject> getParentsChildrenExtractFull(

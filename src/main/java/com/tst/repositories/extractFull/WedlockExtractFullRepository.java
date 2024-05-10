@@ -3,6 +3,7 @@ package com.tst.repositories.extractFull;
 import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectNumberBookFile;
+import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.WedlockExtractFull;
 import com.tst.models.enums.EInputStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,9 +14,46 @@ import java.util.Optional;
 
 public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtractFull, Long> {
 
-    List<WedlockExtractFull> findByProjectAndImporterIsNull(Project project);
+    Optional<WedlockExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
     Optional<WedlockExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
+
+    List<WedlockExtractFull> findByProjectAndImporterIsNull(Project project);
+
+
+    @Query("SELECT wef " +
+            "FROM WedlockExtractFull AS wef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON wef.projectNumberBookFile = pnbf " +
+            "WHERE wef.project = :project " +
+            "AND wef.importer = :importer " +
+            "AND wef.status = 'NEW'"
+    )
+    List<WedlockExtractFull> findByProjectAndImporterAndStatusNew(Project project, User importer);
+
+
+    @Query("SELECT wef " +
+            "FROM WedlockExtractFull AS wef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON wef.projectNumberBookFile = pnbf " +
+            "WHERE wef.project = :project " +
+            "AND wef.importer = :importer " +
+            "AND wef.status = 'LATER_PROCESSING'"
+    )
+    List<WedlockExtractFull> findByProjectAndImporterAndStatusLater(Project project, User importer);
+
+
+    @Query("SELECT wef " +
+            "FROM WedlockExtractFull AS wef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON wef.projectNumberBookFile = pnbf " +
+            "WHERE wef.project = :project " +
+            "AND wef.importer = :importer " +
+            "AND (wef.status = 'IMPORTED' " +
+            "OR wef.status = 'MATCHING' " +
+            "OR wef.status = 'NOT_MATCHING')"
+    )
+    List<WedlockExtractFull> findByProjectAndImporterAndStatusImported(Project project, User importer);
 
 
     @Query("SELECT wef " +
@@ -29,8 +67,5 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
             "ORDER BY wef.id DESC"
     )
     List<WedlockExtractFull> findWedlockSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
-
-
-    Optional<WedlockExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
 }

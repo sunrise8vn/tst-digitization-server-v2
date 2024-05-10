@@ -3,6 +3,7 @@ package com.tst.repositories.extractFull;
 import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectNumberBookFile;
+import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.ParentsChildrenExtractFull;
 import com.tst.models.enums.EInputStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,9 +14,43 @@ import java.util.Optional;
 
 public interface ParentsChildrenExtractFullRepository extends JpaRepository<ParentsChildrenExtractFull, Long> {
 
+    Optional<ParentsChildrenExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
+
     List<ParentsChildrenExtractFull> findByProjectAndImporterIsNull(Project project);
 
-    Optional<ParentsChildrenExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
+    @Query("SELECT pcef " +
+            "FROM ParentsChildrenExtractFull AS pcef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON pcef.projectNumberBookFile = pnbf " +
+            "WHERE pcef.project = :project " +
+            "AND pcef.importer = :importer " +
+            "AND pcef.status = 'NEW'"
+    )
+    List<ParentsChildrenExtractFull> findByProjectAndImporterAndStatusNew(Project project, User importer);
+
+
+    @Query("SELECT pcef " +
+            "FROM ParentsChildrenExtractFull AS pcef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON pcef.projectNumberBookFile = pnbf " +
+            "WHERE pcef.project = :project " +
+            "AND pcef.importer = :importer " +
+            "AND pcef.status = 'LATER_PROCESSING'"
+    )
+    List<ParentsChildrenExtractFull> findByProjectAndImporterAndStatusLater(Project project, User importer);
+
+
+    @Query("SELECT pcef " +
+            "FROM ParentsChildrenExtractFull AS pcef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON pcef.projectNumberBookFile = pnbf " +
+            "WHERE pcef.project = :project " +
+            "AND pcef.importer = :importer " +
+            "AND (pcef.status = 'IMPORTED' " +
+            "OR pcef.status = 'MATCHING' " +
+            "OR pcef.status = 'NOT_MATCHING')"
+    )
+    List<ParentsChildrenExtractFull> findByProjectAndImporterAndStatusImported(Project project, User importer);
 
 
     @Query("SELECT pcef " +
