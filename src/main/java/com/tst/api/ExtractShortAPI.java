@@ -176,20 +176,20 @@ public class ExtractShortAPI {
                 ParentsChildrenExtractShortResponse.class
         );
 
-        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.CMC);
-        parentsChildrenExtractShortResponse.setRegistrationType(registrationTypeDetailResponses);
-
-        List<ConfirmationTypeResponse> confirmationTypeResponses = confirmationTypeService.findAllConfirmationTypeResponse();
-        parentsChildrenExtractShortResponse.setConfirmationType(confirmationTypeResponses);
-
-        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
-        parentsChildrenExtractShortResponse.setParentResidenceType(residenceTypeResponses);
-        parentsChildrenExtractShortResponse.setChildResidenceType(residenceTypeResponses);
-
-        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
-        parentsChildrenExtractShortResponse.setParentIdentificationType(identificationTypeResponses);
-        parentsChildrenExtractShortResponse.setChildIdentificationType(identificationTypeResponses);
-        parentsChildrenExtractShortResponse.setPetitionerIdentificationType(identificationTypeResponses);
+//        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.CMC);
+//        parentsChildrenExtractShortResponse.setRegistrationType(registrationTypeDetailResponses);
+//
+//        List<ConfirmationTypeResponse> confirmationTypeResponses = confirmationTypeService.findAllConfirmationTypeResponse();
+//        parentsChildrenExtractShortResponse.setConfirmationType(confirmationTypeResponses);
+//
+//        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+//        parentsChildrenExtractShortResponse.setParentResidenceType(residenceTypeResponses);
+//        parentsChildrenExtractShortResponse.setChildResidenceType(residenceTypeResponses);
+//
+//        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+//        parentsChildrenExtractShortResponse.setParentIdentificationType(identificationTypeResponses);
+//        parentsChildrenExtractShortResponse.setChildIdentificationType(identificationTypeResponses);
+//        parentsChildrenExtractShortResponse.setPetitionerIdentificationType(identificationTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường ngắn của biểu mẫu cha mẹ con thành công")
@@ -221,23 +221,23 @@ public class ExtractShortAPI {
                 BirthExtractShortResponse.class
         );
 
-        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.KS);
-        birthExtractShortResponse.setRegistrationType(registrationTypeDetailResponses);
-
-        List<GenderTypeResponse> genderTypeResponses = genderTypeService.findAllGenderTypeResponse();
-        birthExtractShortResponse.setBirtherGender(genderTypeResponses);
-
-        List<BirthCertificateTypeResponse> birthCertificateTypeResponses = birthCertificateTypeService.findAllBirthCertificateTypeResponse();
-        birthExtractShortResponse.setBirthCertificateType(birthCertificateTypeResponses);
-
-        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
-        birthExtractShortResponse.setMomResidenceType(residenceTypeResponses);
-        birthExtractShortResponse.setDadResidenceType(residenceTypeResponses);
-
-        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
-        birthExtractShortResponse.setMomIdentificationType(identificationTypeResponses);
-        birthExtractShortResponse.setDadIdentificationType(identificationTypeResponses);
-        birthExtractShortResponse.setPetitionerIdentificationType(identificationTypeResponses);
+//        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.KS);
+//        birthExtractShortResponse.setRegistrationType(registrationTypeDetailResponses);
+//
+//        List<GenderTypeResponse> genderTypeResponses = genderTypeService.findAllGenderTypeResponse();
+//        birthExtractShortResponse.setBirtherGender(genderTypeResponses);
+//
+//        List<BirthCertificateTypeResponse> birthCertificateTypeResponses = birthCertificateTypeService.findAllBirthCertificateTypeResponse();
+//        birthExtractShortResponse.setBirthCertificateType(birthCertificateTypeResponses);
+//
+//        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+//        birthExtractShortResponse.setMomResidenceType(residenceTypeResponses);
+//        birthExtractShortResponse.setDadResidenceType(residenceTypeResponses);
+//
+//        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+//        birthExtractShortResponse.setMomIdentificationType(identificationTypeResponses);
+//        birthExtractShortResponse.setDadIdentificationType(identificationTypeResponses);
+//        birthExtractShortResponse.setPetitionerIdentificationType(identificationTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường ngắn của biểu mẫu khai sinh thành công")
@@ -269,19 +269,19 @@ public class ExtractShortAPI {
                 MarryExtractShortResponse.class
         );
 
-        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.KH);
-        marryExtractShortResponse.setRegistrationType(registrationTypeDetailResponses);
-
-        List<MaritalStatusResponse> maritalStatusResponses = maritalStatusTypeService.findAllMaritalStatusResponse();
-        marryExtractShortResponse.setMaritalStatus(maritalStatusResponses);
-
-        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
-        marryExtractShortResponse.setHusbandResidenceType(residenceTypeResponses);
-        marryExtractShortResponse.setWifeResidenceType(residenceTypeResponses);
-
-        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
-        marryExtractShortResponse.setHusbandIdentificationType(identificationTypeResponses);
-        marryExtractShortResponse.setWifeIdentificationType(identificationTypeResponses);
+//        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.KH);
+//        marryExtractShortResponse.setRegistrationType(registrationTypeDetailResponses);
+//
+//        List<MaritalStatusResponse> maritalStatusResponses = maritalStatusTypeService.findAllMaritalStatusResponse();
+//        marryExtractShortResponse.setMaritalStatus(maritalStatusResponses);
+//
+//        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+//        marryExtractShortResponse.setHusbandResidenceType(residenceTypeResponses);
+//        marryExtractShortResponse.setWifeResidenceType(residenceTypeResponses);
+//
+//        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+//        marryExtractShortResponse.setHusbandIdentificationType(identificationTypeResponses);
+//        marryExtractShortResponse.setWifeIdentificationType(identificationTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường ngắn của biểu mẫu kết hôn thành công")
@@ -313,15 +313,15 @@ public class ExtractShortAPI {
                 WedlockExtractShortResponse.class
         );
 
-        List<GenderTypeResponse> genderTypeResponses = genderTypeService.findAllGenderTypeResponse();
-        wedlockExtractShortResponse.setConfirmerGender(genderTypeResponses);
-
-        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
-        wedlockExtractShortResponse.setConfirmerResidenceType(residenceTypeResponses);
-
-        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
-        wedlockExtractShortResponse.setConfirmerIdentificationType(identificationTypeResponses);
-        wedlockExtractShortResponse.setPetitionerIdentificationType(identificationTypeResponses);
+//        List<GenderTypeResponse> genderTypeResponses = genderTypeService.findAllGenderTypeResponse();
+//        wedlockExtractShortResponse.setConfirmerGender(genderTypeResponses);
+//
+//        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+//        wedlockExtractShortResponse.setConfirmerResidenceType(residenceTypeResponses);
+//
+//        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+//        wedlockExtractShortResponse.setConfirmerIdentificationType(identificationTypeResponses);
+//        wedlockExtractShortResponse.setPetitionerIdentificationType(identificationTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường ngắn của biểu mẫu tình trạng hôn nhân thành công")
@@ -353,21 +353,21 @@ public class ExtractShortAPI {
                 DeathExtractShortResponse.class
         );
 
-        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.KT);
-        deathExtractShortResponse.setRegistrationType(registrationTypeDetailResponses);
-
-        List<GenderTypeResponse> genderTypeResponses = genderTypeService.findAllGenderTypeResponse();
-        deathExtractShortResponse.setDeadManGender(genderTypeResponses);
-
-        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
-        deathExtractShortResponse.setDeadManResidenceType(residenceTypeResponses);
-
-        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
-        deathExtractShortResponse.setDeadManIdentificationType(identificationTypeResponses);
-        deathExtractShortResponse.setPetitionerIdentificationType(identificationTypeResponses);
-
-        List<DeathNoticeTypeResponse> deathNoticeTypeResponses = deathNoticeTypeService.findAllDeathNoticeTypeResponse();
-        deathExtractShortResponse.setDeathNoticeType(deathNoticeTypeResponses);
+//        List<RegistrationTypeDetailResponse> registrationTypeDetailResponses = registrationTypeDetailService.findAllRegistrationTypeDetailResponse(ERegistrationType.KT);
+//        deathExtractShortResponse.setRegistrationType(registrationTypeDetailResponses);
+//
+//        List<GenderTypeResponse> genderTypeResponses = genderTypeService.findAllGenderTypeResponse();
+//        deathExtractShortResponse.setDeadManGender(genderTypeResponses);
+//
+//        List<ResidenceTypeResponse> residenceTypeResponses = residenceTypeService.findAllResidenceTypeResponse();
+//        deathExtractShortResponse.setDeadManResidenceType(residenceTypeResponses);
+//
+//        List<IdentificationTypeResponse> identificationTypeResponses = identificationTypeService.findAllIdentificationTypeResponse();
+//        deathExtractShortResponse.setDeadManIdentificationType(identificationTypeResponses);
+//        deathExtractShortResponse.setPetitionerIdentificationType(identificationTypeResponses);
+//
+//        List<DeathNoticeTypeResponse> deathNoticeTypeResponses = deathNoticeTypeService.findAllDeathNoticeTypeResponse();
+//        deathExtractShortResponse.setDeathNoticeType(deathNoticeTypeResponses);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường ngắn của biểu mẫu khai tử thành công")

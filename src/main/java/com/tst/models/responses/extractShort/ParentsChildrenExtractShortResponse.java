@@ -22,8 +22,8 @@ public class ParentsChildrenExtractShortResponse {
     private String numberPage;
     private String decisionNo;
     private String registrationDate;
-    private List<RegistrationTypeDetailResponse> registrationType;
-    private List<ConfirmationTypeResponse> confirmationType;
+    private String registrationType;
+    private String confirmationType;
     private String signer;
     private String signerPosition;
     private String implementer;
@@ -33,8 +33,8 @@ public class ParentsChildrenExtractShortResponse {
     private String parentNation;
     private String parentNationality;
     private String parentOtherNationality;
-    private List<ResidenceTypeResponse> parentResidenceType;
-    private List<IdentificationTypeResponse> parentIdentificationType;
+    private String parentResidenceType;
+    private String parentIdentificationType;
     private String parentOtherDocument;
     private String parentIdentificationNumber;
     private String parentIdentificationIssuanceDate;
@@ -43,15 +43,15 @@ public class ParentsChildrenExtractShortResponse {
     private String childNation;
     private String childNationality;
     private String childOtherNationality;
-    private List<ResidenceTypeResponse> childResidenceType;
-    private List<IdentificationTypeResponse> childIdentificationType;
+    private String childResidenceType;
+    private String childIdentificationType;
     private String childOtherDocument;
     private String childIdentificationNumber;
     private String childIdentificationIssuanceDate;
     private String petitionerFullName;
     private String petitionerRecipientRelationship;
     private String petitionerReceiverRelationship;
-    private List<IdentificationTypeResponse> petitionerIdentificationType;
+    private String petitionerIdentificationType;
     private String petitionerIdentificationNumber;
     private String petitionerIdentificationIssuanceDate;
 
