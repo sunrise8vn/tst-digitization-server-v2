@@ -25,13 +25,13 @@ public class WedlockExtractShortResponse {
     private String implementer;
     private String note;
     private String confirmerFullName;
-    private List<GenderTypeResponse> confirmerGender;
+    private String confirmerGender;
     private String confirmerBirthday;
     private String confirmerNation;
     private String confirmerNationality;
     private String confirmerOtherNationality;
-    private List<ResidenceTypeResponse> confirmerResidenceType;
-    private List<IdentificationTypeResponse> confirmerIdentificationType;
+    private String confirmerResidenceType;
+    private String confirmerIdentificationType;
     private String confirmerOtherDocument;
     private String confirmerIdentificationNumber;
     private String confirmerIdentificationIssuanceDate;
@@ -39,7 +39,7 @@ public class WedlockExtractShortResponse {
     private String confirmerPeriodResidenceTo;
     private String petitionerFullName;
     private String petitionerRelationship;
-    private List<IdentificationTypeResponse> petitionerIdentificationType;
+    private String petitionerIdentificationType;
     private String petitionerIdentificationNumber;
     private String petitionerIdentificationIssuanceDate;
 }
