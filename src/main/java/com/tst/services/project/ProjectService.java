@@ -69,6 +69,153 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
+    public List<ExtractFullResponse> findAllExtractFullResponse(Project project, User importer) {
+        List<ExtractFullResponse> extractFullResponses = new ArrayList<>();
+
+        List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findAllByProjectAndImporter(project, importer);
+
+        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findAllByProjectAndImporter(project, importer);
+
+        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findAllByProjectAndImporter(project, importer);
+
+        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findAllByProjectAndImporter(project, importer);
+
+        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findAllByProjectAndImporter(project, importer);
+
+        for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
+//            String inputStatus = item.getStatus() == EInputStatus.NEW
+//                    ? "Chưa nhập"
+//                    : item.getStatus() == EInputStatus.LATER_PROCESSING
+//                    ? "Xử lý sau"
+//                    : "Đã nhập";
+//
+//            String checkedStatus = item.getStatus() == EInputStatus.MATCHING
+//                    ? "Đúng"
+//                    : item.getStatus() == EInputStatus.NOT_MATCHING
+//                    ? "Sai"
+//                    : "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(item.getStatus().getValue())
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(item.getStatus().getValue())
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (BirthExtractFull item : birthExtractFulls) {
+//            String inputStatus = item.getStatus() == EInputStatus.NEW
+//                    ? "Chưa nhập"
+//                    : item.getStatus() == EInputStatus.LATER_PROCESSING
+//                    ? "Xử lý sau"
+//                    : "Đã nhập";
+//
+//            String checkedStatus = item.getStatus() == EInputStatus.MATCHING
+//                    ? "Đúng"
+//                    : item.getStatus() == EInputStatus.NOT_MATCHING
+//                    ? "Sai"
+//                    : "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(item.getStatus().getValue())
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(item.getStatus().getValue())
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (MarryExtractFull item : marryExtractFulls) {
+//            String inputStatus = item.getStatus() == EInputStatus.NEW
+//                    ? "Chưa nhập"
+//                    : item.getStatus() == EInputStatus.LATER_PROCESSING
+//                    ? "Xử lý sau"
+//                    : "Đã nhập";
+//
+//            String checkedStatus = item.getStatus() == EInputStatus.MATCHING
+//                    ? "Đúng"
+//                    : item.getStatus() == EInputStatus.NOT_MATCHING
+//                    ? "Sai"
+//                    : "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(item.getStatus().getValue())
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(item.getStatus().getValue())
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (WedlockExtractFull item : wedlockExtractFulls) {
+//            String inputStatus = item.getStatus() == EInputStatus.NEW
+//                    ? "Chưa nhập"
+//                    : item.getStatus() == EInputStatus.LATER_PROCESSING
+//                    ? "Xử lý sau"
+//                    : "Đã nhập";
+//
+//            String checkedStatus = item.getStatus() == EInputStatus.MATCHING
+//                    ? "Đúng"
+//                    : item.getStatus() == EInputStatus.NOT_MATCHING
+//                    ? "Sai"
+//                    : "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(item.getStatus().getValue())
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(item.getStatus().getValue())
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        for (DeathExtractFull item : deathExtractFulls) {
+//            String inputStatus = item.getStatus() == EInputStatus.NEW
+//                    ? "Chưa nhập"
+//                    : item.getStatus() == EInputStatus.LATER_PROCESSING
+//                    ? "Xử lý sau"
+//                    : "Đã nhập";
+//
+//            String checkedStatus = item.getStatus() == EInputStatus.MATCHING
+//                    ? "Đúng"
+//                    : item.getStatus() == EInputStatus.NOT_MATCHING
+//                    ? "Sai"
+//                    : "";
+
+            ExtractFullResponse extractFullResponse = new ExtractFullResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setInputStatus(item.getStatus().getValue())
+                    .setImportedAt(item.getImportedAt())
+                    .setCheckedStatus(item.getStatus().getValue())
+                    .setCheckedAt(item.getCheckedAt());
+
+            extractFullResponses.add(extractFullResponse);
+        }
+
+        return extractFullResponses;
+    }
+
+    @Override
     public List<ExtractShortResponse> findAllNewExtractShortResponse(Project project, User importer) {
         List<ExtractShortResponse> extractShortResponses = new ArrayList<>();
 
@@ -174,15 +321,15 @@ public class ProjectService implements IProjectService {
     public List<ExtractFullResponse> findAllNewExtractFullResponse(Project project, User importer) {
         List<ExtractFullResponse> extractFullResponses = new ArrayList<>();
 
-        List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findByProjectAndImporterAndStatusNew(project, importer);
+        List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findAllByProjectAndImporterAndStatusNew(project, importer);
 
-        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findByProjectAndImporterAndStatusNew(project, importer);
+        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findAllByProjectAndImporterAndStatusNew(project, importer);
 
-        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findByProjectAndImporterAndStatusNew(project, importer);
+        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findAllByProjectAndImporterAndStatusNew(project, importer);
 
-        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findByProjectAndImporterAndStatusNew(project, importer);
+        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findAllByProjectAndImporterAndStatusNew(project, importer);
 
-        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findByProjectAndImporterAndStatusNew(project, importer);
+        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findAllByProjectAndImporterAndStatusNew(project, importer);
 
         for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
             String inputStatus = "Chưa nhập";
@@ -379,15 +526,15 @@ public class ProjectService implements IProjectService {
     public List<ExtractFullResponse> findAllLaterExtractFullResponse(Project project, User importer) {
         List<ExtractFullResponse> extractFullResponses = new ArrayList<>();
 
-        List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findByProjectAndImporterAndStatusLater(project, importer);
+        List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findAllByProjectAndImporterAndStatusLater(project, importer);
 
-        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findByProjectAndImporterAndStatusLater(project, importer);
+        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findAllByProjectAndImporterAndStatusLater(project, importer);
 
-        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findByProjectAndImporterAndStatusLater(project, importer);
+        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findAllByProjectAndImporterAndStatusLater(project, importer);
 
-        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findByProjectAndImporterAndStatusLater(project, importer);
+        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findAllByProjectAndImporterAndStatusLater(project, importer);
 
-        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findByProjectAndImporterAndStatusLater(project, importer);
+        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findAllByProjectAndImporterAndStatusLater(project, importer);
 
 
         for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
@@ -605,15 +752,15 @@ public class ProjectService implements IProjectService {
     public List<ExtractFullResponse> findAllImportedExtractFullResponse(Project project, User importer) {
         List<ExtractFullResponse> extractFullResponses = new ArrayList<>();
 
-        List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findByProjectAndImporterAndStatusImported(project, importer);
+        List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findAllByProjectAndImporterAndStatusImported(project, importer);
 
-        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findByProjectAndImporterAndStatusImported(project, importer);
+        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findAllByProjectAndImporterAndStatusImported(project, importer);
 
-        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findByProjectAndImporterAndStatusImported(project, importer);
+        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findAllByProjectAndImporterAndStatusImported(project, importer);
 
-        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findByProjectAndImporterAndStatusImported(project, importer);
+        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findAllByProjectAndImporterAndStatusImported(project, importer);
 
-        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findByProjectAndImporterAndStatusImported(project, importer);
+        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findAllByProjectAndImporterAndStatusImported(project, importer);
 
 
         for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
@@ -942,25 +1089,25 @@ public class ProjectService implements IProjectService {
         List<BirthExtractShort> birthExtractShorts = birthExtractShortRepository.findByProjectAndImporterIsNull(project);
         totalCountExtractShort += birthExtractShorts.size();
 
-        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findByProjectAndImporterIsNull(project);
+        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findAllByProjectAndImporterIsNull(project);
         totalCountExtractFull += birthExtractFulls.size();
 
         List<MarryExtractShort> marryExtractShorts = marryExtractShortRepository.findByProjectAndImporterIsNull(project);
         totalCountExtractShort += marryExtractShorts.size();
 
-        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findByProjectAndImporterIsNull(project);
+        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findAllByProjectAndImporterIsNull(project);
         totalCountExtractFull += marryExtractFulls.size();
 
         List<WedlockExtractShort> wedlockExtractShorts = wedlockExtractShortRepository.findByProjectAndImporterIsNull(project);
         totalCountExtractShort += wedlockExtractShorts.size();
 
-        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findByProjectAndImporterIsNull(project);
+        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findAllByProjectAndImporterIsNull(project);
         totalCountExtractFull += wedlockExtractFulls.size();
 
         List<DeathExtractShort> deathExtractShorts = deathExtractShortRepository.findByProjectAndImporterIsNull(project);
         totalCountExtractShort += deathExtractShorts.size();
 
-        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findByProjectAndImporterIsNull(project);
+        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findAllByProjectAndImporterIsNull(project);
         totalCountExtractFull += deathExtractFulls.size();
 
         long totalCountExtractForm = totalCountExtractShort + totalCountExtractFull;

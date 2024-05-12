@@ -18,7 +18,17 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
 
     Optional<DeathExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
-    List<DeathExtractFull> findByProjectAndImporterIsNull(Project project);
+    List<DeathExtractFull> findAllByProjectAndImporterIsNull(Project project);
+
+
+    @Query("SELECT def " +
+            "FROM DeathExtractFull AS def " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON def.projectNumberBookFile = pnbf " +
+            "WHERE def.project = :project " +
+            "AND def.importer = :importer"
+    )
+    List<DeathExtractFull> findAllByProjectAndImporter(Project project, User importer);
 
 
     @Query("SELECT def " +
@@ -29,7 +39,7 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
             "AND def.importer = :importer " +
             "AND def.status = 'NEW'"
     )
-    List<DeathExtractFull> findByProjectAndImporterAndStatusNew(Project project, User importer);
+    List<DeathExtractFull> findAllByProjectAndImporterAndStatusNew(Project project, User importer);
 
 
     @Query("SELECT def " +
@@ -40,7 +50,7 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
             "AND def.importer = :importer " +
             "AND def.status = 'LATER_PROCESSING'"
     )
-    List<DeathExtractFull> findByProjectAndImporterAndStatusLater(Project project, User importer);
+    List<DeathExtractFull> findAllByProjectAndImporterAndStatusLater(Project project, User importer);
 
 
     @Query("SELECT def " +
@@ -53,7 +63,7 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
             "OR def.status = 'MATCHING' " +
             "OR def.status = 'NOT_MATCHING')"
     )
-    List<DeathExtractFull> findByProjectAndImporterAndStatusImported(Project project, User importer);
+    List<DeathExtractFull> findAllByProjectAndImporterAndStatusImported(Project project, User importer);
 
 
     @Query("SELECT def " +
@@ -66,6 +76,6 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
             "OR def.status = 'LATER_PROCESSING') " +
             "ORDER BY def.id DESC"
     )
-    List<DeathExtractFull> findDeathSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
+    List<DeathExtractFull> findAllDeathSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 
 }

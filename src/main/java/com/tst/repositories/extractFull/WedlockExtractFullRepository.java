@@ -18,7 +18,17 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
 
     Optional<WedlockExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
-    List<WedlockExtractFull> findByProjectAndImporterIsNull(Project project);
+    List<WedlockExtractFull> findAllByProjectAndImporterIsNull(Project project);
+
+
+    @Query("SELECT wef " +
+            "FROM WedlockExtractFull AS wef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON wef.projectNumberBookFile = pnbf " +
+            "WHERE wef.project = :project " +
+            "AND wef.importer = :importer"
+    )
+    List<WedlockExtractFull> findAllByProjectAndImporter(Project project, User importer);
 
 
     @Query("SELECT wef " +
@@ -29,7 +39,7 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
             "AND wef.importer = :importer " +
             "AND wef.status = 'NEW'"
     )
-    List<WedlockExtractFull> findByProjectAndImporterAndStatusNew(Project project, User importer);
+    List<WedlockExtractFull> findAllByProjectAndImporterAndStatusNew(Project project, User importer);
 
 
     @Query("SELECT wef " +
@@ -40,7 +50,7 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
             "AND wef.importer = :importer " +
             "AND wef.status = 'LATER_PROCESSING'"
     )
-    List<WedlockExtractFull> findByProjectAndImporterAndStatusLater(Project project, User importer);
+    List<WedlockExtractFull> findAllByProjectAndImporterAndStatusLater(Project project, User importer);
 
 
     @Query("SELECT wef " +
@@ -53,7 +63,7 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
             "OR wef.status = 'MATCHING' " +
             "OR wef.status = 'NOT_MATCHING')"
     )
-    List<WedlockExtractFull> findByProjectAndImporterAndStatusImported(Project project, User importer);
+    List<WedlockExtractFull> findAllByProjectAndImporterAndStatusImported(Project project, User importer);
 
 
     @Query("SELECT wef " +
@@ -66,6 +76,6 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
             "OR wef.status = 'LATER_PROCESSING') " +
             "ORDER BY wef.id DESC"
     )
-    List<WedlockExtractFull> findWedlockSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
+    List<WedlockExtractFull> findAllWedlockSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 
 }

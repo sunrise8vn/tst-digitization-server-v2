@@ -18,7 +18,17 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
 
     Optional<BirthExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
-    List<BirthExtractFull> findByProjectAndImporterIsNull(Project project);
+    List<BirthExtractFull> findAllByProjectAndImporterIsNull(Project project);
+
+
+    @Query("SELECT bef " +
+            "FROM BirthExtractFull AS bef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON bef.projectNumberBookFile = pnbf " +
+            "WHERE bef.project = :project " +
+            "AND bef.importer = :importer"
+    )
+    List<BirthExtractFull> findAllByProjectAndImporter(Project project, User importer);
 
 
     @Query("SELECT bef " +
@@ -29,7 +39,7 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
             "AND bef.importer = :importer " +
             "AND bef.status = 'NEW'"
     )
-    List<BirthExtractFull> findByProjectAndImporterAndStatusNew(Project project, User importer);
+    List<BirthExtractFull> findAllByProjectAndImporterAndStatusNew(Project project, User importer);
 
 
     @Query("SELECT bef " +
@@ -40,7 +50,7 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
             "AND bef.importer = :importer " +
             "AND bef.status = 'LATER_PROCESSING'"
     )
-    List<BirthExtractFull> findByProjectAndImporterAndStatusLater(Project project, User importer);
+    List<BirthExtractFull> findAllByProjectAndImporterAndStatusLater(Project project, User importer);
 
 
     @Query("SELECT bef " +
@@ -53,7 +63,7 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
             "OR bef.status = 'MATCHING' " +
             "OR bef.status = 'NOT_MATCHING')"
     )
-    List<BirthExtractFull> findByProjectAndImporterAndStatusImported(Project project, User importer);
+    List<BirthExtractFull> findAllByProjectAndImporterAndStatusImported(Project project, User importer);
 
 
     @Query("SELECT bef " +
@@ -66,6 +76,6 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
             "OR bef.status = 'LATER_PROCESSING') " +
             "ORDER BY bef.id DESC"
     )
-    List<BirthExtractFull> findBirthSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
+    List<BirthExtractFull> findAllBirthSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 
 }
