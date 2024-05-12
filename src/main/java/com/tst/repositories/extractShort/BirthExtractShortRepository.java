@@ -15,9 +15,20 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
 
     Optional<BirthExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
-    List<BirthExtractShort> findByProjectAndImporterIsNull(Project project);
+    List<BirthExtractShort> findAllByProjectAndImporterIsNull(Project project);
 
-    List<BirthExtractShort> findByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    List<BirthExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+
+    @Query("SELECT bes " +
+            "FROM BirthExtractShort AS bes " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON bes.projectNumberBookFile = pnbf " +
+            "WHERE bes.project = :project " +
+            "AND bes.importer = :importer"
+    )
+    List<BirthExtractShort> findAllByProjectAndImporter(Project project, User importer);
 
 
     @Query("SELECT bes " +
@@ -28,7 +39,7 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
             "AND bes.importer = :importer " +
             "AND bes.status = 'NEW'"
     )
-    List<BirthExtractShort> findByProjectAndImporterAndStatusNew(Project project, User importer);
+    List<BirthExtractShort> findAllByProjectAndImporterAndStatusNew(Project project, User importer);
 
 
     @Query("SELECT bes " +
@@ -39,7 +50,7 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
             "AND bes.importer = :importer " +
             "AND bes.status = 'LATER_PROCESSING'"
     )
-    List<BirthExtractShort> findByProjectAndImporterAndStatusLater(Project project, User importer);
+    List<BirthExtractShort> findAllByProjectAndImporterAndStatusLater(Project project, User importer);
 
 
     @Query("SELECT bes " +
@@ -52,7 +63,7 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
             "OR bes.status = 'MATCHING' " +
             "OR bes.status = 'NOT_MATCHING')"
     )
-    List<BirthExtractShort> findByProjectAndImporterAndStatusImported(Project project, User importer);
+    List<BirthExtractShort> findAllByProjectAndImporterAndStatusImported(Project project, User importer);
 
 
     @Query("SELECT bes " +
@@ -65,6 +76,6 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
             "OR bes.status = 'LATER_PROCESSING') " +
             "ORDER BY bes.id DESC"
     )
-    List<BirthExtractShort> findBirthSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
+    List<BirthExtractShort> findAllBirthSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 
 }

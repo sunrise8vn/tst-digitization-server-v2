@@ -4,7 +4,6 @@ import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.User;
 import com.tst.models.entities.extractShort.DeathExtractShort;
-import com.tst.models.entities.extractShort.WedlockExtractShort;
 import com.tst.models.enums.EInputStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,9 +15,19 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
 
     Optional<DeathExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
-    List<DeathExtractShort> findByProjectAndImporterIsNull(Project project);
+    List<DeathExtractShort> findAllByProjectAndImporterIsNull(Project project);
 
-    List<DeathExtractShort> findByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+    List<DeathExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+
+    @Query("SELECT des " +
+            "FROM DeathExtractShort AS des " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON des.projectNumberBookFile = pnbf " +
+            "WHERE des.project = :project " +
+            "AND des.importer = :importer"
+    )
+    List<DeathExtractShort> findAllByProjectAndImporter(Project project, User importer);
 
 
     @Query("SELECT des " +
@@ -29,7 +38,7 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
             "AND des.importer = :importer " +
             "AND des.status = 'NEW'"
     )
-    List<DeathExtractShort> findByProjectAndImporterAndStatusNew(Project project, User importer);
+    List<DeathExtractShort> findAllByProjectAndImporterAndStatusNew(Project project, User importer);
 
 
     @Query("SELECT des " +
@@ -40,7 +49,7 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
             "AND des.importer = :importer " +
             "AND des.status = 'LATER_PROCESSING'"
     )
-    List<DeathExtractShort> findByProjectAndImporterAndStatusLater(Project project, User importer);
+    List<DeathExtractShort> findAllByProjectAndImporterAndStatusLater(Project project, User importer);
     
 
     @Query("SELECT des " +
@@ -53,7 +62,7 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
             "OR des.status = 'MATCHING' " +
             "OR des.status = 'NOT_MATCHING')"
     )
-    List<DeathExtractShort> findByProjectAndImporterAndStatusImported(Project project, User importer);
+    List<DeathExtractShort> findAllByProjectAndImporterAndStatusImported(Project project, User importer);
 
 
     @Query("SELECT des " +
@@ -66,6 +75,6 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
             "OR des.status = 'LATER_PROCESSING') " +
             "ORDER BY des.id DESC"
     )
-    List<DeathExtractShort> findDeathSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
+    List<DeathExtractShort> findAllDeathSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 
 }

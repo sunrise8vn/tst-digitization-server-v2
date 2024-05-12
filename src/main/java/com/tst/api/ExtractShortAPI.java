@@ -66,6 +66,28 @@ public class ExtractShortAPI {
     private final ModelMapper modelMapper;
 
 
+    @GetMapping("/all/{projectId}")
+    public ResponseEntity<ResponseObject> getAllExtractFull(
+            @PathVariable @Pattern(regexp = "^[1-9]\\d*$", message = "ID dự án phải là một số") String projectId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("Dự án không tồn tại");
+        });
+
+        User importer = userService.getAuthenticatedUser();
+
+        List<ExtractShortResponse> extractShortResponses = projectService.findAllExtractShortResponse(project, importer);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu danh sách trường ngắn thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(extractShortResponses)
+                .build());
+    }
+
     @GetMapping("/new/{projectId}")
     public ResponseEntity<ResponseObject> getAllExtractShortNew(
             @PathVariable @Pattern(regexp = "^[1-9]\\d*$", message = "ID dự án phải là một số") String projectId
