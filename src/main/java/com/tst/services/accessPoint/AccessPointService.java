@@ -53,15 +53,15 @@ public class AccessPointService implements IAccessPointService {
     @Transactional
     public void revokeExtractForm(AccessPoint accessPoint, Long totalCountRevoke) {
         List<ParentsChildrenExtractShort> parentsChildrenExtractShorts = parentsChildrenExtractShortRepository.findParentsChildrenSameByAccessPointAndStatusNewOrLater(accessPoint);
-        List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findParentsChildrenSameByAccessPointAndStatusNewOrLater(accessPoint);
+        List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findAllParentsChildrenSameByAccessPointAndStatusNewOrLater(accessPoint);
         List<BirthExtractShort> birthExtractShorts = birthExtractShortRepository.findBirthSameByAccessPointAndStatusNewOrLater(accessPoint);
-        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findBirthSameByAccessPointAndStatusNewOrLater(accessPoint);
+        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findAllBirthSameByAccessPointAndStatusNewOrLater(accessPoint);
         List<MarryExtractShort> marryExtractShorts = marryExtractShortRepository.findMarrySameByAccessPointAndStatusNewOrLater(accessPoint);
-        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findMarrySameByAccessPointAndStatusNewOrLater(accessPoint);
+        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findAllMarrySameByAccessPointAndStatusNewOrLater(accessPoint);
         List<WedlockExtractShort> wedlockExtractShorts = wedlockExtractShortRepository.findWedlockSameByAccessPointAndStatusNewOrLater(accessPoint);
-        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findWedlockSameByAccessPointAndStatusNewOrLater(accessPoint);
+        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findAllWedlockSameByAccessPointAndStatusNewOrLater(accessPoint);
         List<DeathExtractShort> deathExtractShorts = deathExtractShortRepository.findDeathSameByAccessPointAndStatusNewOrLater(accessPoint);
-        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findDeathSameByAccessPointAndStatusNewOrLater(accessPoint);
+        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findAllDeathSameByAccessPointAndStatusNewOrLater(accessPoint);
 
         long totalCountParentsChildRemaining = parentsChildrenExtractShorts.size() + parentsChildrenExtractFulls.size();
         long totalCountBirthRemaining = birthExtractShorts.size() + birthExtractFulls.size();

@@ -18,7 +18,17 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
 
     Optional<MarryExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
-    List<MarryExtractFull> findByProjectAndImporterIsNull(Project project);
+    List<MarryExtractFull> findAllByProjectAndImporterIsNull(Project project);
+
+
+    @Query("SELECT mef " +
+            "FROM MarryExtractFull AS mef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON mef.projectNumberBookFile = pnbf " +
+            "WHERE mef.project = :project " +
+            "AND mef.importer = :importer"
+    )
+    List<MarryExtractFull> findAllByProjectAndImporter(Project project, User importer);
 
 
     @Query("SELECT mef " +
@@ -29,7 +39,7 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
             "AND mef.importer = :importer " +
             "AND mef.status = 'NEW'"
     )
-    List<MarryExtractFull> findByProjectAndImporterAndStatusNew(Project project, User importer);
+    List<MarryExtractFull> findAllByProjectAndImporterAndStatusNew(Project project, User importer);
 
 
     @Query("SELECT mef " +
@@ -40,7 +50,7 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
             "AND mef.importer = :importer " +
             "AND mef.status = 'LATER_PROCESSING'"
     )
-    List<MarryExtractFull> findByProjectAndImporterAndStatusLater(Project project, User importer);
+    List<MarryExtractFull> findAllByProjectAndImporterAndStatusLater(Project project, User importer);
 
 
     @Query("SELECT mef " +
@@ -53,7 +63,7 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
             "OR mef.status = 'MATCHING' " +
             "OR mef.status = 'NOT_MATCHING')"
     )
-    List<MarryExtractFull> findByProjectAndImporterAndStatusImported(Project project, User importer);
+    List<MarryExtractFull> findAllByProjectAndImporterAndStatusImported(Project project, User importer);
 
 
     @Query("SELECT mef " +
@@ -66,6 +76,6 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
             "OR mef.status = 'LATER_PROCESSING') " +
             "ORDER BY mef.id DESC"
     )
-    List<MarryExtractFull> findMarrySameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
+    List<MarryExtractFull> findAllMarrySameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 
 }

@@ -68,6 +68,28 @@ public class ExtractFullAPI {
     private final ModelMapper modelMapper;
 
 
+    @GetMapping("/all/{projectId}")
+    public ResponseEntity<ResponseObject> getAllExtractFull(
+            @PathVariable @Pattern(regexp = "^[1-9]\\d*$", message = "ID dự án phải là một số") String projectId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("Dự án không tồn tại");
+        });
+
+        User importer = userService.getAuthenticatedUser();
+
+        List<ExtractFullResponse> extractFullResponses = projectService.findAllExtractFullResponse(project, importer);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu danh sách trường dài thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(extractFullResponses)
+                .build());
+    }
+
     @GetMapping("/new/{projectId}")
     public ResponseEntity<ResponseObject> getAllExtractFullNew(
             @PathVariable @Pattern(regexp = "^[1-9]\\d*$", message = "ID dự án phải là một số") String projectId
