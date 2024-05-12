@@ -15,9 +15,19 @@ public interface MarryExtractShortRepository extends JpaRepository<MarryExtractS
 
     Optional<MarryExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
-    List<MarryExtractShort> findByProjectAndImporterIsNull(Project project);
+    List<MarryExtractShort> findAllByProjectAndImporterIsNull(Project project);
 
-    List<MarryExtractShort> findByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+    List<MarryExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+
+    @Query("SELECT mes " +
+            "FROM MarryExtractShort AS mes " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON mes.projectNumberBookFile = pnbf " +
+            "WHERE mes.project = :project " +
+            "AND mes.importer = :importer"
+    )
+    List<MarryExtractShort> findAllByProjectAndImporter(Project project, User importer);
 
 
     @Query("SELECT mes " +

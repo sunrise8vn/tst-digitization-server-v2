@@ -13,9 +13,21 @@ import java.util.Optional;
 
 public interface ParentsChildrenExtractShortRepository extends JpaRepository<ParentsChildrenExtractShort, Long> {
 
-    List<ParentsChildrenExtractShort> findByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+    Optional<ParentsChildrenExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
-    List<ParentsChildrenExtractShort> findByProjectAndImporterIsNull(Project project);
+    List<ParentsChildrenExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    List<ParentsChildrenExtractShort> findAllByProjectAndImporterIsNull(Project project);
+
+
+    @Query("SELECT pces " +
+            "FROM ParentsChildrenExtractShort AS pces " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON pces.projectNumberBookFile = pnbf " +
+            "WHERE pces.project = :project " +
+            "AND pces.importer = :importer"
+    )
+    List<ParentsChildrenExtractShort> findAllByProjectAndImporter(Project project, User importer);
 
 
     @Query("SELECT pces " +
@@ -26,7 +38,7 @@ public interface ParentsChildrenExtractShortRepository extends JpaRepository<Par
             "AND pces.importer = :importer " +
             "AND pces.status = 'NEW'"
     )
-    List<ParentsChildrenExtractShort> findByProjectAndImporterAndStatusNew(Project project, User importer);
+    List<ParentsChildrenExtractShort> findAllByProjectAndImporterAndStatusNew(Project project, User importer);
 
 
     @Query("SELECT pces " +
@@ -37,7 +49,7 @@ public interface ParentsChildrenExtractShortRepository extends JpaRepository<Par
             "AND pces.importer = :importer " +
             "AND pces.status = 'LATER_PROCESSING'"
     )
-    List<ParentsChildrenExtractShort> findByProjectAndImporterAndStatusLater(Project project, User importer);
+    List<ParentsChildrenExtractShort> findAllByProjectAndImporterAndStatusLater(Project project, User importer);
 
 
     @Query("SELECT pces " +
@@ -50,7 +62,7 @@ public interface ParentsChildrenExtractShortRepository extends JpaRepository<Par
             "OR pces.status = 'MATCHING' " +
             "OR pces.status = 'NOT_MATCHING')"
     )
-    List<ParentsChildrenExtractShort> findByProjectAndImporterAndStatusImported(Project project, User importer);
+    List<ParentsChildrenExtractShort> findAllByProjectAndImporterAndStatusImported(Project project, User importer);
 
 
     @Query("SELECT pces " +
@@ -63,9 +75,6 @@ public interface ParentsChildrenExtractShortRepository extends JpaRepository<Par
             "OR pces.status = 'LATER_PROCESSING') " +
             "ORDER BY pces.id DESC"
     )
-    List<ParentsChildrenExtractShort> findParentsChildrenSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
-
-
-    Optional<ParentsChildrenExtractShort> findByIdAndStatus(Long id, EInputStatus status);
+    List<ParentsChildrenExtractShort> findAllParentsChildrenSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
 
 }

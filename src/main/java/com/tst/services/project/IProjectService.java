@@ -14,6 +14,8 @@ import java.util.List;
 
 public interface IProjectService extends IGeneralService<Project, Long> {
 
+    List<ExtractShortResponse> findAllExtractShortResponse(Project project, User importer);
+
     List<ExtractFullResponse> findAllExtractFullResponse(Project project, User importer);
 
     List<ExtractShortResponse> findAllNewExtractShortResponse(Project project, User importer);
