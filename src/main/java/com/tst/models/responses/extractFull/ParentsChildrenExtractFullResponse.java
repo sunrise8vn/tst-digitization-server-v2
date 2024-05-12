@@ -22,8 +22,8 @@ public class ParentsChildrenExtractFullResponse {
     private String numberPage;
     private String decisionNo;
     private String registrationDate;
-    private List<RegistrationTypeDetailResponse> registrationType;
-    private List<ConfirmationTypeResponse> confirmationType;
+    private String registrationType;
+    private String confirmationType;
     private String registrationPlace;
     private String signer;
     private String signerPosition;
@@ -35,9 +35,9 @@ public class ParentsChildrenExtractFullResponse {
     private String parentNationality;
     private String parentOtherNationality;
     private String parentHomeTown;
-    private List<ResidenceTypeResponse> parentResidenceType;
+    private String parentResidenceType;
     private String parentResidence;
-    private List<IdentificationTypeResponse> parentIdentificationType;
+    private String parentIdentificationType;
     private String parentOtherDocument;
     private String parentIdentificationNumber;
     private String parentIdentificationIssuanceDate;
@@ -48,9 +48,9 @@ public class ParentsChildrenExtractFullResponse {
     private String childNationality;
     private String childOtherNationality;
     private String childHomeTown;
-    private List<ResidenceTypeResponse> childResidenceType;
+    private String childResidenceType;
     private String childResidence;
-    private List<IdentificationTypeResponse> childIdentificationType;
+    private String childIdentificationType;
     private String childOtherDocument;
     private String childIdentificationNumber;
     private String childIdentificationIssuanceDate;
@@ -58,7 +58,7 @@ public class ParentsChildrenExtractFullResponse {
     private String petitionerFullName;
     private String petitionerRecipientRelationship;
     private String petitionerReceiverRelationship;
-    private List<IdentificationTypeResponse> petitionerIdentificationType;
+    private String petitionerIdentificationType;
     private String petitionerIdentificationNumber;
     private String petitionerIdentificationIssuanceDate;
     private String petitionerIdentificationIssuancePlace;
