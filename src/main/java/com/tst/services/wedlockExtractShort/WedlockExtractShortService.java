@@ -1,6 +1,6 @@
 package com.tst.services.wedlockExtractShort;
 
-import com.tst.exceptions.DataNotFoundException;
+import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractShort.WedlockExtractShortDTO;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.extractShort.WedlockExtractShort;
@@ -48,25 +48,25 @@ public class WedlockExtractShortService implements IWedlockExtractShortService {
         genderTypeRepository.findByCode(
                 wedlockExtractShortDTO.getConfirmerGender()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Giới tính của người xác nhận không tồn tại");
+            throw new DataInputException("Giới tính của người xác nhận không tồn tại");
         });
 
         residenceTypeRepository.findByCode(
                 wedlockExtractShortDTO.getConfirmerResidenceType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại cư trú của người xác nhận không tồn tại");
+            throw new DataInputException("Loại cư trú của người xác nhận không tồn tại");
         });
 
         identificationTypeRepository.findByCode(
                 wedlockExtractShortDTO.getConfirmerIdentificationType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại giấy tờ tùy thân của người xác nhận không tồn tại");
+            throw new DataInputException("Loại giấy tờ tùy thân của người xác nhận không tồn tại");
         });
 
         identificationTypeRepository.findByCode(
                 wedlockExtractShortDTO.getPetitionerIdentificationType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại giấy tờ tùy thân của người yêu cầu không tồn tại");
+            throw new DataInputException("Loại giấy tờ tùy thân của người yêu cầu không tồn tại");
         });
 
         modelMapper.map(

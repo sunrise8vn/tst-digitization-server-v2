@@ -1,19 +1,15 @@
 package com.tst.api;
 
-import com.tst.exceptions.DataNotFoundException;
+import com.tst.exceptions.DataInputException;
 import com.tst.exceptions.PermissionDenyException;
 import com.tst.models.dtos.extractShort.*;
 import com.tst.models.dtos.project.ProjectExtractDTO;
 import com.tst.models.entities.Project;
-import com.tst.models.entities.extractFull.*;
 import com.tst.models.entities.extractShort.*;
 import com.tst.models.enums.EInputStatus;
-import com.tst.models.enums.ERegistrationType;
-import com.tst.models.responses.extractFull.*;
 import com.tst.models.responses.extractShort.*;
 import com.tst.models.entities.User;
 import com.tst.models.responses.ResponseObject;
-import com.tst.models.responses.typeList.*;
 import com.tst.services.birthCertificateType.IBirthCertificateTypeService;
 import com.tst.services.birthExtractShort.IBirthExtractShortService;
 import com.tst.services.confirmationType.IConfirmationTypeService;
@@ -76,7 +72,7 @@ public class ExtractShortAPI {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Dự án không tồn tại");
+            throw new DataInputException("Dự án không tồn tại");
         });
 
         User importer = userService.getAuthenticatedUser();
@@ -98,7 +94,7 @@ public class ExtractShortAPI {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Dự án không tồn tại");
+            throw new DataInputException("Dự án không tồn tại");
         });
 
         User importer = userService.getAuthenticatedUser();
@@ -120,7 +116,7 @@ public class ExtractShortAPI {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Dự án không tồn tại");
+            throw new DataInputException("Dự án không tồn tại");
         });
 
         User importer = userService.getAuthenticatedUser();
@@ -142,7 +138,7 @@ public class ExtractShortAPI {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Dự án không tồn tại");
+            throw new DataInputException("Dự án không tồn tại");
         });
 
         User importer = userService.getAuthenticatedUser();
@@ -176,14 +172,14 @@ public class ExtractShortAPI {
         Project project = projectService.findById(
                 Long.parseLong(projectExtractDTO.getProjectId())
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID dự án không tồn tại");
+            throw new DataInputException("ID dự án không tồn tại");
         });
 
         ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortService.findByIdAndStatusBeforeCompare(
                 project,
                 Long.parseLong(projectExtractDTO.getId())
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (parentsChildrenExtractShort.getImporter() == null || !parentsChildrenExtractShort.getImporter().getId().equals(user.getId())) {
@@ -225,14 +221,14 @@ public class ExtractShortAPI {
         Project project = projectService.findById(
                 Long.parseLong(projectExtractDTO.getProjectId())
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID dự án không tồn tại");
+            throw new DataInputException("ID dự án không tồn tại");
         });
 
         BirthExtractShort birthExtractShort = birthExtractShortService.findByIdAndStatusBeforeCompare(
                 project,
                 Long.parseLong(projectExtractDTO.getId())
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (birthExtractShort.getImporter() == null || !birthExtractShort.getImporter().getId().equals(user.getId())) {
@@ -274,14 +270,14 @@ public class ExtractShortAPI {
         Project project = projectService.findById(
                 Long.parseLong(projectExtractDTO.getProjectId())
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID dự án không tồn tại");
+            throw new DataInputException("ID dự án không tồn tại");
         });
 
         MarryExtractShort marryExtractShort = marryExtractShortService.findByIdAndStatusBeforeCompare(
                 project,
                 Long.parseLong(projectExtractDTO.getId())
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (marryExtractShort.getImporter() == null || !marryExtractShort.getImporter().getId().equals(user.getId())) {
@@ -323,14 +319,14 @@ public class ExtractShortAPI {
         Project project = projectService.findById(
                 Long.parseLong(projectExtractDTO.getProjectId())
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID dự án không tồn tại");
+            throw new DataInputException("ID dự án không tồn tại");
         });
 
         WedlockExtractShort wedlockExtractShort = wedlockExtractShortService.findByIdAndStatusBeforeCompare(
                 project,
                 Long.parseLong(projectExtractDTO.getId())
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (wedlockExtractShort.getImporter() == null || !wedlockExtractShort.getImporter().getId().equals(user.getId())) {
@@ -372,14 +368,14 @@ public class ExtractShortAPI {
         Project project = projectService.findById(
                 Long.parseLong(projectExtractDTO.getProjectId())
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID dự án không tồn tại");
+            throw new DataInputException("ID dự án không tồn tại");
         });
 
         DeathExtractShort deathExtractShort = deathExtractShortService.findByIdAndStatusBeforeCompare(
                 project,
                 Long.parseLong(projectExtractDTO.getId())
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (deathExtractShort.getImporter() == null || !deathExtractShort.getImporter().getId().equals(user.getId())) {
@@ -412,7 +408,7 @@ public class ExtractShortAPI {
                 Long.parseLong(id),
                 EInputStatus.NEW
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (parentsChildrenExtractShort.getImporter() == null || !parentsChildrenExtractShort.getImporter().getId().equals(user.getId())) {
@@ -457,7 +453,7 @@ public class ExtractShortAPI {
                 Long.parseLong(id),
                 EInputStatus.NEW
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (birthExtractShort.getImporter() == null || !birthExtractShort.getImporter().getId().equals(user.getId())) {
@@ -505,7 +501,7 @@ public class ExtractShortAPI {
                 Long.parseLong(id),
                 EInputStatus.NEW
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (marryExtractShort.getImporter() == null || !marryExtractShort.getImporter().getId().equals(user.getId())) {
@@ -549,7 +545,7 @@ public class ExtractShortAPI {
                 Long.parseLong(id),
                 EInputStatus.NEW
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (wedlockExtractShort.getImporter() == null || !wedlockExtractShort.getImporter().getId().equals(user.getId())) {
@@ -589,7 +585,7 @@ public class ExtractShortAPI {
                 Long.parseLong(id),
                 EInputStatus.NEW
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (deathExtractShort.getImporter() == null || !deathExtractShort.getImporter().getId().equals(user.getId())) {
@@ -645,7 +641,7 @@ public class ExtractShortAPI {
                 Long.parseLong(parentsChildrenExtractShortDTO.getId()),
                 EInputStatus.NEW
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (parentsChildrenExtractShort.getImporter() == null || !parentsChildrenExtractShort.getImporter().getId().equals(user.getId())) {
@@ -681,7 +677,7 @@ public class ExtractShortAPI {
                 Long.parseLong(birthExtractShortDTO.getId()),
                 EInputStatus.NEW
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (birthExtractShort.getImporter() == null || !birthExtractShort.getImporter().getId().equals(user.getId())) {
@@ -717,7 +713,7 @@ public class ExtractShortAPI {
                 Long.parseLong(marryExtractShortDTO.getId()),
                 EInputStatus.NEW
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (marryExtractShort.getImporter() == null || !marryExtractShort.getImporter().getId().equals(user.getId())) {
@@ -753,7 +749,7 @@ public class ExtractShortAPI {
                 Long.parseLong(wedlockExtractShortDTO.getId()),
                 EInputStatus.NEW
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (wedlockExtractShort.getImporter() == null || !wedlockExtractShort.getImporter().getId().equals(user.getId())) {
@@ -789,7 +785,7 @@ public class ExtractShortAPI {
                 Long.parseLong(deathExtractShortDTO.getId()),
                 EInputStatus.NEW
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+            throw new DataInputException("ID biểu mẫu không tồn tại");
         });
 
         if (deathExtractShort.getImporter() == null || !deathExtractShort.getImporter().getId().equals(user.getId())) {

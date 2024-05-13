@@ -1,6 +1,6 @@
 package com.tst.services.birthExtractFull;
 
-import com.tst.exceptions.DataNotFoundException;
+import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.BirthExtractFullDTO;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.BirthExtractFull;
@@ -51,49 +51,49 @@ public class BirthExtractFullService implements IBirthExtractFullService {
                 birthExtractFullDTO.getRegistrationType(),
                 ERegistrationType.KS
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại đăng ký không tồn tại");
+            throw new DataInputException("Loại đăng ký không tồn tại");
         });
 
         genderTypeRepository.findByCode(
                 birthExtractFullDTO.getBirtherGender()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại giới tính không tồn tại");
+            throw new DataInputException("Loại giới tính không tồn tại");
         });
 
         birthCertificateTypeRepository.findByCode(
                 birthExtractFullDTO.getBirthCertificateType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại khai sinh không tồn tại");
+            throw new DataInputException("Loại khai sinh không tồn tại");
         });
 
         residenceTypeRepository.findByCode(
                 birthExtractFullDTO.getMomResidenceType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại cư trú của người mẹ không tồn tại");
+            throw new DataInputException("Loại cư trú của người mẹ không tồn tại");
         });
 
         identificationTypeRepository.findByCode(
                 birthExtractFullDTO.getMomIdentificationType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại giấy tờ tùy thân của người mẹ không tồn tại");
+            throw new DataInputException("Loại giấy tờ tùy thân của người mẹ không tồn tại");
         });
 
         residenceTypeRepository.findByCode(
                 birthExtractFullDTO.getDadResidenceType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại cư trú của người cha không tồn tại");
+            throw new DataInputException("Loại cư trú của người cha không tồn tại");
         });
 
         identificationTypeRepository.findByCode(
                 birthExtractFullDTO.getDadIdentificationType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại giấy tờ tùy thân của người cha không tồn tại");
+            throw new DataInputException("Loại giấy tờ tùy thân của người cha không tồn tại");
         });
 
         identificationTypeRepository.findByCode(
                 birthExtractFullDTO.getPetitionerIdentificationType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại giấy tờ tùy thân của người yêu cầu không tồn tại");
+            throw new DataInputException("Loại giấy tờ tùy thân của người yêu cầu không tồn tại");
         });
 
         modelMapper.map(

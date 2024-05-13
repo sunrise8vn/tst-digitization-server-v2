@@ -1,7 +1,7 @@
 package com.tst.services.projectNumberBook;
 
 import com.tst.exceptions.DataInputException;
-import com.tst.exceptions.DataNotFoundException;
+import com.tst.exceptions.DataInputException;
 import com.tst.models.entities.*;
 import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.repositories.ProjectNumberBookRepository;
@@ -57,7 +57,7 @@ public class ProjectNumberBookService implements IProjectNumberBookService {
         String fileType = Objects.requireNonNull(coverFile.getContentType()).split("/")[1].toLowerCase();
 
         if (!fileType.equals("pdf")) {
-            throw new DataNotFoundException("Chỉ chấp nhận tập tin pdf");
+            throw new DataInputException("Chỉ chấp nhận tập tin pdf");
         } else {
             ProjectRegistrationDate projectRegistrationDate = projectNumberBook.getProjectRegistrationDate();
 
@@ -84,37 +84,37 @@ public class ProjectNumberBookService implements IProjectNumberBookService {
             ProjectPaperSize projectPaperSize = projectPaperSizeService.findById(
                     projectRegistrationDate.getProjectPaperSize().getId()
             ).orElseThrow(() -> {
-                throw new DataNotFoundException("Không tìm thấy khổ giấy của tài liệu");
+                throw new DataInputException("Không tìm thấy khổ giấy của tài liệu");
             });
 
             ProjectRegistrationType projectRegistrationType = projectRegistrationTypeService.findById(
                     projectPaperSize.getProjectRegistrationType().getId()
             ).orElseThrow(() -> {
-                throw new DataNotFoundException("Không tìm thấy loại tài liệu đăng ký");
+                throw new DataInputException("Không tìm thấy loại tài liệu đăng ký");
             });
 
             ProjectWard projectWard = projectWardService.findById(
                     projectRegistrationType.getProjectWard().getId()
             ).orElseThrow(() -> {
-                throw new DataNotFoundException("Không tìm thấy phường/xã đăng ký");
+                throw new DataInputException("Không tìm thấy phường/xã đăng ký");
             });
 
             ProjectDistrict projectDistrict = projectDistrictService.findById(
                     projectWard.getProjectDistrict().getId()
             ).orElseThrow(() -> {
-                throw new DataNotFoundException("Không tìm thấy thành phố/quận/huyện đăng ký");
+                throw new DataInputException("Không tìm thấy thành phố/quận/huyện đăng ký");
             });
 
             ProjectProvince projectProvince = projectProvinceService.findById(
                     projectDistrict.getProjectProvince().getId()
             ).orElseThrow(() -> {
-                throw new DataNotFoundException("Không tìm thấy tỉnh/thành phố đăng ký");
+                throw new DataInputException("Không tìm thấy tỉnh/thành phố đăng ký");
             });
 
             Project project = projectService.findById(
                     projectProvince.getProject().getId()
             ).orElseThrow(() -> {
-                throw new DataNotFoundException("Không tìm thấy dự án đăng ký");
+                throw new DataInputException("Không tìm thấy dự án đăng ký");
             });
 
             String coverFileName = projectWard.getCode() + "." +

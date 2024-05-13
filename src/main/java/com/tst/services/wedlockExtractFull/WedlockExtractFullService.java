@@ -1,6 +1,6 @@
 package com.tst.services.wedlockExtractFull;
 
-import com.tst.exceptions.DataNotFoundException;
+import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.WedlockExtractFullDTO;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.WedlockExtractFull;
@@ -48,31 +48,31 @@ public class WedlockExtractFullService implements IWedlockExtractFullService {
         genderTypeRepository.findByCode(
                 wedlockExtractFullDTO.getConfirmerGender()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Giới tính của người xác nhận không tồn tại");
+            throw new DataInputException("Giới tính của người xác nhận không tồn tại");
         });
 
         residenceTypeRepository.findByCode(
                 wedlockExtractFullDTO.getConfirmerResidenceType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại cư trú của người xác nhận không tồn tại");
+            throw new DataInputException("Loại cư trú của người xác nhận không tồn tại");
         });
 
         identificationTypeRepository.findByCode(
                 wedlockExtractFullDTO.getConfirmerIdentificationType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại giấy tờ tùy thân của người xác nhận không tồn tại");
+            throw new DataInputException("Loại giấy tờ tùy thân của người xác nhận không tồn tại");
         });
 
         intendedUseTypeRepository.findByCode(
                 wedlockExtractFullDTO.getConfirmerIntendedUseType()
         ).orElseThrow(() -> {
-           throw new DataNotFoundException("Loại mục đích sử dụng của người xác nhận không tồn tại");
+           throw new DataInputException("Loại mục đích sử dụng của người xác nhận không tồn tại");
         });
 
         identificationTypeRepository.findByCode(
                 wedlockExtractFullDTO.getPetitionerIdentificationType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại giấy tờ tùy thân của người yêu cầu không tồn tại");
+            throw new DataInputException("Loại giấy tờ tùy thân của người yêu cầu không tồn tại");
         });
 
         modelMapper.map(
