@@ -25,6 +25,8 @@ public class Project {
     @Column(nullable = false)
     private String code;
 
+    private String description;
+
     @Column(nullable = false)
     private String folder;
 
