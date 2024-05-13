@@ -16,6 +16,20 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
 
     Optional<MarryExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
+
+    @Query("SELECT mef " +
+            "FROM MarryExtractFull AS mef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON mef.projectNumberBookFile = pnbf " +
+            "WHERE mef.project = :project " +
+            "AND mef.id = :id " +
+            "AND (mef.status = 'NEW' " +
+            "OR mef.status = 'IMPORTED'" +
+            "OR mef.status = 'LATER_PROCESSING')"
+    )
+    Optional<MarryExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id);
+
+
     Optional<MarryExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
     List<MarryExtractFull> findAllByProjectAndImporterIsNull(Project project);
