@@ -21,13 +21,12 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
             "FROM BirthExtractFull AS bef " +
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON bef.projectNumberBookFile = pnbf " +
-            "WHERE bef.project = :project " +
-            "AND bef.id = :id " +
+            "WHERE bef.id = :id " +
             "AND (bef.status = 'NEW' " +
             "OR bef.status = 'IMPORTED'" +
             "OR bef.status = 'LATER_PROCESSING')"
     )
-    Optional<BirthExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id);
+    Optional<BirthExtractFull> findByIdAndStatusBeforeCompare(Long id);
 
 
     Optional<BirthExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);

@@ -20,13 +20,12 @@ public interface MarryExtractShortRepository extends JpaRepository<MarryExtractS
             "FROM MarryExtractShort AS mes " +
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON mes.projectNumberBookFile = pnbf " +
-            "WHERE mes.project = :project " +
-            "AND mes.id = :id " +
+            "WHERE mes.id = :id " +
             "AND (mes.status = 'NEW' " +
             "OR mes.status = 'IMPORTED'" +
             "OR mes.status = 'LATER_PROCESSING')"
     )
-    Optional<MarryExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id);
+    Optional<MarryExtractShort> findByIdAndStatusBeforeCompare(Long id);
 
 
     List<MarryExtractShort> findAllByProjectAndImporterIsNull(Project project);

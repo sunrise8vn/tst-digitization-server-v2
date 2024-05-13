@@ -21,13 +21,12 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
             "FROM ParentsChildrenExtractFull AS pcef " +
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON pcef.projectNumberBookFile = pnbf " +
-            "WHERE pcef.project = :project " +
-            "AND pcef.id = :id " +
+            "WHERE pcef.id = :id " +
             "AND (pcef.status = 'NEW' " +
             "OR pcef.status = 'IMPORTED'" +
             "OR pcef.status = 'LATER_PROCESSING')"
     )
-    Optional<ParentsChildrenExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id);
+    Optional<ParentsChildrenExtractFull> findByIdAndStatusBeforeCompare(Long id);
 
 
     Optional<ParentsChildrenExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);

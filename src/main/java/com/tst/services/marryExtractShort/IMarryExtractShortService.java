@@ -1,7 +1,6 @@
 package com.tst.services.marryExtractShort;
 
 import com.tst.models.dtos.extractShort.MarryExtractShortDTO;
-import com.tst.models.entities.Project;
 import com.tst.models.entities.extractShort.MarryExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.services.IGeneralService;
@@ -12,9 +11,9 @@ public interface IMarryExtractShortService extends IGeneralService<MarryExtractS
 
     Optional<MarryExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
-    Optional<MarryExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id);
+    Optional<MarryExtractShort> findByIdAndStatusBeforeCompare(Long id);
 
-    void update(
+    void importBeforeCompare(
             MarryExtractShort marryExtractShort,
             MarryExtractShortDTO marryExtractShortDTO
     );

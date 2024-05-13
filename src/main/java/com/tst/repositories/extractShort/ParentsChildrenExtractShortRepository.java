@@ -20,13 +20,12 @@ public interface ParentsChildrenExtractShortRepository extends JpaRepository<Par
             "FROM ParentsChildrenExtractShort AS pces " +
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON pces.projectNumberBookFile = pnbf " +
-            "WHERE pces.project = :project " +
-            "AND pces.id = :id " +
+            "WHERE pces.id = :id " +
             "AND (pces.status = 'NEW' " +
             "OR pces.status = 'IMPORTED'" +
             "OR pces.status = 'LATER_PROCESSING')"
     )
-    Optional<ParentsChildrenExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id);
+    Optional<ParentsChildrenExtractShort> findByIdAndStatusBeforeCompare(Long id);
 
 
     List<ParentsChildrenExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);

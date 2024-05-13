@@ -2,7 +2,6 @@ package com.tst.services.wedlockExtractFull;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.WedlockExtractFullDTO;
-import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.WedlockExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.repositories.*;
@@ -39,12 +38,12 @@ public class WedlockExtractFullService implements IWedlockExtractFullService {
     }
 
     @Override
-    public Optional<WedlockExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id) {
-        return wedlockExtractFullRepository.findByIdAndStatusBeforeCompare(project, id);
+    public Optional<WedlockExtractFull> findByIdAndStatusBeforeCompare(Long id) {
+        return wedlockExtractFullRepository.findByIdAndStatusBeforeCompare(id);
     }
 
     @Override
-    public void update(WedlockExtractFull wedlockExtractFull, WedlockExtractFullDTO wedlockExtractFullDTO) {
+    public void importBeforeCompare(WedlockExtractFull wedlockExtractFull, WedlockExtractFullDTO wedlockExtractFullDTO) {
         genderTypeRepository.findByCode(
                 wedlockExtractFullDTO.getConfirmerGender()
         ).orElseThrow(() -> {

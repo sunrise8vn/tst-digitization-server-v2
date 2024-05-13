@@ -12,8 +12,12 @@ import lombok.*;
 @Setter
 @Builder
 public class DeathExtractFullDTO {
-    @Pattern(regexp = "^\\d*$", message = "ID phải là số")
+    @Pattern(regexp = "^\\d*$", message = "ID biểu mẫu phải là số")
     private String id;
+
+    @Pattern(regexp = "^\\d*$", message = "ID dự án phải là số")
+    private String projectId;
+
     private String number;
     private String numberPage;
     private String registrationDate;

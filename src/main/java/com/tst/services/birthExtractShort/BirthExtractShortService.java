@@ -2,7 +2,6 @@ package com.tst.services.birthExtractShort;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractShort.BirthExtractShortDTO;
-import com.tst.models.entities.Project;
 import com.tst.models.entities.extractShort.BirthExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
@@ -41,12 +40,12 @@ public class BirthExtractShortService implements IBirthExtractShortService {
     }
 
     @Override
-    public Optional<BirthExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id) {
-        return birthExtractShortRepository.findByIdAndStatusBeforeCompare(project, id);
+    public Optional<BirthExtractShort> findByIdAndStatusBeforeCompare(Long id) {
+        return birthExtractShortRepository.findByIdAndStatusBeforeCompare(id);
     }
 
     @Override
-    public void update(BirthExtractShort birthExtractShort, BirthExtractShortDTO birthExtractShortDTO) {
+    public void importBeforeCompare(BirthExtractShort birthExtractShort, BirthExtractShortDTO birthExtractShortDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 birthExtractShortDTO.getRegistrationType(),
                 ERegistrationType.KS

@@ -20,13 +20,12 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
             "FROM DeathExtractShort AS des " +
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON des.projectNumberBookFile = pnbf " +
-            "WHERE des.project = :project " +
-            "AND des.id = :id " +
+            "WHERE des.id = :id " +
             "AND (des.status = 'NEW' " +
             "OR des.status = 'IMPORTED'" +
             "OR des.status = 'LATER_PROCESSING')"
     )
-    Optional<DeathExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id);
+    Optional<DeathExtractShort> findByIdAndStatusBeforeCompare(Long id);
 
 
     List<DeathExtractShort> findAllByProjectAndImporterIsNull(Project project);

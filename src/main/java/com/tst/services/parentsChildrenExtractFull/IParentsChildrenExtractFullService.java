@@ -1,7 +1,6 @@
 package com.tst.services.parentsChildrenExtractFull;
 
 import com.tst.models.dtos.extractFull.ParentsChildrenExtractFullDTO;
-import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.ParentsChildrenExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.services.IGeneralService;
@@ -12,9 +11,9 @@ public interface IParentsChildrenExtractFullService extends IGeneralService<Pare
 
     Optional<ParentsChildrenExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
-    Optional<ParentsChildrenExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id);
+    Optional<ParentsChildrenExtractFull> findByIdAndStatusBeforeCompare(Long id);
 
-    void update(
+    void importBeforeCompare(
             ParentsChildrenExtractFull parentsChildrenExtractFull,
             ParentsChildrenExtractFullDTO parentsChildrenExtractFullDTO
     );
