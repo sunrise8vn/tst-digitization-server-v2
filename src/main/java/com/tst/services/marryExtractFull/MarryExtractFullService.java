@@ -1,6 +1,6 @@
 package com.tst.services.marryExtractFull;
 
-import com.tst.exceptions.DataNotFoundException;
+import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.MarryExtractFullDTO;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.MarryExtractFull;
@@ -52,37 +52,37 @@ public class MarryExtractFullService implements IMarryExtractFullService {
                 marryExtractFullDTO.getRegistrationType(),
                 ERegistrationType.KH
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại đăng ký không tồn tại");
+            throw new DataInputException("Loại đăng ký không tồn tại");
         });
 
         maritalStatusTypeRepository.findByCode(
                 marryExtractFullDTO.getMaritalStatus()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Tình trạng hôn nhân không tồn tại");
+            throw new DataInputException("Tình trạng hôn nhân không tồn tại");
         });
 
         residenceTypeRepository.findByCode(
                 marryExtractFullDTO.getHusbandResidenceType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại cư trú của người chồng không tồn tại");
+            throw new DataInputException("Loại cư trú của người chồng không tồn tại");
         });
 
         identificationTypeRepository.findByCode(
                 marryExtractFullDTO.getHusbandIdentificationType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại giấy tờ tùy thân của người chồng không tồn tại");
+            throw new DataInputException("Loại giấy tờ tùy thân của người chồng không tồn tại");
         });
 
         residenceTypeRepository.findByCode(
                 marryExtractFullDTO.getWifeResidenceType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại cư trú của người vợ không tồn tại");
+            throw new DataInputException("Loại cư trú của người vợ không tồn tại");
         });
 
         identificationTypeRepository.findByCode(
                 marryExtractFullDTO.getWifeIdentificationType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại giấy tờ tùy thân của người vợ không tồn tại");
+            throw new DataInputException("Loại giấy tờ tùy thân của người vợ không tồn tại");
         });
 
         modelMapper.map(

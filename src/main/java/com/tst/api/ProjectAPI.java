@@ -1,7 +1,6 @@
 package com.tst.api;
 
 import com.tst.exceptions.DataInputException;
-import com.tst.exceptions.DataNotFoundException;
 import com.tst.exceptions.PermissionDenyException;
 import com.tst.models.dtos.accessPoint.AccessPointRevokeDTO;
 import com.tst.models.dtos.project.*;
@@ -83,25 +82,25 @@ public class ProjectAPI {
         Project project = projectService.findById(
                 Long.parseLong(registrationPointDTO.getProject_id())
         ).orElseThrow(() -> {
-           throw new DataNotFoundException("Dự án không tồn tại");
+           throw new DataInputException("Dự án không tồn tại");
         });
 
         LocationProvince locationProvince = locationProvinceService.findById(
                 Long.parseLong(registrationPointDTO.getProvince_id())
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Tỉnh/thành phố không tồn tại");
+            throw new DataInputException("Tỉnh/thành phố không tồn tại");
         });
 
         LocationDistrict locationDistrict = locationDistrictService.findById(
                 Long.parseLong(registrationPointDTO.getDistrict_id())
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Thành phố/quận/huyện không tồn tại");
+            throw new DataInputException("Thành phố/quận/huyện không tồn tại");
         });
 
         LocationWard locationWard = locationWardService.findById(
                 Long.parseLong(registrationPointDTO.getWard_id())
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Phường/xã không tồn tại");
+            throw new DataInputException("Phường/xã không tồn tại");
         });
 
         projectService.createRegistrationPoint(
@@ -156,7 +155,7 @@ public class ProjectAPI {
         RegistrationType registrationType = registrationTypeService.findByCode(
                 eRegistrationType
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại sổ đăng ký không tồn tại");
+            throw new DataInputException("Loại sổ đăng ký không tồn tại");
         });
 
         if (!EPaperSize.checkValue(registrationNumberBookDTO.getPaper_size_code())) {
@@ -189,7 +188,7 @@ public class ProjectAPI {
 //        ProjectRegistrationDate projectRegistrationDate = projectRegistrationDateService.findById(
 //                projectNumberBookCreateDTO.getProject_registration_date_id()
 //        ).orElseThrow(() -> {
-//            throw new DataNotFoundException("Năm đăng ký không tồn tại");
+//            throw new DataInputException("Năm đăng ký không tồn tại");
 //        });
 //
 //        ProjectNumberBook projectNumberBook = projectNumberBookCreateDTO.toProjectNumberBook(projectRegistrationDate);
@@ -245,7 +244,7 @@ public class ProjectAPI {
                 Long.parseLong(projectNumberBookFileDTO.getNumber_book_id()),
                 EProjectNumberBookStatus.ACCEPT
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID quyển số không tồn tại");
+            throw new DataInputException("ID quyển số không tồn tại");
         });
 
         List<String> failedFiles = projectNumberBookFileService.create(
@@ -292,7 +291,7 @@ public class ProjectAPI {
         Project project = projectService.findById(
                 Long.parseLong(assignExtractFormDTO.getProject_id())
         ).orElseThrow(() -> {
-           throw new DataNotFoundException("ID dự án không tồn tại");
+           throw new DataInputException("ID dự án không tồn tại");
         });
 
         User user = userService.getAuthenticatedUser();
@@ -346,7 +345,7 @@ public class ProjectAPI {
         AccessPoint accessPoint = accessPointService.findById(
                 Long.parseLong(accessPointId)
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID điểm truy cập không tồn tại");
+            throw new DataInputException("ID điểm truy cập không tồn tại");
         });
 
         projectService.autoCompareExtractShortFull(accessPoint);
@@ -377,7 +376,7 @@ public class ProjectAPI {
         AccessPoint accessPoint = accessPointService.findById(
                 Long.parseLong(accessPointRevokeDTO.getAccess_point_id())
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID điểm truy cập không tồn tại");
+            throw new DataInputException("ID điểm truy cập không tồn tại");
         });
 
         accessPointService.revokeExtractForm(accessPoint, Long.parseLong(accessPointRevokeDTO.getTotal_count_revoke()));
@@ -399,7 +398,7 @@ public class ProjectAPI {
                 Long.parseLong(projectNumberBookId),
                 EProjectNumberBookStatus.NEW
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID quyển số không tồn tại");
+            throw new DataInputException("ID quyển số không tồn tại");
         });
 
         projectNumberBookService.updateAccept(projectNumberBook);
@@ -421,7 +420,7 @@ public class ProjectAPI {
                 Long.parseLong(projectNumberBookId),
                 EProjectNumberBookStatus.NEW
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID quyển số không tồn tại");
+            throw new DataInputException("ID quyển số không tồn tại");
         });
 
         projectNumberBookService.updateCancel(projectNumberBook);
@@ -455,7 +454,7 @@ public class ProjectAPI {
                 Long.parseLong(projectNumberBookFileOrganizationDTO.getId()),
                 EProjectNumberBookFileStatus.NEW
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID tập tin không tồn tại");
+            throw new DataInputException("ID tập tin không tồn tại");
         });
 
         projectNumberBookFileService.organization(
@@ -483,7 +482,7 @@ public class ProjectAPI {
                 Long.parseLong(id),
                 EProjectNumberBookFileStatus.ORGANIZED
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("ID tập tin không tồn tại");
+            throw new DataInputException("ID tập tin không tồn tại");
         });
 
         projectNumberBookFileService.approve(projectNumberBookFile);

@@ -1,6 +1,6 @@
 package com.tst.services.deathExtractShort;
 
-import com.tst.exceptions.DataNotFoundException;
+import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractShort.DeathExtractShortDTO;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.extractShort.DeathExtractShort;
@@ -51,37 +51,37 @@ public class DeathExtractShortService implements IDeathExtractShortService {
                 deathExtractShortDTO.getRegistrationType(),
                 ERegistrationType.KT
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại đăng ký không tồn tại");
+            throw new DataInputException("Loại đăng ký không tồn tại");
         });
 
         genderTypeRepository.findByCode(
                 deathExtractShortDTO.getDeadManGender()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại giới tính của người khai tử không tồn tại");
+            throw new DataInputException("Loại giới tính của người khai tử không tồn tại");
         });
 
         residenceTypeRepository.findByCode(
                 deathExtractShortDTO.getDeadManResidenceType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại cư trú của người khai tử không tồn tại");
+            throw new DataInputException("Loại cư trú của người khai tử không tồn tại");
         });
 
         identificationTypeRepository.findByCode(
                 deathExtractShortDTO.getDeadManIdentificationType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại giấy tờ tùy thân của người khai tử không tồn tại");
+            throw new DataInputException("Loại giấy tờ tùy thân của người khai tử không tồn tại");
         });
 
         deathNoticeTypeRepository.findByCode(
                 deathExtractShortDTO.getDeathNoticeType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại giấy báo tử không tồn tại");
+            throw new DataInputException("Loại giấy báo tử không tồn tại");
         });
 
         identificationTypeRepository.findByCode(
                 deathExtractShortDTO.getPetitionerIdentificationType()
         ).orElseThrow(() -> {
-            throw new DataNotFoundException("Loại giấy tờ tùy thân của người yêu cầu không tồn tại");
+            throw new DataInputException("Loại giấy tờ tùy thân của người yêu cầu không tồn tại");
         });
 
         modelMapper.map(
