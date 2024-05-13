@@ -4,17 +4,13 @@ import com.tst.components.LocalizationUtils;
 import com.tst.models.dtos.auth.RefreshTokenDTO;
 import com.tst.models.dtos.user.UserCreateDTO;
 import com.tst.models.dtos.user.UserLoginDTO;
-import com.tst.models.entities.ProjectUser;
 import com.tst.models.entities.Token;
 import com.tst.models.entities.User;
 import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.auth.AuthLoginResponse;
 import com.tst.models.responses.auth.AuthTokenResponse;
 import com.tst.models.responses.auth.AuthUserResponse;
-import com.tst.models.responses.project.ProjectResponse;
 import com.tst.models.responses.user.UserRegisterResponse;
-import com.tst.services.project.IProjectService;
-import com.tst.services.projectUser.IProjectUserService;
 import com.tst.services.token.ITokenService;
 import com.tst.services.user.IUserService;
 import com.tst.utils.AppUtils;
@@ -27,8 +23,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 
 @RestController
 @RequestMapping("${api.prefix}/auth")
@@ -36,8 +30,6 @@ import java.util.List;
 public class AuthAPI {
 
     private final IUserService userService;
-    private final IProjectService projectService;
-    private final IProjectUserService projectUserService;
     private final LocalizationUtils localizationUtils;
     private final AppUtils appUtils;
     private final ITokenService tokenService;
@@ -113,12 +105,9 @@ public class AuthAPI {
                 .refreshToken(jwtToken.getRefreshToken())
                 .build();
 
-        List<ProjectResponse> projectResponses = projectUserService.findAllProjectResponseByUser(userDetail);
-
         AuthLoginResponse authLoginResponse = AuthLoginResponse.builder()
                 .user(authUserResponse)
                 .token(authTokenResponse)
-                .projects(projectResponses)
                 .build();
 
         return ResponseEntity.ok().body(ResponseObject.builder()

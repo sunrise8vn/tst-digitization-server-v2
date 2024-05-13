@@ -2,10 +2,8 @@ package com.tst.models.responses.auth;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.tst.models.responses.project.ProjectResponse;
 import lombok.*;
 
-import java.util.List;
 
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -17,6 +15,5 @@ import java.util.List;
 public class AuthLoginResponse {
     private AuthUserResponse user;
     private AuthTokenResponse token;
-    private List<ProjectResponse> projects;
 
 }
