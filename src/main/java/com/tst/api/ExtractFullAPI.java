@@ -242,6 +242,9 @@ public class ExtractFullAPI {
                 BirthExtractFullResponse.class
         );
 
+        birthExtractFullResponse.setFolderPath(birthExtractFull.getProjectNumberBookFile().getFolderPath());
+        birthExtractFullResponse.setFileName(birthExtractFull.getProjectNumberBookFile().getFileName());
+
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường dài của biểu mẫu khai sinh thành công")
                 .status(HttpStatus.OK.value())
@@ -287,6 +290,9 @@ public class ExtractFullAPI {
                 marryExtractFull,
                 MarryExtractFullResponse.class
         );
+
+        marryExtractFullResponse.setFolderPath(marryExtractFull.getProjectNumberBookFile().getFolderPath());
+        marryExtractFullResponse.setFileName(marryExtractFull.getProjectNumberBookFile().getFileName());
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường dài của biểu mẫu kết hôn thành công")
@@ -334,6 +340,9 @@ public class ExtractFullAPI {
                 WedlockExtractFullResponse.class
         );
 
+        wedlockExtractFullResponse.setFolderPath(wedlockExtractFull.getProjectNumberBookFile().getFolderPath());
+        wedlockExtractFullResponse.setFileName(wedlockExtractFull.getProjectNumberBookFile().getFileName());
+
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường dài của biểu mẫu tình trạng hôn nhân thành công")
                 .status(HttpStatus.OK.value())
@@ -379,6 +388,9 @@ public class ExtractFullAPI {
                 deathExtractFull,
                 DeathExtractFullResponse.class
         );
+
+        deathExtractFullResponse.setFolderPath(deathExtractFull.getProjectNumberBookFile().getFolderPath());
+        deathExtractFullResponse.setFileName(deathExtractFull.getProjectNumberBookFile().getFileName());
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy dữ liệu trường dài của biểu mẫu khai tử thành công")

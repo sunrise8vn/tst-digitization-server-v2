@@ -2,6 +2,7 @@ package com.tst.services.deathExtractShort;
 
 import com.tst.exceptions.DataNotFoundException;
 import com.tst.models.dtos.extractShort.DeathExtractShortDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractShort.DeathExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
@@ -37,6 +38,11 @@ public class DeathExtractShortService implements IDeathExtractShortService {
     @Override
     public Optional<DeathExtractShort> findByIdAndStatus(Long id, EInputStatus status) {
         return deathExtractShortRepository.findByIdAndStatus(id, status);
+    }
+
+    @Override
+    public Optional<DeathExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id) {
+        return deathExtractShortRepository.findByIdAndStatusBeforeCompare(project, id);
     }
 
     @Override

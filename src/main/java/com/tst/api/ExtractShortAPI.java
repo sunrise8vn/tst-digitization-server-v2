@@ -3,10 +3,13 @@ package com.tst.api;
 import com.tst.exceptions.DataNotFoundException;
 import com.tst.exceptions.PermissionDenyException;
 import com.tst.models.dtos.extractShort.*;
+import com.tst.models.dtos.project.ProjectExtractDTO;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.extractFull.*;
 import com.tst.models.entities.extractShort.*;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
+import com.tst.models.responses.extractFull.*;
 import com.tst.models.responses.extractShort.*;
 import com.tst.models.entities.User;
 import com.tst.models.responses.ResponseObject;
@@ -151,6 +154,251 @@ public class ExtractShortAPI {
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .data(extractShortResponses)
+                .build());
+    }
+
+    @PostMapping("/get-parents-children")
+    public ResponseEntity<ResponseObject> getParentsChildrenExtractBeforeCompare(
+            @Validated @RequestBody ProjectExtractDTO projectExtractDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi lấy dữ liệu trường dài của biểu mẫu cha mẹ con")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        User user = userService.getAuthenticatedUser();
+
+        Project project = projectService.findById(
+                Long.parseLong(projectExtractDTO.getProjectId())
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("ID dự án không tồn tại");
+        });
+
+        ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortService.findByIdAndStatusBeforeCompare(
+                project,
+                Long.parseLong(projectExtractDTO.getId())
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+        });
+
+        if (parentsChildrenExtractShort.getImporter() == null || !parentsChildrenExtractShort.getImporter().getId().equals(user.getId())) {
+            throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        ParentsChildrenExtractShortResponse parentsChildrenExtractShortResponse = modelMapper.map(
+                parentsChildrenExtractShort,
+                ParentsChildrenExtractShortResponse.class
+        );
+
+        parentsChildrenExtractShortResponse.setFolderPath(parentsChildrenExtractShort.getProjectNumberBookFile().getFolderPath());
+        parentsChildrenExtractShortResponse.setFileName(parentsChildrenExtractShort.getProjectNumberBookFile().getFileName());
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu trường dài của biểu mẫu cha mẹ con thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(parentsChildrenExtractShortResponse)
+                .build());
+    }
+
+    @PostMapping("/get-birth")
+    public ResponseEntity<ResponseObject> getBirthExtractBeforeCompare(
+            @Validated @RequestBody ProjectExtractDTO projectExtractDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi lấy dữ liệu trường dài của biểu mẫu khai sinh")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        User user = userService.getAuthenticatedUser();
+
+        Project project = projectService.findById(
+                Long.parseLong(projectExtractDTO.getProjectId())
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("ID dự án không tồn tại");
+        });
+
+        BirthExtractShort birthExtractShort = birthExtractShortService.findByIdAndStatusBeforeCompare(
+                project,
+                Long.parseLong(projectExtractDTO.getId())
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+        });
+
+        if (birthExtractShort.getImporter() == null || !birthExtractShort.getImporter().getId().equals(user.getId())) {
+            throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        BirthExtractShortResponse birthExtractShortResponse = modelMapper.map(
+                birthExtractShort,
+                BirthExtractShortResponse.class
+        );
+
+        birthExtractShortResponse.setFolderPath(birthExtractShort.getProjectNumberBookFile().getFolderPath());
+        birthExtractShortResponse.setFileName(birthExtractShort.getProjectNumberBookFile().getFileName());
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu trường dài của biểu mẫu khai sinh thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(birthExtractShortResponse)
+                .build());
+    }
+
+    @PostMapping("/get-marry")
+    public ResponseEntity<ResponseObject> getMarryExtractBeforeCompare(
+            @Validated @RequestBody ProjectExtractDTO projectExtractDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi lấy dữ liệu trường dài của biểu mẫu kết hôn")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        User user = userService.getAuthenticatedUser();
+
+        Project project = projectService.findById(
+                Long.parseLong(projectExtractDTO.getProjectId())
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("ID dự án không tồn tại");
+        });
+
+        MarryExtractShort marryExtractShort = marryExtractShortService.findByIdAndStatusBeforeCompare(
+                project,
+                Long.parseLong(projectExtractDTO.getId())
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+        });
+
+        if (marryExtractShort.getImporter() == null || !marryExtractShort.getImporter().getId().equals(user.getId())) {
+            throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        MarryExtractShortResponse marryExtractShortResponse = modelMapper.map(
+                marryExtractShort,
+                MarryExtractShortResponse.class
+        );
+
+        marryExtractShortResponse.setFolderPath(marryExtractShort.getProjectNumberBookFile().getFolderPath());
+        marryExtractShortResponse.setFileName(marryExtractShort.getProjectNumberBookFile().getFileName());
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu trường dài của biểu mẫu kết hôn thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(marryExtractShortResponse)
+                .build());
+    }
+
+    @PostMapping("/get-wedlock")
+    public ResponseEntity<ResponseObject> getWedlockExtractBeforeCompare(
+            @Validated @RequestBody ProjectExtractDTO projectExtractDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi lấy dữ liệu trường dài của biểu mẫu tình trạng hôn nhân")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        User user = userService.getAuthenticatedUser();
+
+        Project project = projectService.findById(
+                Long.parseLong(projectExtractDTO.getProjectId())
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("ID dự án không tồn tại");
+        });
+
+        WedlockExtractShort wedlockExtractShort = wedlockExtractShortService.findByIdAndStatusBeforeCompare(
+                project,
+                Long.parseLong(projectExtractDTO.getId())
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+        });
+
+        if (wedlockExtractShort.getImporter() == null || !wedlockExtractShort.getImporter().getId().equals(user.getId())) {
+            throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        WedlockExtractShortResponse wedlockExtractShortResponse = modelMapper.map(
+                wedlockExtractShort,
+                WedlockExtractShortResponse.class
+        );
+
+        wedlockExtractShortResponse.setFolderPath(wedlockExtractShort.getProjectNumberBookFile().getFolderPath());
+        wedlockExtractShortResponse.setFileName(wedlockExtractShort.getProjectNumberBookFile().getFileName());
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu trường dài của biểu mẫu tình trạng hôn nhân thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(wedlockExtractShortResponse)
+                .build());
+    }
+
+    @PostMapping("/get-death")
+    public ResponseEntity<ResponseObject> getDeathExtractBeforeCompare(
+            @Validated @RequestBody ProjectExtractDTO projectExtractDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi lấy dữ liệu trường dài của biểu mẫu khai tử")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        User user = userService.getAuthenticatedUser();
+
+        Project project = projectService.findById(
+                Long.parseLong(projectExtractDTO.getProjectId())
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("ID dự án không tồn tại");
+        });
+
+        DeathExtractShort deathExtractShort = deathExtractShortService.findByIdAndStatusBeforeCompare(
+                project,
+                Long.parseLong(projectExtractDTO.getId())
+        ).orElseThrow(() -> {
+            throw new DataNotFoundException("ID biểu mẫu không tồn tại");
+        });
+
+        if (deathExtractShort.getImporter() == null || !deathExtractShort.getImporter().getId().equals(user.getId())) {
+            throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        DeathExtractShortResponse deathExtractShortResponse = modelMapper.map(
+                deathExtractShort,
+                DeathExtractShortResponse.class
+        );
+
+        deathExtractShortResponse.setFolderPath(deathExtractShort.getProjectNumberBookFile().getFolderPath());
+        deathExtractShortResponse.setFileName(deathExtractShort.getProjectNumberBookFile().getFileName());
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu trường dài của biểu mẫu khai tử thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(deathExtractShortResponse)
                 .build());
     }
 
