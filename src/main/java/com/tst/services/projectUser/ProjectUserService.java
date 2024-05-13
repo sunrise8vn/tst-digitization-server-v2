@@ -3,10 +3,12 @@ package com.tst.services.projectUser;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectUser;
 import com.tst.models.entities.User;
+import com.tst.models.responses.project.ProjectResponse;
 import com.tst.repositories.ProjectUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -24,6 +26,11 @@ public class ProjectUserService implements IProjectUserService {
     @Override
     public Optional<ProjectUser> findByProjectAndUser(Project project, User user) {
         return projectUserRepository.findByProjectAndUser(project, user);
+    }
+
+    @Override
+    public List<ProjectResponse> findAllProjectResponseByUser(User user) {
+        return projectUserRepository.findAllProjectResponseByUser(user);
     }
 
     @Override
