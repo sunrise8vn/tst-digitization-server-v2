@@ -13,6 +13,7 @@ import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.models.enums.EProjectNumberBookFileStatus;
 import com.tst.models.enums.ERegistrationType;
 import com.tst.models.responses.ResponseObject;
+import com.tst.models.responses.project.ProjectResponse;
 import com.tst.services.accessPoint.IAccessPointService;
 import com.tst.services.locationDistrict.ILocationDistrictService;
 import com.tst.services.locationProvince.ILocationProvinceService;
@@ -64,6 +65,20 @@ public class ProjectAPI {
     private final AppUtils appUtils;
     private final FileUtils fileUtils;
 
+
+    @GetMapping("/get-all")
+    public ResponseEntity<ResponseObject> getAllProjects() {
+        User user = userService.getAuthenticatedUser();
+
+        List<ProjectResponse> projectResponses = projectUserService.findAllProjectResponseByUser(user);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách dự án thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(projectResponses)
+                .build());
+    }
 
     @PostMapping("/registration-point")
     public ResponseEntity<ResponseObject> createRegistrationPoint(
