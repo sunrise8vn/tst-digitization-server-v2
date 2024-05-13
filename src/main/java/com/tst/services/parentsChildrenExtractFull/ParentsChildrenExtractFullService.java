@@ -2,6 +2,7 @@ package com.tst.services.parentsChildrenExtractFull;
 
 import com.tst.exceptions.DataNotFoundException;
 import com.tst.models.dtos.extractFull.ParentsChildrenExtractFullDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.ParentsChildrenExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
@@ -39,6 +40,11 @@ public class ParentsChildrenExtractFullService implements IParentsChildrenExtrac
     @Override
     public Optional<ParentsChildrenExtractFull> findByIdAndStatus(Long id, EInputStatus status) {
         return parentsChildrenExtractFullRepository.findByIdAndStatus(id, status);
+    }
+
+    @Override
+    public Optional<ParentsChildrenExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id) {
+        return parentsChildrenExtractFullRepository.findByIdAndStatusBeforeCompare(project, id);
     }
 
     @Override

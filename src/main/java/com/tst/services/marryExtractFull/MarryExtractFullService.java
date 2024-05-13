@@ -2,6 +2,7 @@ package com.tst.services.marryExtractFull;
 
 import com.tst.exceptions.DataNotFoundException;
 import com.tst.models.dtos.extractFull.MarryExtractFullDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.MarryExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
@@ -38,6 +39,11 @@ public class MarryExtractFullService implements IMarryExtractFullService {
     @Override
     public Optional<MarryExtractFull> findByIdAndStatus(Long id, EInputStatus status) {
         return marryExtractFullRepository.findByIdAndStatus(id, status);
+    }
+
+    @Override
+    public Optional<MarryExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id) {
+        return marryExtractFullRepository.findByIdAndStatusBeforeCompare(project, id);
     }
 
     @Override

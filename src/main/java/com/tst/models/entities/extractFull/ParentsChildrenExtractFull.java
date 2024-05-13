@@ -106,6 +106,9 @@ public class ParentsChildrenExtractFull {
     @Column(name = "child_full_name", length = 50)
     private String childFullName;
 
+    @Column(name = "child_gender")
+    private String childGender;
+
     @Column(name = "child_birthday", length = 10)
     private String childBirthday;
 

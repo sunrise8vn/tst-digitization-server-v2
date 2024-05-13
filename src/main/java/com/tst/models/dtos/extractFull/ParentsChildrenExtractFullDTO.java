@@ -57,6 +57,10 @@ public class ParentsChildrenExtractFullDTO {
     private String parentIdentificationIssuanceDate;
     private String parentIdentificationIssuancePlace;
     private String childFullName;
+
+    @Pattern(regexp = "^\\d*$", message = "Giới tính của người con phải là số")
+    private String childGender;
+
     private String childBirthday;
     private String childNation;
     private String childNationality;

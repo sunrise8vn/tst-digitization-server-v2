@@ -16,6 +16,20 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
 
     Optional<BirthExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
+
+    @Query("SELECT bef " +
+            "FROM BirthExtractFull AS bef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON bef.projectNumberBookFile = pnbf " +
+            "WHERE bef.project = :project " +
+            "AND bef.id = :id " +
+            "AND (bef.status = 'NEW' " +
+            "OR bef.status = 'IMPORTED'" +
+            "OR bef.status = 'LATER_PROCESSING')"
+    )
+    Optional<BirthExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id);
+
+
     Optional<BirthExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
     List<BirthExtractFull> findAllByProjectAndImporterIsNull(Project project);

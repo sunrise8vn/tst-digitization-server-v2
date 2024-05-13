@@ -14,6 +14,22 @@ import java.util.Optional;
 
 public interface ParentsChildrenExtractFullRepository extends JpaRepository<ParentsChildrenExtractFull, Long> {
 
+    Optional<ParentsChildrenExtractFull> findByIdAndStatus(Long id, EInputStatus status);
+
+
+    @Query("SELECT pcef " +
+            "FROM ParentsChildrenExtractFull AS pcef " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON pcef.projectNumberBookFile = pnbf " +
+            "WHERE pcef.project = :project " +
+            "AND pcef.id = :id " +
+            "AND (pcef.status = 'NEW' " +
+            "OR pcef.status = 'IMPORTED'" +
+            "OR pcef.status = 'LATER_PROCESSING')"
+    )
+    Optional<ParentsChildrenExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id);
+
+
     Optional<ParentsChildrenExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
     List<ParentsChildrenExtractFull> findByProjectAndImporterIsNull(Project project);
@@ -35,8 +51,8 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
             "ON pcef.projectNumberBookFile = pnbf " +
             "WHERE pcef.project = :project " +
             "AND pcef.importer = :importer " +
-            "AND pcef.status = 'NEW' " +
-            "OR pcef.status = 'LATER_PROCESSING'"
+            "AND (pcef.status = 'NEW' " +
+            "OR pcef.status = 'LATER_PROCESSING')"
     )
     List<ParentsChildrenExtractFull> findAllByProjectAndImporterAndStatusNew(Project project, User importer);
 
@@ -76,8 +92,5 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
             "ORDER BY pcef.id DESC"
     )
     List<ParentsChildrenExtractFull> findAllParentsChildrenSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
-
-
-    Optional<ParentsChildrenExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
 }

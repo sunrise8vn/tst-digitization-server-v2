@@ -2,6 +2,7 @@ package com.tst.services.wedlockExtractFull;
 
 import com.tst.exceptions.DataNotFoundException;
 import com.tst.models.dtos.extractFull.WedlockExtractFullDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.WedlockExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.repositories.*;
@@ -35,6 +36,11 @@ public class WedlockExtractFullService implements IWedlockExtractFullService {
     @Override
     public Optional<WedlockExtractFull> findByIdAndStatus(Long id, EInputStatus status) {
         return wedlockExtractFullRepository.findByIdAndStatus(id, status);
+    }
+
+    @Override
+    public Optional<WedlockExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id) {
+        return wedlockExtractFullRepository.findByIdAndStatusBeforeCompare(project, id);
     }
 
     @Override

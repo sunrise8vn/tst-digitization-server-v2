@@ -2,6 +2,7 @@ package com.tst.services.birthExtractFull;
 
 import com.tst.exceptions.DataNotFoundException;
 import com.tst.models.dtos.extractFull.BirthExtractFullDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.BirthExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
@@ -37,6 +38,11 @@ public class BirthExtractFullService implements IBirthExtractFullService {
     @Override
     public Optional<BirthExtractFull> findByIdAndStatus(Long id, EInputStatus status) {
         return birthExtractFullRepository.findByIdAndStatus(id, status);
+    }
+
+    @Override
+    public Optional<BirthExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id) {
+        return birthExtractFullRepository.findByIdAndStatusBeforeCompare(project, id);
     }
 
     @Override

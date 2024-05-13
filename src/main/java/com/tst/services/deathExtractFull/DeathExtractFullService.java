@@ -2,6 +2,7 @@ package com.tst.services.deathExtractFull;
 
 import com.tst.exceptions.DataNotFoundException;
 import com.tst.models.dtos.extractFull.DeathExtractFullDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.DeathExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
@@ -37,6 +38,11 @@ public class DeathExtractFullService implements IDeathExtractFullService {
     @Override
     public Optional<DeathExtractFull> findByIdAndStatus(Long id, EInputStatus status) {
         return deathExtractFullRepository.findByIdAndStatus(id, status);
+    }
+
+    @Override
+    public Optional<DeathExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id) {
+        return deathExtractFullRepository.findByIdAndStatusBeforeCompare(project, id);
     }
 
     @Override
