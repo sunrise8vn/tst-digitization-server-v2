@@ -2,6 +2,7 @@ package com.tst.services.marryExtractShort;
 
 import com.tst.exceptions.DataNotFoundException;
 import com.tst.models.dtos.extractShort.MarryExtractShortDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractShort.MarryExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
@@ -38,6 +39,11 @@ public class MarryExtractShortService implements IMarryExtractShortService {
     @Override
     public Optional<MarryExtractShort> findByIdAndStatus(Long id, EInputStatus status) {
         return marryExtractShortRepository.findByIdAndStatus(id, status);
+    }
+
+    @Override
+    public Optional<MarryExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id) {
+        return marryExtractShortRepository.findByIdAndStatusBeforeCompare(project, id);
     }
 
     @Override

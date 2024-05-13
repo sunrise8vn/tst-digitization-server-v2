@@ -2,6 +2,7 @@ package com.tst.services.wedlockExtractShort;
 
 import com.tst.exceptions.DataNotFoundException;
 import com.tst.models.dtos.extractShort.WedlockExtractShortDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractShort.WedlockExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.repositories.GenderTypeRepository;
@@ -35,6 +36,11 @@ public class WedlockExtractShortService implements IWedlockExtractShortService {
     @Override
     public Optional<WedlockExtractShort> findByIdAndStatus(Long id, EInputStatus status) {
         return wedlockExtractShortRepository.findByIdAndStatus(id, status);
+    }
+
+    @Override
+    public Optional<WedlockExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id) {
+        return wedlockExtractShortRepository.findByIdAndStatusBeforeCompare(project, id);
     }
 
     @Override

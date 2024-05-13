@@ -2,6 +2,7 @@ package com.tst.services.parentsChildrenExtractShort;
 
 import com.tst.exceptions.DataNotFoundException;
 import com.tst.models.dtos.extractShort.ParentsChildrenExtractShortDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractShort.ParentsChildrenExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
@@ -39,6 +40,11 @@ public class ParentsChildrenExtractShortService implements IParentsChildrenExtra
     @Override
     public Optional<ParentsChildrenExtractShort> findByIdAndStatus(Long id, EInputStatus status) {
         return parentsChildrenExtractShortRepository.findByIdAndStatus(id, status);
+    }
+
+    @Override
+    public Optional<ParentsChildrenExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id) {
+        return parentsChildrenExtractShortRepository.findByIdAndStatusBeforeCompare(project, id);
     }
 
     @Override

@@ -17,6 +17,8 @@ import java.util.List;
 @Builder
 public class WedlockExtractShortResponse {
     private Long id;
+    private String folderPath;
+    private String fileName;
     private String number;
     private String numberPage;
     private String registrationDate;

@@ -15,6 +15,20 @@ public interface WedlockExtractShortRepository extends JpaRepository<WedlockExtr
 
     Optional<WedlockExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
+
+    @Query("SELECT wes " +
+            "FROM WedlockExtractShort AS wes " +
+            "JOIN ProjectNumberBookFile AS pnbf " +
+            "ON wes.projectNumberBookFile = pnbf " +
+            "WHERE wes.project = :project " +
+            "AND wes.id = :id " +
+            "AND (wes.status = 'NEW' " +
+            "OR wes.status = 'IMPORTED'" +
+            "OR wes.status = 'LATER_PROCESSING')"
+    )
+    Optional<WedlockExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id);
+
+
     List<WedlockExtractShort> findAllByProjectAndImporterIsNull(Project project);
 
     List<WedlockExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
