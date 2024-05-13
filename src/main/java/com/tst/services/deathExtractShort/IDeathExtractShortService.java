@@ -1,7 +1,6 @@
 package com.tst.services.deathExtractShort;
 
 import com.tst.models.dtos.extractShort.DeathExtractShortDTO;
-import com.tst.models.entities.Project;
 import com.tst.models.entities.extractShort.DeathExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.services.IGeneralService;
@@ -12,9 +11,9 @@ public interface IDeathExtractShortService extends IGeneralService<DeathExtractS
 
     Optional<DeathExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
-    Optional<DeathExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id);
+    Optional<DeathExtractShort> findByIdAndStatusBeforeCompare(Long id);
 
-    void update(
+    void importBeforeCompare(
             DeathExtractShort deathExtractShort,
             DeathExtractShortDTO deathExtractShortDTO
     );

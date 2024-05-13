@@ -1,7 +1,6 @@
 package com.tst.services.wedlockExtractFull;
 
 import com.tst.models.dtos.extractFull.WedlockExtractFullDTO;
-import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.WedlockExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.services.IGeneralService;
@@ -12,9 +11,9 @@ public interface IWedlockExtractFullService extends IGeneralService<WedlockExtra
 
     Optional<WedlockExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
-    Optional<WedlockExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id);
+    Optional<WedlockExtractFull> findByIdAndStatusBeforeCompare(Long id);
 
-    void update(
+    void importBeforeCompare(
             WedlockExtractFull wedlockExtractFull,
             WedlockExtractFullDTO wedlockExtractFullDTO
     );

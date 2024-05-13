@@ -1,7 +1,6 @@
 package com.tst.services.parentsChildrenExtractShort;
 
 import com.tst.models.dtos.extractShort.ParentsChildrenExtractShortDTO;
-import com.tst.models.entities.Project;
 import com.tst.models.entities.extractShort.ParentsChildrenExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.services.IGeneralService;
@@ -12,9 +11,9 @@ public interface IParentsChildrenExtractShortService extends IGeneralService<Par
 
     Optional<ParentsChildrenExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
-    Optional<ParentsChildrenExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id);
+    Optional<ParentsChildrenExtractShort> findByIdAndStatusBeforeCompare(Long id);
 
-    void update(
+    void importBeforeCompare(
             ParentsChildrenExtractShort parentsChildrenExtractShort,
             ParentsChildrenExtractShortDTO parentsChildrenExtractShortDTO
     );

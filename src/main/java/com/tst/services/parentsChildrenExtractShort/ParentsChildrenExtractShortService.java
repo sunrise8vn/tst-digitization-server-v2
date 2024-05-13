@@ -2,7 +2,6 @@ package com.tst.services.parentsChildrenExtractShort;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractShort.ParentsChildrenExtractShortDTO;
-import com.tst.models.entities.Project;
 import com.tst.models.entities.extractShort.ParentsChildrenExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
@@ -43,12 +42,12 @@ public class ParentsChildrenExtractShortService implements IParentsChildrenExtra
     }
 
     @Override
-    public Optional<ParentsChildrenExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id) {
-        return parentsChildrenExtractShortRepository.findByIdAndStatusBeforeCompare(project, id);
+    public Optional<ParentsChildrenExtractShort> findByIdAndStatusBeforeCompare(Long id) {
+        return parentsChildrenExtractShortRepository.findByIdAndStatusBeforeCompare(id);
     }
 
     @Override
-    public void update(ParentsChildrenExtractShort parentsChildrenExtractShort, ParentsChildrenExtractShortDTO parentsChildrenExtractShortDTO) {
+    public void importBeforeCompare(ParentsChildrenExtractShort parentsChildrenExtractShort, ParentsChildrenExtractShortDTO parentsChildrenExtractShortDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 parentsChildrenExtractShortDTO.getRegistrationType(),
                 ERegistrationType.CMC

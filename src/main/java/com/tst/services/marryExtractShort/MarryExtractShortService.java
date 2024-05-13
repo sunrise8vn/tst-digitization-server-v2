@@ -2,7 +2,6 @@ package com.tst.services.marryExtractShort;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractShort.MarryExtractShortDTO;
-import com.tst.models.entities.Project;
 import com.tst.models.entities.extractShort.MarryExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
@@ -42,12 +41,12 @@ public class MarryExtractShortService implements IMarryExtractShortService {
     }
 
     @Override
-    public Optional<MarryExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id) {
-        return marryExtractShortRepository.findByIdAndStatusBeforeCompare(project, id);
+    public Optional<MarryExtractShort> findByIdAndStatusBeforeCompare(Long id) {
+        return marryExtractShortRepository.findByIdAndStatusBeforeCompare(id);
     }
 
     @Override
-    public void update(MarryExtractShort marryExtractShort, MarryExtractShortDTO marryExtractShortDTO) {
+    public void importBeforeCompare(MarryExtractShort marryExtractShort, MarryExtractShortDTO marryExtractShortDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 marryExtractShortDTO.getRegistrationType(),
                 ERegistrationType.KH

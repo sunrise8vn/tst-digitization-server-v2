@@ -2,7 +2,6 @@ package com.tst.services.deathExtractShort;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractShort.DeathExtractShortDTO;
-import com.tst.models.entities.Project;
 import com.tst.models.entities.extractShort.DeathExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
@@ -41,12 +40,12 @@ public class DeathExtractShortService implements IDeathExtractShortService {
     }
 
     @Override
-    public Optional<DeathExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id) {
-        return deathExtractShortRepository.findByIdAndStatusBeforeCompare(project, id);
+    public Optional<DeathExtractShort> findByIdAndStatusBeforeCompare(Long id) {
+        return deathExtractShortRepository.findByIdAndStatusBeforeCompare(id);
     }
 
     @Override
-    public void update(DeathExtractShort deathExtractShort, DeathExtractShortDTO deathExtractShortDTO) {
+    public void importBeforeCompare(DeathExtractShort deathExtractShort, DeathExtractShortDTO deathExtractShortDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 deathExtractShortDTO.getRegistrationType(),
                 ERegistrationType.KT

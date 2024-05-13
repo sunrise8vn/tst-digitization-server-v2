@@ -2,7 +2,6 @@ package com.tst.services.birthExtractFull;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.BirthExtractFullDTO;
-import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.BirthExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
@@ -41,12 +40,12 @@ public class BirthExtractFullService implements IBirthExtractFullService {
     }
 
     @Override
-    public Optional<BirthExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id) {
-        return birthExtractFullRepository.findByIdAndStatusBeforeCompare(project, id);
+    public Optional<BirthExtractFull> findByIdAndStatusBeforeCompare(Long id) {
+        return birthExtractFullRepository.findByIdAndStatusBeforeCompare(id);
     }
 
     @Override
-    public void update(BirthExtractFull birthExtractFull, BirthExtractFullDTO birthExtractFullDTO) {
+    public void importBeforeCompare(BirthExtractFull birthExtractFull, BirthExtractFullDTO birthExtractFullDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 birthExtractFullDTO.getRegistrationType(),
                 ERegistrationType.KS

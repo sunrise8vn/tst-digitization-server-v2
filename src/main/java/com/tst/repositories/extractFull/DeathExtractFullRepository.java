@@ -21,13 +21,12 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
             "FROM DeathExtractFull AS def " +
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON def.projectNumberBookFile = pnbf " +
-            "WHERE def.project = :project " +
-            "AND def.id = :id " +
+            "WHERE def.id = :id " +
             "AND (def.status = 'NEW' " +
             "OR def.status = 'IMPORTED'" +
             "OR def.status = 'LATER_PROCESSING')"
     )
-    Optional<DeathExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id);
+    Optional<DeathExtractFull> findByIdAndStatusBeforeCompare(Long id);
 
 
     Optional<DeathExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);

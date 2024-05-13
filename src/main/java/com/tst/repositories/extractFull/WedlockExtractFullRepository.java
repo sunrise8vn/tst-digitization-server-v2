@@ -21,13 +21,12 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
             "FROM WedlockExtractFull AS wef " +
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON wef.projectNumberBookFile = pnbf " +
-            "WHERE wef.project = :project " +
-            "AND wef.id = :id " +
+            "WHERE wef.id = :id " +
             "AND (wef.status = 'NEW' " +
             "OR wef.status = 'IMPORTED'" +
             "OR wef.status = 'LATER_PROCESSING')"
     )
-    Optional<WedlockExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id);
+    Optional<WedlockExtractFull> findByIdAndStatusBeforeCompare(Long id);
 
 
     Optional<WedlockExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);

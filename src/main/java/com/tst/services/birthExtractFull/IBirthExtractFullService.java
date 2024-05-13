@@ -1,7 +1,6 @@
 package com.tst.services.birthExtractFull;
 
 import com.tst.models.dtos.extractFull.BirthExtractFullDTO;
-import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.BirthExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.services.IGeneralService;
@@ -12,9 +11,9 @@ public interface IBirthExtractFullService extends IGeneralService<BirthExtractFu
 
     Optional<BirthExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
-    Optional<BirthExtractFull> findByIdAndStatusBeforeCompare(Project project, Long id);
+    Optional<BirthExtractFull> findByIdAndStatusBeforeCompare(Long id);
 
-    void update(
+    void importBeforeCompare(
             BirthExtractFull birthExtractFull,
             BirthExtractFullDTO birthExtractFullDTO
     );

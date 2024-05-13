@@ -20,13 +20,12 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
             "FROM BirthExtractShort AS bes " +
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON bes.projectNumberBookFile = pnbf " +
-            "WHERE bes.project = :project " +
-            "AND bes.id = :id " +
+            "WHERE bes.id = :id " +
             "AND (bes.status = 'NEW' " +
             "OR bes.status = 'IMPORTED'" +
             "OR bes.status = 'LATER_PROCESSING')"
     )
-    Optional<BirthExtractShort> findByIdAndStatusBeforeCompare(Project project, Long id);
+    Optional<BirthExtractShort> findByIdAndStatusBeforeCompare(Long id);
 
 
     List<BirthExtractShort> findAllByProjectAndImporterIsNull(Project project);
