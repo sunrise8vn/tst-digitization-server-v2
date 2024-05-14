@@ -32,10 +32,11 @@ public class JwtTokenUtils {
 
     private final TokenRepository tokenRepository;
 
-    public String generateToken(User user) {
+    public String generateToken(User user, String fullName) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", user.getId());
         claims.put("username", user.getUsername());
+        claims.put("fullName", fullName);
 
         try {
             return Jwts.builder()

@@ -85,7 +85,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         List<ExtractFullResponse> extractFullResponses = projectService.findAllExtractFullResponse(project, user);
@@ -114,7 +114,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         List<ExtractFullResponse> extractFullResponses = projectService.findAllNewExtractFullResponse(project, user);
@@ -143,7 +143,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         List<ExtractFullResponse> extractFullResponses = projectService.findAllLaterExtractFullResponse(project, user);
@@ -430,7 +430,7 @@ public class ExtractFullAPI {
                 project, 
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         ParentsChildrenExtractFull parentsChildrenExtractFull = parentsChildrenExtractFullService.findByIdAndStatusBeforeCompare(
@@ -441,6 +441,10 @@ public class ExtractFullAPI {
 
         if (parentsChildrenExtractFull.getImporter() == null || !parentsChildrenExtractFull.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        if (parentsChildrenExtractFull.getProject() != project) {
+            throw new PermissionDenyException("Biểu mẫu không thuộc dự án này");
         }
 
         ParentsChildrenExtractFullResponse parentsChildrenExtractFullResponse = modelMapper.map(
@@ -485,7 +489,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         BirthExtractFull birthExtractFull = birthExtractFullService.findByIdAndStatusBeforeCompare(
@@ -496,6 +500,10 @@ public class ExtractFullAPI {
 
         if (birthExtractFull.getImporter() == null || !birthExtractFull.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        if (birthExtractFull.getProject() != project) {
+            throw new PermissionDenyException("Biểu mẫu không thuộc dự án này");
         }
 
         BirthExtractFullResponse birthExtractFullResponse = modelMapper.map(
@@ -540,7 +548,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         MarryExtractFull marryExtractFull = marryExtractFullService.findByIdAndStatusBeforeCompare(
@@ -551,6 +559,10 @@ public class ExtractFullAPI {
 
         if (marryExtractFull.getImporter() == null || !marryExtractFull.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        if (marryExtractFull.getProject() != project) {
+            throw new PermissionDenyException("Biểu mẫu không thuộc dự án này");
         }
 
         MarryExtractFullResponse marryExtractFullResponse = modelMapper.map(
@@ -595,7 +607,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         WedlockExtractFull wedlockExtractFull = wedlockExtractFullService.findByIdAndStatusBeforeCompare(
@@ -606,6 +618,10 @@ public class ExtractFullAPI {
 
         if (wedlockExtractFull.getImporter() == null || !wedlockExtractFull.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        if (wedlockExtractFull.getProject() != project) {
+            throw new PermissionDenyException("Biểu mẫu không thuộc dự án này");
         }
 
         WedlockExtractFullResponse wedlockExtractFullResponse = modelMapper.map(
@@ -650,7 +666,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         DeathExtractFull deathExtractFull = deathExtractFullService.findByIdAndStatusBeforeCompare(
@@ -661,6 +677,10 @@ public class ExtractFullAPI {
 
         if (deathExtractFull.getImporter() == null || !deathExtractFull.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        if (deathExtractFull.getProject() != project) {
+            throw new PermissionDenyException("Biểu mẫu không thuộc dự án này");
         }
 
         DeathExtractFullResponse deathExtractFullResponse = modelMapper.map(
@@ -705,7 +725,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         ParentsChildrenExtractFull parentsChildrenExtractFull = parentsChildrenExtractFullService.findByIdAndStatus(
@@ -754,7 +774,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         BirthExtractFull birthExtractFull = birthExtractFullService.findByIdAndStatus(
@@ -803,7 +823,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         MarryExtractFull marryExtractFull = marryExtractFullService.findByIdAndStatus(
@@ -852,7 +872,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         WedlockExtractFull wedlockExtractFull = wedlockExtractFullService.findByIdAndStatus(
@@ -901,7 +921,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         DeathExtractFull deathExtractFull = deathExtractFullService.findByIdAndStatus(
@@ -950,7 +970,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         ParentsChildrenExtractFull parentsChildrenExtractFull = parentsChildrenExtractFullService.findByIdAndStatusBeforeCompare(
@@ -998,7 +1018,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         BirthExtractFull birthExtractFull = birthExtractFullService.findByIdAndStatusBeforeCompare(
@@ -1046,7 +1066,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         MarryExtractFull marryExtractFull = marryExtractFullService.findByIdAndStatusBeforeCompare(
@@ -1094,7 +1114,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         WedlockExtractFull wedlockExtractFull = wedlockExtractFullService.findByIdAndStatusBeforeCompare(
@@ -1142,7 +1162,7 @@ public class ExtractFullAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         DeathExtractFull deathExtractFull = deathExtractFullService.findByIdAndStatusBeforeCompare(

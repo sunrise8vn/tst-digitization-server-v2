@@ -83,7 +83,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         List<ExtractShortResponse> extractShortResponses = projectService.findAllExtractShortResponse(project, user);
@@ -112,7 +112,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         List<ExtractShortResponse> extractShortResponses = projectService.findAllNewExtractShortResponse(project, user);
@@ -141,7 +141,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         List<ExtractShortResponse> extractShortResponses = projectService.findAllLaterExtractShortResponse(project, user);
@@ -170,7 +170,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         List<ExtractShortResponse> extractShortResponses = projectService.findAllImportedExtractShortResponse(project, user);
@@ -432,7 +432,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortService.findByIdAndStatusBeforeCompare(
@@ -443,6 +443,10 @@ public class ExtractShortAPI {
 
         if (parentsChildrenExtractShort.getImporter() == null || !parentsChildrenExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        if (parentsChildrenExtractShort.getProject() != project) {
+            throw new PermissionDenyException("Biểu mẫu không thuộc dự án này");
         }
 
         ParentsChildrenExtractShortResponse parentsChildrenExtractShortResponse = modelMapper.map(
@@ -487,7 +491,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         BirthExtractShort birthExtractShort = birthExtractShortService.findByIdAndStatusBeforeCompare(
@@ -498,6 +502,10 @@ public class ExtractShortAPI {
 
         if (birthExtractShort.getImporter() == null || !birthExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        if (birthExtractShort.getProject() != project) {
+            throw new PermissionDenyException("Biểu mẫu không thuộc dự án này");
         }
 
         BirthExtractShortResponse birthExtractShortResponse = modelMapper.map(
@@ -542,7 +550,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         MarryExtractShort marryExtractShort = marryExtractShortService.findByIdAndStatusBeforeCompare(
@@ -553,6 +561,10 @@ public class ExtractShortAPI {
 
         if (marryExtractShort.getImporter() == null || !marryExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        if (marryExtractShort.getProject() != project) {
+            throw new PermissionDenyException("Biểu mẫu không thuộc dự án này");
         }
 
         MarryExtractShortResponse marryExtractShortResponse = modelMapper.map(
@@ -597,7 +609,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         WedlockExtractShort wedlockExtractShort = wedlockExtractShortService.findByIdAndStatusBeforeCompare(
@@ -608,6 +620,10 @@ public class ExtractShortAPI {
 
         if (wedlockExtractShort.getImporter() == null || !wedlockExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        if (wedlockExtractShort.getProject() != project) {
+            throw new PermissionDenyException("Biểu mẫu không thuộc dự án này");
         }
 
         WedlockExtractShortResponse wedlockExtractShortResponse = modelMapper.map(
@@ -652,7 +668,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         DeathExtractShort deathExtractShort = deathExtractShortService.findByIdAndStatusBeforeCompare(
@@ -663,6 +679,10 @@ public class ExtractShortAPI {
 
         if (deathExtractShort.getImporter() == null || !deathExtractShort.getImporter().getId().equals(user.getId())) {
             throw new PermissionDenyException("Bạn không được phân phối nhập liệu cho biểu mẫu này");
+        }
+
+        if (deathExtractShort.getProject() != project) {
+            throw new PermissionDenyException("Biểu mẫu không thuộc dự án này");
         }
 
         DeathExtractShortResponse deathExtractShortResponse = modelMapper.map(
@@ -707,7 +727,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortService.findByIdAndStatus(
@@ -756,7 +776,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         BirthExtractShort birthExtractShort = birthExtractShortService.findByIdAndStatus(
@@ -805,7 +825,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         MarryExtractShort marryExtractShort = marryExtractShortService.findByIdAndStatus(
@@ -854,7 +874,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         WedlockExtractShort wedlockExtractShort = wedlockExtractShortService.findByIdAndStatus(
@@ -903,7 +923,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         DeathExtractShort deathExtractShort = deathExtractShortService.findByIdAndStatus(
@@ -952,7 +972,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortService.findByIdAndStatusBeforeCompare(
@@ -1000,7 +1020,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         BirthExtractShort birthExtractShort = birthExtractShortService.findByIdAndStatusBeforeCompare(
@@ -1048,7 +1068,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         MarryExtractShort marryExtractShort = marryExtractShortService.findByIdAndStatusBeforeCompare(
@@ -1096,7 +1116,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         WedlockExtractShort wedlockExtractShort = wedlockExtractShortService.findByIdAndStatusBeforeCompare(
@@ -1144,7 +1164,7 @@ public class ExtractShortAPI {
                 project,
                 user
         ).orElseThrow(() -> {
-            throw new DataInputException("Bạn không thuộc dự án này");
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
         DeathExtractShort deathExtractShort = deathExtractShortService.findByIdAndStatusBeforeCompare(

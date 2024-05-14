@@ -2,6 +2,7 @@ package com.tst.models.dtos.extractFull;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
@@ -13,9 +14,11 @@ import lombok.*;
 @Setter
 @Builder
 public class ParentsChildrenExtractFullDTO {
+    @NotBlank(message = "ID biểu mẫu không được rỗng")
     @Pattern(regexp = "^\\d*$", message = "ID biểu mẫu phải là số")
     private String id;
 
+    @NotBlank(message = "ID dự án không được rỗng")
     @Pattern(regexp = "^\\d*$", message = "ID dự án phải là số")
     private String projectId;
 
@@ -33,7 +36,6 @@ public class ParentsChildrenExtractFullDTO {
     @Pattern(regexp = "^\\d*$", message = "Loại xác nhận phải là số")
     private String confirmationType;
 
-    private String registrationPlace;
     private String signer;
     private String signerPosition;
     private String implementer;

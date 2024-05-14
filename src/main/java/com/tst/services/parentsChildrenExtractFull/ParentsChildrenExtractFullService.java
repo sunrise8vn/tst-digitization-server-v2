@@ -5,10 +5,7 @@ import com.tst.models.dtos.extractFull.ParentsChildrenExtractFullDTO;
 import com.tst.models.entities.extractFull.ParentsChildrenExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
-import com.tst.repositories.ConfirmationTypeRepository;
-import com.tst.repositories.IdentificationTypeRepository;
-import com.tst.repositories.RegistrationTypeDetailRepository;
-import com.tst.repositories.ResidenceTypeRepository;
+import com.tst.repositories.*;
 import com.tst.repositories.extractFull.ParentsChildrenExtractFullRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -27,6 +24,7 @@ public class ParentsChildrenExtractFullService implements IParentsChildrenExtrac
     private final ConfirmationTypeRepository confirmationTypeRepository;
     private final ResidenceTypeRepository residenceTypeRepository;
     private final IdentificationTypeRepository identificationTypeRepository;
+    private final GenderTypeRepository genderTypeRepository;
 
     private final ModelMapper modelMapper;
 
@@ -83,6 +81,12 @@ public class ParentsChildrenExtractFullService implements IParentsChildrenExtrac
                 parentsChildrenExtractFullDTO.getChildIdentificationType()
         ).orElseThrow(() -> {
             throw new DataInputException("Loại giấy tờ tùy thân của người con không tồn tại");
+        });
+
+        genderTypeRepository.findByCode(
+                parentsChildrenExtractFullDTO.getChildGender()
+        ).orElseThrow(() -> {
+            throw new DataInputException("Loại giới tính của người con không tồn tại");
         });
 
         identificationTypeRepository.findByCode(
