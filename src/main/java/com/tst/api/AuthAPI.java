@@ -6,6 +6,7 @@ import com.tst.models.dtos.user.UserCreateDTO;
 import com.tst.models.dtos.user.UserLoginDTO;
 import com.tst.models.entities.Token;
 import com.tst.models.entities.User;
+import com.tst.models.entities.UserInfo;
 import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.auth.AuthLoginResponse;
 import com.tst.models.responses.auth.AuthTokenResponse;

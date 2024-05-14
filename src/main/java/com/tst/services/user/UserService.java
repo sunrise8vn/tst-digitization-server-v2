@@ -7,10 +7,12 @@ import com.tst.exceptions.*;
 import com.tst.models.entities.Role;
 import com.tst.models.entities.Token;
 import com.tst.models.entities.User;
+import com.tst.models.entities.UserInfo;
 import com.tst.models.enums.EUserRole;
 import com.tst.models.responses.user.UserResponse;
 import com.tst.repositories.RoleRepository;
 import com.tst.repositories.TokenRepository;
+import com.tst.repositories.UserInfoRepository;
 import com.tst.repositories.UserRepository;
 import com.tst.utils.MessageKeys;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ import java.util.Optional;
 @Service
 public class UserService implements IUserService {
     private final UserRepository userRepository;
+    private final UserInfoRepository userInfoRepository;
     private final RoleRepository roleRepository;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
@@ -138,7 +141,15 @@ public class UserService implements IUserService {
             throw new UnauthorizedException(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_USERNAME_PASSWORD));
         }
 
-        return jwtTokenUtil.generateToken(existingUser);
+        String fullName = null;
+
+        Optional<UserInfo> userInfo = userInfoRepository.findByUser(existingUser);
+
+        if (userInfo.isPresent()) {
+            fullName = userInfo.get().getFullName();
+        }
+
+        return jwtTokenUtil.generateToken(existingUser, fullName);
     }
 
     @Override

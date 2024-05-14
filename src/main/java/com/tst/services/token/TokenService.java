@@ -5,7 +5,9 @@ import com.tst.components.LocalizationUtils;
 import com.tst.exceptions.UnauthorizedException;
 import com.tst.models.entities.Token;
 import com.tst.models.entities.User;
+import com.tst.models.entities.UserInfo;
 import com.tst.repositories.TokenRepository;
+import com.tst.repositories.UserInfoRepository;
 import com.tst.utils.MessageKeys;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -28,6 +31,7 @@ public class TokenService implements ITokenService {
     @Value("${jwt.expiration-refresh-token}")
     private int expirationRefreshToken;
 
+    private final UserInfoRepository userInfoRepository;
     private final TokenRepository tokenRepository;
     private final JwtTokenUtils jwtTokenUtil;
     private final LocalizationUtils localizationUtils;
@@ -77,7 +81,15 @@ public class TokenService implements ITokenService {
             throw new UnauthorizedException(localizationUtils.getLocalizedMessage(MessageKeys.REFRESH_TOKEN_EXPIRED));
         }
 
-        String token = jwtTokenUtil.generateToken(user);
+        String fullName = null;
+
+        Optional<UserInfo> userInfo = userInfoRepository.findByUser(user);
+
+        if (userInfo.isPresent()) {
+            fullName = userInfo.get().getFullName();
+        }
+
+        String token = jwtTokenUtil.generateToken(user, fullName);
         LocalDateTime expirationDateTime = LocalDateTime.now().plusSeconds(expiration);
         existingToken.setExpirationDate(expirationDateTime);
         existingToken.setToken(token);
