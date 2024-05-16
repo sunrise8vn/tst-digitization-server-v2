@@ -13,6 +13,13 @@ public interface IMarryExtractShortService extends IGeneralService<MarryExtractS
 
     Optional<MarryExtractShort> findByIdAndStatusBeforeCompare(Long id);
 
+    Optional<MarryExtractShort> findNextIdAndStatusBeforeCompare(
+            Long projectId,
+            String userId,
+            Long id,
+            String tableName
+    );
+
     void importBeforeCompare(
             MarryExtractShort marryExtractShort,
             MarryExtractShortDTO marryExtractShortDTO

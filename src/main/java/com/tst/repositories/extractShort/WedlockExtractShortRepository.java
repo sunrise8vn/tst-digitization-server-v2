@@ -28,6 +28,10 @@ public interface WedlockExtractShortRepository extends JpaRepository<WedlockExtr
     Optional<WedlockExtractShort> findByIdAndStatusBeforeCompare(Long id);
 
 
+    @Query(value = "CALL sp_find_next_item_all_table_by_next_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
+    Optional<WedlockExtractShort> findNextIdAndStatusBeforeCompare(long projectId, String userId, Long id, String tableName);
+
+
     List<WedlockExtractShort> findAllByProjectAndImporterIsNull(Project project);
 
     List<WedlockExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);

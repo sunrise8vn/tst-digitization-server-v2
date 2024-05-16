@@ -5,6 +5,8 @@ import com.tst.models.entities.Project;
 import com.tst.models.entities.User;
 import com.tst.models.entities.extractShort.ParentsChildrenExtractShort;
 import com.tst.models.enums.EInputStatus;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,6 +14,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ParentsChildrenExtractShortRepository extends JpaRepository<ParentsChildrenExtractShort, Long> {
+
+    @PersistenceContext
+    EntityManager entityManager = null;
 
     Optional<ParentsChildrenExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
@@ -22,10 +27,14 @@ public interface ParentsChildrenExtractShortRepository extends JpaRepository<Par
             "ON pces.projectNumberBookFile = pnbf " +
             "WHERE pces.id = :id " +
             "AND (pces.status = 'NEW' " +
-            "OR pces.status = 'IMPORTED'" +
+            "OR pces.status = 'IMPORTED' " +
             "OR pces.status = 'LATER_PROCESSING')"
     )
     Optional<ParentsChildrenExtractShort> findByIdAndStatusBeforeCompare(Long id);
+
+
+    @Query(value = "CALL sp_find_next_item_all_table_by_next_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
+    Optional<ParentsChildrenExtractShort> findNextIdAndStatusBeforeCompare(long projectId, String userId, Long id, String tableName);
 
 
     List<ParentsChildrenExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);

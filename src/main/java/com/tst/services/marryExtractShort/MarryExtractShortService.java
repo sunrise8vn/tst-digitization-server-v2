@@ -46,6 +46,11 @@ public class MarryExtractShortService implements IMarryExtractShortService {
     }
 
     @Override
+    public Optional<MarryExtractShort> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
+        return marryExtractShortRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    }
+
+    @Override
     public void importBeforeCompare(MarryExtractShort marryExtractShort, MarryExtractShortDTO marryExtractShortDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 marryExtractShortDTO.getRegistrationType(),

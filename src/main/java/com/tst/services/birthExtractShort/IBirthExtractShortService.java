@@ -13,6 +13,13 @@ public interface IBirthExtractShortService extends IGeneralService<BirthExtractS
 
     Optional<BirthExtractShort> findByIdAndStatusBeforeCompare(Long id);
 
+    Optional<BirthExtractShort> findNextIdAndStatusBeforeCompare(
+            Long projectId,
+            String userId,
+            Long id,
+            String tableName
+    );
+
     void importBeforeCompare(
             BirthExtractShort birthExtractShort,
             BirthExtractShortDTO birthExtractShortDTO

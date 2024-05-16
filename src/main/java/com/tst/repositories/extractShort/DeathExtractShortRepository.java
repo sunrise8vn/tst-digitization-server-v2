@@ -28,6 +28,10 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
     Optional<DeathExtractShort> findByIdAndStatusBeforeCompare(Long id);
 
 
+    @Query(value = "CALL sp_find_next_item_all_table_by_next_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
+    Optional<DeathExtractShort> findNextIdAndStatusBeforeCompare(long projectId, String userId, Long id, String tableName);
+
+
     List<DeathExtractShort> findAllByProjectAndImporterIsNull(Project project);
 
     List<DeathExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);

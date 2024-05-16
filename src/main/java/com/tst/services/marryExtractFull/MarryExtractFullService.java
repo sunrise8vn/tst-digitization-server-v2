@@ -46,6 +46,11 @@ public class MarryExtractFullService implements IMarryExtractFullService {
     }
 
     @Override
+    public Optional<MarryExtractFull> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
+        return marryExtractFullRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    }
+
+    @Override
     public void importBeforeCompare(MarryExtractFull marryExtractFull, MarryExtractFullDTO marryExtractFullDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 marryExtractFullDTO.getRegistrationType(),

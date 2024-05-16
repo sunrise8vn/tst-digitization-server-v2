@@ -13,6 +13,13 @@ public interface IWedlockExtractShortService extends IGeneralService<WedlockExtr
 
     Optional<WedlockExtractShort> findByIdAndStatusBeforeCompare(Long id);
 
+    Optional<WedlockExtractShort> findNextIdAndStatusBeforeCompare(
+            Long projectId,
+            String userId,
+            Long id,
+            String tableName
+    );
+
     void importBeforeCompare(
             WedlockExtractShort wedlockExtractShort,
             WedlockExtractShortDTO wedlockExtractShortDTO
