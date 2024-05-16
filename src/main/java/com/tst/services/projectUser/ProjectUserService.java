@@ -4,6 +4,7 @@ import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectUser;
 import com.tst.models.entities.User;
 import com.tst.models.responses.project.ProjectResponse;
+import com.tst.models.responses.project.RegistrationPointResponse;
 import com.tst.repositories.ProjectUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
