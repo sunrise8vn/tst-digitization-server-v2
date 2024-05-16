@@ -12,6 +12,8 @@ import com.tst.models.entities.locationRegion.LocationWard;
 import com.tst.models.enums.*;
 import com.tst.models.responses.extractFull.ExtractFullResponse;
 import com.tst.models.responses.extractShort.ExtractShortResponse;
+import com.tst.models.responses.project.ProjectResponse;
+import com.tst.models.responses.project.RegistrationPointResponse;
 import com.tst.repositories.*;
 import com.tst.repositories.extractFull.*;
 import com.tst.repositories.extractShort.*;
@@ -66,6 +68,11 @@ public class ProjectService implements IProjectService {
     @Override
     public Optional<Project> findById(Long id) {
         return projectRepository.findById(id);
+    }
+
+    @Override
+    public Optional<ProjectResponse> findProjectResponseByProjectAndUser(Project project, User user) {
+        return projectRepository.findProjectResponseByProjectAndUser(project, user);
     }
 
     @Override
@@ -866,6 +873,11 @@ public class ProjectService implements IProjectService {
         }
 
         return extractFullResponses;
+    }
+
+    @Override
+    public List<RegistrationPointResponse> findAllRegistrationPointByProjectAndUser(Project project, User user) {
+        return projectRepository.findAllRegistrationPointByProjectAndUser(project, user);
     }
 
     @Override

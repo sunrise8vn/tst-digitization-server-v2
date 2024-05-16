@@ -7,12 +7,17 @@ import com.tst.models.entities.locationRegion.LocationWard;
 import com.tst.models.enums.EPaperSize;
 import com.tst.models.responses.extractFull.ExtractFullResponse;
 import com.tst.models.responses.extractShort.ExtractShortResponse;
+import com.tst.models.responses.project.ProjectResponse;
+import com.tst.models.responses.project.RegistrationPointResponse;
 import com.tst.services.IGeneralService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IProjectService extends IGeneralService<Project, Long> {
+
+    Optional<ProjectResponse> findProjectResponseByProjectAndUser(Project project, User user);
 
     List<ExtractShortResponse> findAllExtractShortResponse(Project project, User importer);
 
@@ -29,6 +34,8 @@ public interface IProjectService extends IGeneralService<Project, Long> {
     List<ExtractShortResponse> findAllImportedExtractShortResponse(Project project, User importer);
 
     List<ExtractFullResponse> findAllImportedExtractFullResponse(Project project, User importer);
+
+    List<RegistrationPointResponse> findAllRegistrationPointByProjectAndUser(Project project, User user);
 
     void updatePaperCountSize(Project project);
 

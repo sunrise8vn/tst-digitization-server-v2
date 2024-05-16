@@ -14,6 +14,7 @@ import com.tst.models.enums.EProjectNumberBookFileStatus;
 import com.tst.models.enums.ERegistrationType;
 import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.project.ProjectResponse;
+import com.tst.models.responses.project.RegistrationPointResponse;
 import com.tst.services.accessPoint.IAccessPointService;
 import com.tst.services.locationDistrict.ILocationDistrictService;
 import com.tst.services.locationProvince.ILocationProvinceService;
@@ -79,6 +80,74 @@ public class ProjectAPI {
                 .data(projectResponses)
                 .build());
     }
+
+    @PostMapping("/get-all-registration-point-by-project-and-user")
+    public ResponseEntity<ResponseObject> getAllRegistrationPointByProject(
+            @Validated @RequestBody ProjectDTO projectDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lấy danh sách địa điểm theo dự án không thành công")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        Project project = projectService.findById(
+                Long.parseLong(projectDTO.getId())
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        User user = userService.getAuthenticatedUser();
+
+        List<RegistrationPointResponse> registrationPointResponses = projectService.findAllRegistrationPointByProjectAndUser(project, user);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách địa điểm thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(registrationPointResponses)
+                .build());
+    }
+    @PostMapping("/verify-project-by-user")
+    public ResponseEntity<ResponseObject> verifyProjectByUser(
+            @Validated @RequestBody ProjectDTO projectDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Xác thực dự án không thành công")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        Project project = projectService.findById(
+                Long.parseLong(projectDTO.getId())
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        User user = userService.getAuthenticatedUser();
+
+        Optional<ProjectResponse> projectResponse = projectService.findProjectResponseByProjectAndUser(project, user);
+
+        if (projectResponse.isEmpty()) {
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
+        }
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Xác thực dự án thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(projectResponse)
+                .build());
+    }
+
 
     @PostMapping("/registration-point")
     public ResponseEntity<ResponseObject> createRegistrationPoint(
