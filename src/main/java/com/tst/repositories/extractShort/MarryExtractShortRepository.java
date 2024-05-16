@@ -28,6 +28,10 @@ public interface MarryExtractShortRepository extends JpaRepository<MarryExtractS
     Optional<MarryExtractShort> findByIdAndStatusBeforeCompare(Long id);
 
 
+    @Query(value = "CALL sp_find_next_item_all_table_by_next_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
+    Optional<MarryExtractShort> findNextIdAndStatusBeforeCompare(long projectId, String userId, Long id, String tableName);
+
+
     List<MarryExtractShort> findAllByProjectAndImporterIsNull(Project project);
 
     List<MarryExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);

@@ -28,6 +28,10 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
     Optional<BirthExtractShort> findByIdAndStatusBeforeCompare(Long id);
 
 
+    @Query(value = "CALL sp_find_next_item_all_table_by_next_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
+    Optional<BirthExtractShort> findNextIdAndStatusBeforeCompare(long projectId, String userId, Long id, String tableName);
+
+
     List<BirthExtractShort> findAllByProjectAndImporterIsNull(Project project);
 
 

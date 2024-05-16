@@ -7,9 +7,12 @@ import com.tst.models.dtos.project.ProjectExtractDTO;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.*;
+import com.tst.models.entities.extractShort.*;
 import com.tst.models.enums.EInputStatus;
+import com.tst.models.enums.ETableName;
 import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.extractFull.*;
+import com.tst.models.responses.extractShort.*;
 import com.tst.services.birthCertificateType.IBirthCertificateTypeService;
 import com.tst.services.birthExtractFull.IBirthExtractFullService;
 import com.tst.services.confirmationType.IConfirmationTypeService;
@@ -38,6 +41,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -127,7 +131,7 @@ public class ExtractFullAPI {
                 .build());
     }
 
-    @GetMapping("/later/{projectId}")
+    @GetMapping("/later-processing/{projectId}")
     public ResponseEntity<ResponseObject> getAllExtractFullLater(
             @PathVariable @Pattern(regexp = "^[1-9]\\d*$", message = "Dự án phải là một số") String projectId
     ) {
@@ -463,6 +467,66 @@ public class ExtractFullAPI {
                 .build());
     }
 
+    @PostMapping("/get-next-parents-children")
+    public ResponseEntity<ResponseObject> getNextParentsChildrenExtractBeforeCompare(
+            @Validated @RequestBody ProjectExtractDTO projectExtractDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi lấy dữ liệu trường dài của biểu mẫu cha mẹ con")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        User user = userService.getAuthenticatedUser();
+
+        Project project = projectService.findById(
+                Long.parseLong(projectExtractDTO.getProjectId())
+        ).orElseThrow(() -> {
+            throw new DataInputException("ID dự án không tồn tại");
+        });
+
+        projectUserService.findByProjectAndUser(
+                project,
+                user
+        ).orElseThrow(() -> {
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
+        });
+
+        Optional<ParentsChildrenExtractFull> parentsChildrenExtractFull = parentsChildrenExtractFullService.findNextIdAndStatusBeforeCompare(
+                project.getId(),
+                user.getId(),
+                Long.parseLong(projectExtractDTO.getId()),
+                ETableName.ParentsChildrenExtractFull.getValue()
+        );
+
+        if (parentsChildrenExtractFull.isPresent()) {
+            ParentsChildrenExtractFullResponse parentsChildrenExtractFullResponse = modelMapper.map(
+                    parentsChildrenExtractFull,
+                    ParentsChildrenExtractFullResponse.class
+            );
+
+            parentsChildrenExtractFullResponse.setFolderPath(parentsChildrenExtractFull.get().getProjectNumberBookFile().getFolderPath());
+            parentsChildrenExtractFullResponse.setFileName(parentsChildrenExtractFull.get().getProjectNumberBookFile().getFileName());
+
+            return ResponseEntity.ok().body(ResponseObject.builder()
+                    .message("Lấy dữ liệu trường dài của biểu mẫu cha mẹ con thành công")
+                    .status(HttpStatus.OK.value())
+                    .statusText(HttpStatus.OK)
+                    .data(parentsChildrenExtractFullResponse)
+                    .build());
+        }
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Không có biểu mẫu nào tiếp theo")
+                .status(HttpStatus.NO_CONTENT.value())
+                .statusText(HttpStatus.NO_CONTENT)
+                .build());
+    }
+
     @PostMapping("/get-birth")
     public ResponseEntity<ResponseObject> getBirthExtractBeforeCompare(
             @Validated @RequestBody ProjectExtractDTO projectExtractDTO,
@@ -519,6 +583,66 @@ public class ExtractFullAPI {
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .data(birthExtractFullResponse)
+                .build());
+    }
+
+    @PostMapping("/get-next-birth")
+    public ResponseEntity<ResponseObject> getNextBirthExtractBeforeCompare(
+            @Validated @RequestBody ProjectExtractDTO projectExtractDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi lấy dữ liệu trường dài của biểu mẫu khai sinh")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        User user = userService.getAuthenticatedUser();
+
+        Project project = projectService.findById(
+                Long.parseLong(projectExtractDTO.getProjectId())
+        ).orElseThrow(() -> {
+            throw new DataInputException("ID dự án không tồn tại");
+        });
+
+        projectUserService.findByProjectAndUser(
+                project,
+                user
+        ).orElseThrow(() -> {
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
+        });
+
+        Optional<BirthExtractFull> birthExtractFull = birthExtractFullService.findNextIdAndStatusBeforeCompare(
+                project.getId(),
+                user.getId(),
+                Long.parseLong(projectExtractDTO.getId()),
+                ETableName.BirthExtractFull.getValue()
+        );
+
+        if (birthExtractFull.isPresent()) {
+            BirthExtractFullResponse birthExtractFullResponse = modelMapper.map(
+                    birthExtractFull,
+                    BirthExtractFullResponse.class
+            );
+
+            birthExtractFullResponse.setFolderPath(birthExtractFull.get().getProjectNumberBookFile().getFolderPath());
+            birthExtractFullResponse.setFileName(birthExtractFull.get().getProjectNumberBookFile().getFileName());
+
+            return ResponseEntity.ok().body(ResponseObject.builder()
+                    .message("Lấy dữ liệu trường dài của biểu mẫu khai sinh thành công")
+                    .status(HttpStatus.OK.value())
+                    .statusText(HttpStatus.OK)
+                    .data(birthExtractFullResponse)
+                    .build());
+        }
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Không có biểu mẫu nào tiếp theo")
+                .status(HttpStatus.NO_CONTENT.value())
+                .statusText(HttpStatus.NO_CONTENT)
                 .build());
     }
 
@@ -581,6 +705,66 @@ public class ExtractFullAPI {
                 .build());
     }
 
+    @PostMapping("/get-next-marry")
+    public ResponseEntity<ResponseObject> getNextMarryExtractBeforeCompare(
+            @Validated @RequestBody ProjectExtractDTO projectExtractDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi lấy dữ liệu trường dài của biểu mẫu kết hôn")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        User user = userService.getAuthenticatedUser();
+
+        Project project = projectService.findById(
+                Long.parseLong(projectExtractDTO.getProjectId())
+        ).orElseThrow(() -> {
+            throw new DataInputException("ID dự án không tồn tại");
+        });
+
+        projectUserService.findByProjectAndUser(
+                project,
+                user
+        ).orElseThrow(() -> {
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
+        });
+
+        Optional<MarryExtractFull> marryExtractFull = marryExtractFullService.findNextIdAndStatusBeforeCompare(
+                project.getId(),
+                user.getId(),
+                Long.parseLong(projectExtractDTO.getId()),
+                ETableName.MarryExtractFull.getValue()
+        );
+
+        if (marryExtractFull.isPresent()) {
+            MarryExtractFullResponse marryExtractFullResponse = modelMapper.map(
+                    marryExtractFull,
+                    MarryExtractFullResponse.class
+            );
+
+            marryExtractFullResponse.setFolderPath(marryExtractFull.get().getProjectNumberBookFile().getFolderPath());
+            marryExtractFullResponse.setFileName(marryExtractFull.get().getProjectNumberBookFile().getFileName());
+
+            return ResponseEntity.ok().body(ResponseObject.builder()
+                    .message("Lấy dữ liệu trường dài của biểu mẫu kết hôn thành công")
+                    .status(HttpStatus.OK.value())
+                    .statusText(HttpStatus.OK)
+                    .data(marryExtractFullResponse)
+                    .build());
+        }
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Không có biểu mẫu nào tiếp theo")
+                .status(HttpStatus.NO_CONTENT.value())
+                .statusText(HttpStatus.NO_CONTENT)
+                .build());
+    }
+
     @PostMapping("/get-wedlock")
     public ResponseEntity<ResponseObject> getWedlockExtractBeforeCompare(
             @Validated @RequestBody ProjectExtractDTO projectExtractDTO,
@@ -640,6 +824,66 @@ public class ExtractFullAPI {
                 .build());
     }
 
+    @PostMapping("/get-next-wedlock")
+    public ResponseEntity<ResponseObject> getNextWedlockExtractBeforeCompare(
+            @Validated @RequestBody ProjectExtractDTO projectExtractDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi lấy dữ liệu trường dài của biểu mẫu tình trạng hôn nhân")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        User user = userService.getAuthenticatedUser();
+
+        Project project = projectService.findById(
+                Long.parseLong(projectExtractDTO.getProjectId())
+        ).orElseThrow(() -> {
+            throw new DataInputException("ID dự án không tồn tại");
+        });
+
+        projectUserService.findByProjectAndUser(
+                project,
+                user
+        ).orElseThrow(() -> {
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
+        });
+
+        Optional<WedlockExtractFull> wedlockExtractFull = wedlockExtractFullService.findNextIdAndStatusBeforeCompare(
+                project.getId(),
+                user.getId(),
+                Long.parseLong(projectExtractDTO.getId()),
+                ETableName.WedlockExtractFull.getValue()
+        );
+
+        if (wedlockExtractFull.isPresent()) {
+            WedlockExtractFullResponse wedlockExtractFullResponse = modelMapper.map(
+                    wedlockExtractFull,
+                    WedlockExtractFullResponse.class
+            );
+
+            wedlockExtractFullResponse.setFolderPath(wedlockExtractFull.get().getProjectNumberBookFile().getFolderPath());
+            wedlockExtractFullResponse.setFileName(wedlockExtractFull.get().getProjectNumberBookFile().getFileName());
+
+            return ResponseEntity.ok().body(ResponseObject.builder()
+                    .message("Lấy dữ liệu trường dài của biểu mẫu tình trạng hôn nhân thành công")
+                    .status(HttpStatus.OK.value())
+                    .statusText(HttpStatus.OK)
+                    .data(wedlockExtractFullResponse)
+                    .build());
+        }
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Không có biểu mẫu nào tiếp theo")
+                .status(HttpStatus.NO_CONTENT.value())
+                .statusText(HttpStatus.NO_CONTENT)
+                .build());
+    }
+
     @PostMapping("/get-death")
     public ResponseEntity<ResponseObject> getDeathExtractBeforeCompare(
             @Validated @RequestBody ProjectExtractDTO projectExtractDTO,
@@ -696,6 +940,66 @@ public class ExtractFullAPI {
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .data(deathExtractFullResponse)
+                .build());
+    }
+
+    @PostMapping("/get-next-death")
+    public ResponseEntity<ResponseObject> getNextDeathExtractBeforeCompare(
+            @Validated @RequestBody ProjectExtractDTO projectExtractDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi lấy dữ liệu trường dài của biểu mẫu khai tử")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        User user = userService.getAuthenticatedUser();
+
+        Project project = projectService.findById(
+                Long.parseLong(projectExtractDTO.getProjectId())
+        ).orElseThrow(() -> {
+            throw new DataInputException("ID dự án không tồn tại");
+        });
+
+        projectUserService.findByProjectAndUser(
+                project,
+                user
+        ).orElseThrow(() -> {
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
+        });
+
+        Optional<DeathExtractFull> deathExtractFull = deathExtractFullService.findNextIdAndStatusBeforeCompare(
+                project.getId(),
+                user.getId(),
+                Long.parseLong(projectExtractDTO.getId()),
+                ETableName.DeathExtractFull.getValue()
+        );
+
+        if (deathExtractFull.isPresent()) {
+            DeathExtractFullResponse deathExtractFullResponse = modelMapper.map(
+                    deathExtractFull,
+                    DeathExtractFullResponse.class
+            );
+
+            deathExtractFullResponse.setFolderPath(deathExtractFull.get().getProjectNumberBookFile().getFolderPath());
+            deathExtractFullResponse.setFileName(deathExtractFull.get().getProjectNumberBookFile().getFileName());
+
+            return ResponseEntity.ok().body(ResponseObject.builder()
+                    .message("Lấy dữ liệu trường dài của biểu mẫu khai tử thành công")
+                    .status(HttpStatus.OK.value())
+                    .statusText(HttpStatus.OK)
+                    .data(deathExtractFullResponse)
+                    .build());
+        }
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Không có biểu mẫu nào tiếp theo")
+                .status(HttpStatus.NO_CONTENT.value())
+                .statusText(HttpStatus.NO_CONTENT)
                 .build());
     }
 

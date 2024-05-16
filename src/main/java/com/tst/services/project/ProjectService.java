@@ -257,7 +257,6 @@ public class ProjectService implements IProjectService {
         List<DeathExtractShort> deathExtractShorts = deathExtractShortRepository.findAllByProjectAndImporterAndStatusNew(project, importer);
 
         for (ParentsChildrenExtractShort item : parentsChildrenExtractShorts) {
-            String inputStatus = "Chưa nhập";
             String checkedStatus = "";
 
             ExtractShortResponse extractShortResponse = new ExtractShortResponse()
@@ -265,7 +264,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -274,7 +273,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (BirthExtractShort item : birthExtractShorts) {
-            String inputStatus = "Chưa nhập";
             String checkedStatus = "";
 
             ExtractShortResponse extractShortResponse = new ExtractShortResponse()
@@ -282,7 +280,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -291,7 +289,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (MarryExtractShort item : marryExtractShorts) {
-            String inputStatus = "Chưa nhập";
             String checkedStatus = "";
 
             ExtractShortResponse extractShortResponse = new ExtractShortResponse()
@@ -299,7 +296,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -308,7 +305,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (WedlockExtractShort item : wedlockExtractShorts) {
-            String inputStatus = "Chưa nhập";
             String checkedStatus = "";
 
             ExtractShortResponse extractShortResponse = new ExtractShortResponse()
@@ -316,7 +312,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -325,7 +321,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (DeathExtractShort item : deathExtractShorts) {
-            String inputStatus = "Chưa nhập";
             String checkedStatus = "";
 
             ExtractShortResponse extractShortResponse = new ExtractShortResponse()
@@ -333,7 +328,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -359,7 +354,6 @@ public class ProjectService implements IProjectService {
         List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findAllByProjectAndImporterAndStatusNew(project, importer);
 
         for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
-            String inputStatus = "Chưa nhập";
             String checkedStatus = "";
 
             ExtractFullResponse extractFullResponse = new ExtractFullResponse()
@@ -367,7 +361,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -376,7 +370,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (BirthExtractFull item : birthExtractFulls) {
-            String inputStatus = "Chưa nhập";
             String checkedStatus = "";
 
             ExtractFullResponse extractFullResponse = new ExtractFullResponse()
@@ -384,7 +377,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -393,7 +386,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (MarryExtractFull item : marryExtractFulls) {
-            String inputStatus = "Chưa nhập";
             String checkedStatus = "";
 
             ExtractFullResponse extractFullResponse = new ExtractFullResponse()
@@ -401,7 +393,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -410,7 +402,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (WedlockExtractFull item : wedlockExtractFulls) {
-            String inputStatus = "Chưa nhập";
             String checkedStatus = "";
 
             ExtractFullResponse extractFullResponse = new ExtractFullResponse()
@@ -418,7 +409,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -427,7 +418,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (DeathExtractFull item : deathExtractFulls) {
-            String inputStatus = "Chưa nhập";
             String checkedStatus = "";
 
             ExtractFullResponse extractFullResponse = new ExtractFullResponse()
@@ -435,7 +425,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -462,7 +452,6 @@ public class ProjectService implements IProjectService {
 
 
         for (ParentsChildrenExtractShort item : parentsChildrenExtractShorts) {
-            String inputStatus = "Xử lý sau";
             String checkedStatus = "";
 
             ExtractShortResponse extractShortResponse = new ExtractShortResponse()
@@ -470,7 +459,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -479,7 +468,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (BirthExtractShort item : birthExtractShorts) {
-            String inputStatus = "Xử lý sau";
             String checkedStatus = "";
 
             ExtractShortResponse extractShortResponse = new ExtractShortResponse()
@@ -487,7 +475,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -496,7 +484,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (MarryExtractShort item : marryExtractShorts) {
-            String inputStatus = "Xử lý sau";
             String checkedStatus = "";
 
             ExtractShortResponse extractShortResponse = new ExtractShortResponse()
@@ -504,7 +491,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -513,7 +500,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (WedlockExtractShort item : wedlockExtractShorts) {
-            String inputStatus = "Xử lý sau";
             String checkedStatus = "";
 
             ExtractShortResponse extractShortResponse = new ExtractShortResponse()
@@ -521,7 +507,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -530,7 +516,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (DeathExtractShort item : deathExtractShorts) {
-            String inputStatus = "Xử lý sau";
             String checkedStatus = "";
 
             ExtractShortResponse extractShortResponse = new ExtractShortResponse()
@@ -538,7 +523,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -565,7 +550,6 @@ public class ProjectService implements IProjectService {
 
 
         for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
-            String inputStatus = "Xử lý sau";
             String checkedStatus = "";
 
             ExtractFullResponse extractFullResponse = new ExtractFullResponse()
@@ -573,7 +557,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -582,7 +566,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (BirthExtractFull item : birthExtractFulls) {
-            String inputStatus = "Xử lý sau";
             String checkedStatus = "";
 
             ExtractFullResponse extractFullResponse = new ExtractFullResponse()
@@ -590,7 +573,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -599,7 +582,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (MarryExtractFull item : marryExtractFulls) {
-            String inputStatus = "Xử lý sau";
             String checkedStatus = "";
 
             ExtractFullResponse extractFullResponse = new ExtractFullResponse()
@@ -607,7 +589,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -616,7 +598,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (WedlockExtractFull item : wedlockExtractFulls) {
-            String inputStatus = "Xử lý sau";
             String checkedStatus = "";
 
             ExtractFullResponse extractFullResponse = new ExtractFullResponse()
@@ -624,7 +605,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -633,7 +614,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (DeathExtractFull item : deathExtractFulls) {
-            String inputStatus = "Xử lý sau";
             String checkedStatus = "";
 
             ExtractFullResponse extractFullResponse = new ExtractFullResponse()
@@ -641,7 +621,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -668,7 +648,6 @@ public class ProjectService implements IProjectService {
 
 
         for (ParentsChildrenExtractShort item : parentsChildrenExtractShorts) {
-            String inputStatus = "Đã nhập";
             String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
                     ? ""
                     : item.getStatus() == EInputStatus.MATCHING
@@ -680,7 +659,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -689,7 +668,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (BirthExtractShort item : birthExtractShorts) {
-            String inputStatus = "Đã nhập";
             String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
                     ? ""
                     : item.getStatus() == EInputStatus.MATCHING
@@ -701,7 +679,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -710,7 +688,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (MarryExtractShort item : marryExtractShorts) {
-            String inputStatus = "Đã nhập";
             String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
                     ? ""
                     : item.getStatus() == EInputStatus.MATCHING
@@ -722,7 +699,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -731,7 +708,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (WedlockExtractShort item : wedlockExtractShorts) {
-            String inputStatus = "Đã nhập";
             String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
                     ? ""
                     : item.getStatus() == EInputStatus.MATCHING
@@ -743,7 +719,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -752,7 +728,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (DeathExtractShort item : deathExtractShorts) {
-            String inputStatus = "Đã nhập";
             String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
                     ? ""
                     : item.getStatus() == EInputStatus.MATCHING
@@ -764,7 +739,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -791,7 +766,6 @@ public class ProjectService implements IProjectService {
 
 
         for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
-            String inputStatus = "Đã nhập";
             String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
                     ? ""
                     : item.getStatus() == EInputStatus.MATCHING
@@ -803,7 +777,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -812,7 +786,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (BirthExtractFull item : birthExtractFulls) {
-            String inputStatus = "Đã nhập";
             String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
                     ? ""
                     : item.getStatus() == EInputStatus.MATCHING
@@ -824,7 +797,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -833,7 +806,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (MarryExtractFull item : marryExtractFulls) {
-            String inputStatus = "Đã nhập";
             String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
                     ? ""
                     : item.getStatus() == EInputStatus.MATCHING
@@ -845,7 +817,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -854,7 +826,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (WedlockExtractFull item : wedlockExtractFulls) {
-            String inputStatus = "Đã nhập";
             String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
                     ? ""
                     : item.getStatus() == EInputStatus.MATCHING
@@ -866,7 +837,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());
@@ -875,7 +846,6 @@ public class ProjectService implements IProjectService {
         }
 
         for (DeathExtractFull item : deathExtractFulls) {
-            String inputStatus = "Đã nhập";
             String checkedStatus = item.getStatus() == EInputStatus.IMPORTED
                     ? ""
                     : item.getStatus() == EInputStatus.MATCHING
@@ -887,7 +857,7 @@ public class ProjectService implements IProjectService {
                     .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
                     .setFileName(item.getProjectNumberBookFile().getFileName())
                     .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
-                    .setInputStatus(inputStatus)
+                    .setInputStatus(item.getStatus().getValue())
                     .setImportedAt(item.getImportedAt())
                     .setCheckedStatus(checkedStatus)
                     .setCheckedAt(item.getCheckedAt());

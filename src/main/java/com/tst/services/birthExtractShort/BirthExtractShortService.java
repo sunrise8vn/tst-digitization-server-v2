@@ -45,6 +45,11 @@ public class BirthExtractShortService implements IBirthExtractShortService {
     }
 
     @Override
+    public Optional<BirthExtractShort> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
+        return birthExtractShortRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    }
+
+    @Override
     public void importBeforeCompare(BirthExtractShort birthExtractShort, BirthExtractShortDTO birthExtractShortDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 birthExtractShortDTO.getRegistrationType(),

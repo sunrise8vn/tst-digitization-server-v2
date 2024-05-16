@@ -45,6 +45,11 @@ public class DeathExtractShortService implements IDeathExtractShortService {
     }
 
     @Override
+    public Optional<DeathExtractShort> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
+        return deathExtractShortRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    }
+
+    @Override
     public void importBeforeCompare(DeathExtractShort deathExtractShort, DeathExtractShortDTO deathExtractShortDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 deathExtractShortDTO.getRegistrationType(),

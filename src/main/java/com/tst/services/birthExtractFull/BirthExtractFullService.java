@@ -45,6 +45,11 @@ public class BirthExtractFullService implements IBirthExtractFullService {
     }
 
     @Override
+    public Optional<BirthExtractFull> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
+        return birthExtractFullRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    }
+
+    @Override
     public void importBeforeCompare(BirthExtractFull birthExtractFull, BirthExtractFullDTO birthExtractFullDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 birthExtractFullDTO.getRegistrationType(),

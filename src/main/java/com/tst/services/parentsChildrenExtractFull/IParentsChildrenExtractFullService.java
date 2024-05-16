@@ -13,6 +13,13 @@ public interface IParentsChildrenExtractFullService extends IGeneralService<Pare
 
     Optional<ParentsChildrenExtractFull> findByIdAndStatusBeforeCompare(Long id);
 
+    Optional<ParentsChildrenExtractFull> findNextIdAndStatusBeforeCompare(
+            Long projectId,
+            String userId,
+            Long id,
+            String tableName
+    );
+
     void importBeforeCompare(
             ParentsChildrenExtractFull parentsChildrenExtractFull,
             ParentsChildrenExtractFullDTO parentsChildrenExtractFullDTO

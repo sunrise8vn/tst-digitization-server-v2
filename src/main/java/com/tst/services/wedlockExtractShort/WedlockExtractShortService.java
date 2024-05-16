@@ -43,6 +43,11 @@ public class WedlockExtractShortService implements IWedlockExtractShortService {
     }
 
     @Override
+    public Optional<WedlockExtractShort> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
+        return wedlockExtractShortRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    }
+
+    @Override
     public void importBeforeCompare(WedlockExtractShort wedlockExtractShort, WedlockExtractShortDTO wedlockExtractShortDTO) {
         genderTypeRepository.findByCode(
                 wedlockExtractShortDTO.getConfirmerGender()

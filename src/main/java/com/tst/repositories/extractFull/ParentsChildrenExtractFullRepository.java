@@ -29,6 +29,10 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
     Optional<ParentsChildrenExtractFull> findByIdAndStatusBeforeCompare(Long id);
 
 
+    @Query(value = "CALL sp_find_next_item_all_table_by_next_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
+    Optional<ParentsChildrenExtractFull> findNextIdAndStatusBeforeCompare(long projectId, String userId, Long id, String tableName);
+
+
     Optional<ParentsChildrenExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
     List<ParentsChildrenExtractFull> findByProjectAndImporterIsNull(Project project);

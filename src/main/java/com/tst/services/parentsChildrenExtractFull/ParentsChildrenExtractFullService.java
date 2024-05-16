@@ -45,6 +45,11 @@ public class ParentsChildrenExtractFullService implements IParentsChildrenExtrac
     }
 
     @Override
+    public Optional<ParentsChildrenExtractFull> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
+        return parentsChildrenExtractFullRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    }
+
+    @Override
     public void importBeforeCompare(ParentsChildrenExtractFull parentsChildrenExtractFull, ParentsChildrenExtractFullDTO parentsChildrenExtractFullDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 parentsChildrenExtractFullDTO.getRegistrationType(),

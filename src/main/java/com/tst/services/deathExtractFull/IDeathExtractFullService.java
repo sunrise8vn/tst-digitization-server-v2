@@ -13,6 +13,13 @@ public interface IDeathExtractFullService extends IGeneralService<DeathExtractFu
 
     Optional<DeathExtractFull> findByIdAndStatusBeforeCompare(Long id);
 
+    Optional<DeathExtractFull> findNextIdAndStatusBeforeCompare(
+            Long projectId,
+            String userId,
+            Long id,
+            String tableName
+    );
+
     void importBeforeCompare(
             DeathExtractFull deathExtractFull,
             DeathExtractFullDTO deathExtractFullDTO
