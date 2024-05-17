@@ -41,6 +41,9 @@ public class DeathExtractShort {
     @Column(name = "registration_type")
     private String registrationType;
 
+    @Column(name = "signer", length = 50)
+    private String signer;
+
     @Column(name = "signer_position", length = 50)
     private String signerPosition;
 

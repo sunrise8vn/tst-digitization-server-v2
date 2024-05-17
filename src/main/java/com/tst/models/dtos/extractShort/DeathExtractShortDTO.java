@@ -28,6 +28,7 @@ public class DeathExtractShortDTO {
     @Pattern(regexp = "^\\d*$", message = "Loại đăng ký phải là số")
     private String registrationType;
 
+    private String signer;
     private String signerPosition;
     private String implementer;
     private String note;

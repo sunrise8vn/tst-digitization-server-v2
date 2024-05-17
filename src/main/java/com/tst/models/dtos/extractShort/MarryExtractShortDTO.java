@@ -29,6 +29,8 @@ public class MarryExtractShortDTO {
     private String registrationType;
 
     private String maritalRelationshipEstablishmentDate;
+    private String signer;
+    private String signerPosition;
     private String implementer;
     private String note;
 
