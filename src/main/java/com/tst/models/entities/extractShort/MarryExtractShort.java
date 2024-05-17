@@ -44,6 +44,12 @@ public class MarryExtractShort {
     @Column(name = "marital_relationship_establishment_date ")
     private String maritalRelationshipEstablishmentDate;
 
+    @Column(name = "signer", length = 50)
+    private String signer;
+
+    @Column(name = "signer_position", length = 50)
+    private String signerPosition;
+
     @Column(name = "implementer", length = 50)
     private String implementer;
 
