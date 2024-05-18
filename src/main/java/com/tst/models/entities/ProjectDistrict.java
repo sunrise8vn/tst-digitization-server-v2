@@ -13,7 +13,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Getter
 @Setter
 @Entity
-@Table(name = "project_districts")
+@Table(
+    name = "project_districts",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "unique_code_project_id", columnNames = {"code", "project_id"})
+    }
+)
 public class ProjectDistrict {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +33,10 @@ public class ProjectDistrict {
     @ManyToOne
     @JoinColumn(name = "project_province_id", nullable = false)
     private ProjectProvince projectProvince;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
 
     @Column(nullable = false)
     private Long a0 = 0L;

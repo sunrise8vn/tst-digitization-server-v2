@@ -32,6 +32,10 @@ public class ProjectNumberBookCover {
     private String sizeType ="KB";
 
     @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
+    @ManyToOne
     @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
     private User createdBy;
 

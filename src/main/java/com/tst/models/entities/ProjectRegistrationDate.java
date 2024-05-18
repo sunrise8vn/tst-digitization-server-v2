@@ -10,7 +10,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Getter
 @Setter
 @Entity
-@Table(name = "project_registration_date")
+@Table(
+    name = "project_registration_date",
+    uniqueConstraints = {
+        @UniqueConstraint(
+                name = "unique_code_project_paper_size_id",
+                columnNames = {"code", "project_paper_size_id"}
+        )
+    }
+)
 public class ProjectRegistrationDate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +30,10 @@ public class ProjectRegistrationDate {
     @ManyToOne
     @JoinColumn(name = "project_paper_size_id", nullable = false)
     private ProjectPaperSize projectPaperSize;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
 
     @Column(nullable = false)
     private Long a0 = 0L;

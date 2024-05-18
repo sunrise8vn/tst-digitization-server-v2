@@ -36,6 +36,10 @@ public class ProjectPaperSize {
     @JoinColumn(name = "project_registration_type_id", nullable = false)
     private ProjectRegistrationType projectRegistrationType;
 
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
     @Column(nullable = false)
     private Long a0 = 0L;
 

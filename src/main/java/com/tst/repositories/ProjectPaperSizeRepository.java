@@ -4,7 +4,6 @@ import com.tst.models.dtos.project.PaperSizeDTO;
 import com.tst.models.entities.ProjectPaperSize;
 import com.tst.models.entities.ProjectRegistrationType;
 import com.tst.models.enums.EPaperSize;
-import com.tst.models.enums.EUserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,7 +12,7 @@ import java.util.Optional;
 
 public interface ProjectPaperSizeRepository extends JpaRepository<ProjectPaperSize, Long> {
 
-    Optional<ProjectPaperSize> findByCode(EPaperSize code);
+    Optional<ProjectPaperSize> findByProjectRegistrationTypeAndCode(ProjectRegistrationType projectRegistrationType, EPaperSize code);
 
 
     @Query("SELECT NEW com.tst.models.dtos.project.PaperSizeDTO(" +

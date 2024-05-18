@@ -12,7 +12,9 @@ import com.tst.models.entities.locationRegion.LocationWard;
 import com.tst.models.enums.*;
 import com.tst.models.responses.extractFull.ExtractFullResponse;
 import com.tst.models.responses.extractShort.ExtractShortResponse;
+import com.tst.models.responses.locationRegion.LocationResponse;
 import com.tst.models.responses.project.ProjectResponse;
+import com.tst.models.responses.project.RegistrationNumberBookResponse;
 import com.tst.models.responses.project.RegistrationPointResponse;
 import com.tst.repositories.*;
 import com.tst.repositories.extractFull.*;
@@ -881,21 +883,92 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
-    @Transactional
-    public void createRegistrationPoint(Project project, LocationProvince locationProvince, LocationDistrict locationDistrict, LocationWard locationWard) {
-        ProjectProvince projectProvince = new ProjectProvince()
-                .setProject(project)
-                .setCode(locationProvince.getCode())
-                .setName(locationProvince.getName());
-        projectProvinceRepository.save(projectProvince);
+    public List<LocationResponse> findAllProvincesByProjectAndUser(Project project, User user) {
+        return projectRepository.findAllProvincesByProjectAndUser(project, user);
+    }
 
-        ProjectDistrict projectDistrict = new ProjectDistrict()
-                .setProjectProvince(projectProvince)
-                .setName(locationDistrict.getName())
-                .setCode(locationDistrict.getCode());
-        projectDistrictRepository.save(projectDistrict);
+    @Override
+    public List<LocationResponse> findAllDistrictsByProjectAndProvinceAndUser(Project project, ProjectProvince projectProvince, User user) {
+        return projectRepository.findAllDistrictsByProjectAndProvinceAndUser(project, projectProvince, user);
+    }
+
+    @Override
+    public List<LocationResponse> findAllWardsByProjectAndDistrictAndUser(Project project, ProjectDistrict projectDistrict, User user) {
+        return projectRepository.findAllWardsByProjectAndDistrictAndUser(project, projectDistrict, user);
+    }
+
+    @Override
+    public List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectWard(Project project, ProjectWard projectWard) {
+        return projectRepository.findAllNumberBooksByProjectAndProjectWard(project, projectWard);
+    }
+
+    @Override
+    public List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectDistrict(Project project, ProjectDistrict projectDistrict) {
+        return projectRepository.findAllNumberBooksByProjectAndProjectDistrict(project, projectDistrict);
+    }
+
+    @Override
+    public List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectProvince(Project project, ProjectProvince projectProvince) {
+        return projectRepository.findAllNumberBooksByProjectAndProjectProvince(project, projectProvince);
+    }
+
+    @Override
+    @Transactional
+    public void createRegistrationPoint(
+            Project project,
+            LocationProvince locationProvince,
+            LocationDistrict locationDistrict,
+            LocationWard locationWard
+    ) {
+        Optional<ProjectProvince> projectProvinceOptional = projectProvinceRepository.findByProjectAndCode(
+                project, locationProvince.getCode()
+        );
+
+        ProjectProvince projectProvince;
+
+        if (projectProvinceOptional.isEmpty()) {
+            projectProvince = new ProjectProvince()
+                    .setProject(project)
+                    .setCode(locationProvince.getCode())
+                    .setName(locationProvince.getName());
+            projectProvinceRepository.save(projectProvince);
+        }
+        else {
+            projectProvince = projectProvinceOptional.get();
+        }
+
+        Optional<ProjectDistrict> projectDistrictOptional = projectDistrictRepository.findByProjectAndProjectProvinceAndCode(
+                project,
+                projectProvince,
+                locationDistrict.getCode()
+        );
+
+        ProjectDistrict projectDistrict;
+
+        if (projectDistrictOptional.isEmpty()) {
+            projectDistrict = new ProjectDistrict()
+                    .setProject(project)
+                    .setProjectProvince(projectProvince)
+                    .setName(locationDistrict.getName())
+                    .setCode(locationDistrict.getCode());
+            projectDistrictRepository.save(projectDistrict);
+        }
+        else {
+            projectDistrict = projectDistrictOptional.get();
+        }
+
+        Optional<ProjectWard> projectWardOptional = projectWardRepository.findByProjectAndProjectDistrictAndCode(
+                project,
+                projectDistrict,
+                locationWard.getCode()
+        );
+
+        if (projectWardOptional.isPresent()) {
+            throw new DataInputException("Phường / Xã / Thị trấn này đã được đăng ký trong dự án này");
+        }
 
         ProjectWard projectWard = new ProjectWard()
+                .setProject(project)
                 .setProjectDistrict(projectDistrict)
                 .setName(locationWard.getName())
                 .setCode(locationWard.getCode());
@@ -914,25 +987,76 @@ public class ProjectService implements IProjectService {
     ) {
         Optional<ProjectRegistrationType> projectRegistrationTypeOptional = projectRegistrationTypeRepository.findByProjectWardAndCode(
                 projectWard,
-                registrationType.getCode()
-        );
+                registrationType.getCode());
+
+        ProjectRegistrationType projectRegistrationType;
 
         if (projectRegistrationTypeOptional.isEmpty()) {
-            ProjectRegistrationType projectRegistrationType = new ProjectRegistrationType()
+            projectRegistrationType = new ProjectRegistrationType()
+                    .setProject(projectWard.getProject())
                     .setProjectWard(projectWard)
                     .setCode(registrationType.getCode());
             projectRegistrationTypeRepository.save(projectRegistrationType);
+        }
+        else {
+            projectRegistrationType = projectRegistrationTypeOptional.get();
+        }
 
-            ProjectPaperSize projectPaperSize = new ProjectPaperSize()
+        Optional<ProjectPaperSize> projectPaperSizeOptional = projectPaperSizeRepository.findByProjectRegistrationTypeAndCode(
+                projectRegistrationType,
+                ePaperSize
+        );
+
+        ProjectPaperSize projectPaperSize;
+
+        if (projectPaperSizeOptional.isEmpty()) {
+            projectPaperSize = new ProjectPaperSize()
+                    .setProject(projectWard.getProject())
                     .setProjectRegistrationType(projectRegistrationType)
                     .setCode(ePaperSize);
             projectPaperSizeRepository.save(projectPaperSize);
+        }
+        else {
+            projectPaperSize = projectPaperSizeOptional.get();
+        }
 
-            ProjectRegistrationDate projectRegistrationDate = new ProjectRegistrationDate()
+        Optional<ProjectRegistrationDate> projectRegistrationDateOptional = projectRegistrationDateRepository.findByProjectPaperSizeAndCode(
+                projectPaperSize,
+                registrationDateCode
+        );
+
+        ProjectRegistrationDate projectRegistrationDate;
+
+        if (projectRegistrationDateOptional.isEmpty()) {
+            projectRegistrationDate = new ProjectRegistrationDate()
+                    .setProject(projectWard.getProject())
                     .setProjectPaperSize(projectPaperSize)
                     .setCode(registrationDateCode);
             projectRegistrationDateRepository.save(projectRegistrationDate);
+        }
+        else {
+            projectRegistrationDate = projectRegistrationDateOptional.get();
+        }
 
+        Optional<ProjectNumberBook> projectNumberBookOptional = projectNumberBookRepository.findByProjectRegistrationDateAndCodeAndStatusNot(
+                projectRegistrationDate,
+                numberBookCode,
+                EProjectNumberBookStatus.CANCEL
+        );
+
+        if (projectNumberBookOptional.isPresent()) {
+            String dateCode = projectRegistrationDate.getCode();
+            String pageSizeCode = projectPaperSize.getCode().getValue();
+
+            if (projectNumberBookOptional.get().getStatus().equals(EProjectNumberBookStatus.NEW)) {
+                throw new DataInputException("Quyển sổ " + numberBookCode + " năm " + dateCode + " khổ giấy " + pageSizeCode + " đang chờ xét duyệt");
+            }
+
+            if (projectNumberBookOptional.get().getStatus().equals(EProjectNumberBookStatus.ACCEPT)) {
+                throw new DataInputException("Quyển sổ " + numberBookCode + " đã được sử dụng trong năm " + dateCode);
+            }
+        }
+        else {
             this.uploadCoverFileAndSave(
                     projectWard,
                     projectRegistrationType,
@@ -941,83 +1065,6 @@ public class ProjectService implements IProjectService {
                     numberBookCode,
                     coverFile
             );
-        }
-        else {
-            Optional<ProjectPaperSize> projectPaperSizeOptional = projectPaperSizeRepository.findByCode(ePaperSize);
-
-            if (projectPaperSizeOptional.isEmpty()) {
-                ProjectRegistrationType projectRegistrationType = projectRegistrationTypeOptional.get();
-
-                ProjectPaperSize projectPaperSize = new ProjectPaperSize()
-                        .setProjectRegistrationType(projectRegistrationType)
-                        .setCode(ePaperSize);
-                projectPaperSizeRepository.save(projectPaperSize);
-
-                ProjectRegistrationDate projectRegistrationDate = new ProjectRegistrationDate()
-                        .setProjectPaperSize(projectPaperSize)
-                        .setCode(registrationDateCode);
-                projectRegistrationDateRepository.save(projectRegistrationDate);
-
-                this.uploadCoverFileAndSave(
-                        projectWard,
-                        projectRegistrationType,
-                        projectPaperSize,
-                        projectRegistrationDate,
-                        numberBookCode,
-                        coverFile
-                );
-            }
-            else {
-                Optional<ProjectRegistrationDate> projectRegistrationDateOptional = projectRegistrationDateRepository.findByCode(registrationDateCode);
-
-                if (projectRegistrationDateOptional.isEmpty()) {
-                    ProjectRegistrationType projectRegistrationType = projectRegistrationTypeOptional.get();
-                    ProjectPaperSize projectPaperSize = projectPaperSizeOptional.get();
-
-                    ProjectRegistrationDate projectRegistrationDate = new ProjectRegistrationDate()
-                            .setProjectPaperSize(projectPaperSize)
-                            .setCode(registrationDateCode);
-                    projectRegistrationDateRepository.save(projectRegistrationDate);
-
-                    this.uploadCoverFileAndSave(
-                            projectWard,
-                            projectRegistrationType,
-                            projectPaperSize,
-                            projectRegistrationDate,
-                            numberBookCode,
-                            coverFile
-                    );
-                }
-                else {
-                    Optional<ProjectNumberBook> projectNumberBookOptional = projectNumberBookRepository.findByCodeAndStatusNot(numberBookCode, EProjectNumberBookStatus.CANCEL);
-
-                    if (projectNumberBookOptional.isPresent()) {
-                        String dateCode = projectRegistrationDateOptional.get().getCode();
-
-                        if (projectNumberBookOptional.get().getStatus().equals(EProjectNumberBookStatus.NEW)) {
-                            throw new DataInputException("Quyển sổ " + numberBookCode + " đăng ký năm " + dateCode + " đang chờ xét duyệt");
-                        }
-
-                        if (projectNumberBookOptional.get().getStatus().equals(EProjectNumberBookStatus.ACCEPT)) {
-                            throw new DataInputException("Quyển sổ " + numberBookCode + " đã được sử dụng trong năm " + dateCode);
-                        }
-                    }
-                    else {
-                        ProjectRegistrationType projectRegistrationType = projectRegistrationTypeOptional.get();
-                        ProjectPaperSize projectPaperSize = projectPaperSizeOptional.get();
-                        ProjectRegistrationDate projectRegistrationDate = projectRegistrationDateOptional.get();
-
-                        this.uploadCoverFileAndSave(
-                                projectWard,
-                                projectRegistrationType,
-                                projectPaperSize,
-                                projectRegistrationDate,
-                                numberBookCode,
-                                coverFile
-                        );
-                    }
-                }
-            }
         }
     }
 
@@ -1055,12 +1102,14 @@ public class ProjectService implements IProjectService {
         projectNumberBookCoverService.uploadCoverFile(coverFile, coverFileName, coverFolderPath);
 
         ProjectNumberBookCover projectNumberBookCover = new ProjectNumberBookCover()
+                .setProject(projectWard.getProject())
                 .setFileName(coverFileName)
                 .setFolderPath(coverFolderPath)
                 .setFileSize(fileSize);
         projectNumberBookCoverRepository.save(projectNumberBookCover);
 
         ProjectNumberBook projectNumberBook = new ProjectNumberBook()
+                .setProject(projectWard.getProject())
                 .setProjectRegistrationDate(projectRegistrationDate)
                 .setProjectNumberBookCover(projectNumberBookCover)
                 .setCode(numberBookCode)
