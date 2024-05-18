@@ -1242,7 +1242,7 @@ public class ExtractShortAPI {
         deathExtractShortService.importBeforeCompare(deathExtractShort, deathExtractShortDTO);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
-                .message("Nhập dữ liệu trường ngắn của biểu mẫu tình khai tử")
+                .message("Nhập dữ liệu trường ngắn của biểu mẫu khai tử")
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .build());

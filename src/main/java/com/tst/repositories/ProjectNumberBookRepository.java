@@ -12,11 +12,19 @@ import java.util.Optional;
 
 public interface ProjectNumberBookRepository extends JpaRepository<ProjectNumberBook, Long> {
 
-    Boolean existsByProjectRegistrationDateAndCodeAndStatus(ProjectRegistrationDate projectRegistrationDate, String code, EProjectNumberBookStatus status);
+    Boolean existsByProjectRegistrationDateAndCodeAndStatus(
+            ProjectRegistrationDate projectRegistrationDate,
+            String code,
+            EProjectNumberBookStatus status
+    );
 
     Optional<ProjectNumberBook> findByIdAndStatus(Long id, EProjectNumberBookStatus status);
 
-    Optional<ProjectNumberBook> findByCodeAndStatusNot(String code, EProjectNumberBookStatus status);
+    Optional<ProjectNumberBook> findByProjectRegistrationDateAndCodeAndStatusNot(
+            ProjectRegistrationDate projectRegistrationDate,
+            String code,
+            EProjectNumberBookStatus status
+    );
 
 
     @Query("SELECT NEW com.tst.models.dtos.project.PaperSizeDTO(" +

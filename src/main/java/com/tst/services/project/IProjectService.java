@@ -7,7 +7,9 @@ import com.tst.models.entities.locationRegion.LocationWard;
 import com.tst.models.enums.EPaperSize;
 import com.tst.models.responses.extractFull.ExtractFullResponse;
 import com.tst.models.responses.extractShort.ExtractShortResponse;
+import com.tst.models.responses.locationRegion.LocationResponse;
 import com.tst.models.responses.project.ProjectResponse;
+import com.tst.models.responses.project.RegistrationNumberBookResponse;
 import com.tst.models.responses.project.RegistrationPointResponse;
 import com.tst.services.IGeneralService;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +38,35 @@ public interface IProjectService extends IGeneralService<Project, Long> {
     List<ExtractFullResponse> findAllImportedExtractFullResponse(Project project, User importer);
 
     List<RegistrationPointResponse> findAllRegistrationPointByProjectAndUser(Project project, User user);
+
+    List<LocationResponse> findAllProvincesByProjectAndUser(Project project, User user);
+
+    List<LocationResponse> findAllDistrictsByProjectAndProvinceAndUser(
+            Project project,
+            ProjectProvince projectProvince,
+            User user
+    );
+
+    List<LocationResponse> findAllWardsByProjectAndDistrictAndUser(
+            Project project,
+            ProjectDistrict projectDistrict,
+            User user
+    );
+
+    List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectWard(
+            Project project,
+            ProjectWard projectWard
+    );
+
+    List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectDistrict(
+            Project project,
+            ProjectDistrict projectDistrict
+    );
+
+    List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectProvince(
+            Project project,
+            ProjectProvince projectProvince
+    );
 
     void updatePaperCountSize(Project project);
 

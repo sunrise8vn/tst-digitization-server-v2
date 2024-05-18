@@ -50,6 +50,10 @@ public class ProjectNumberBookFile {
     @JoinColumn(name = "project_number_book_id", nullable = false)
     private ProjectNumberBook projectNumberBook;
 
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EProjectNumberBookFileStatus status;

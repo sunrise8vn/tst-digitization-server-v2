@@ -13,7 +13,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Getter
 @Setter
 @Entity
-@Table(name = "project_provinces")
+@Table(
+    name = "project_provinces",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "unique_code_project_id", columnNames = {"code", "project_id"})
+    }
+)
 public class ProjectProvince {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

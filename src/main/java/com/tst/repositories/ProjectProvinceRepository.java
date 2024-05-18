@@ -6,6 +6,8 @@ import com.tst.models.entities.ProjectProvince;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
+
 
 public interface ProjectProvinceRepository extends JpaRepository<ProjectProvince, Long> {
 
@@ -22,5 +24,8 @@ public interface ProjectProvinceRepository extends JpaRepository<ProjectProvince
             "WHERE pp.project = :project"
     )
     PaperSizeDTO findByProject(Project project);
+
+
+    Optional<ProjectProvince> findByProjectAndCode(Project project, String code);
 
 }

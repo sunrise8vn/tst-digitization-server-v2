@@ -35,6 +35,10 @@ public class ProjectNumberBook {
     @JoinColumn(name = "project_number_book_cover_id", nullable = false)
     private ProjectNumberBookCover projectNumberBookCover;
 
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
     @Column(nullable = false)
     private Long a0 = 0L;
 

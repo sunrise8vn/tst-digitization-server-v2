@@ -147,6 +147,7 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
                             .setRegistrationType(registrationType)
                             .setFileSize(fileSize)
                             .setProjectNumberBook(projectNumberBook)
+                            .setProject(projectNumberBook.getProject())
                             .setStatus(EProjectNumberBookFileStatus.NEW);
 
                     projectNumberBookFileRepository.save(projectNumberBookFile);

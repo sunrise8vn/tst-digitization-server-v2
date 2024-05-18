@@ -16,7 +16,15 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "project_wards")
+@Table(
+    name = "project_wards",
+    uniqueConstraints = {
+        @UniqueConstraint(
+            name = "unique_code_district_id_project_id",
+            columnNames = {"code", "project_district_id", "project_id"}
+        )
+    }
+)
 public class ProjectWard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +39,10 @@ public class ProjectWard {
     @ManyToOne
     @JoinColumn(name = "project_district_id", nullable = false)
     private ProjectDistrict projectDistrict;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
 
     @Column(nullable = false)
     private Long a0 = 0L;

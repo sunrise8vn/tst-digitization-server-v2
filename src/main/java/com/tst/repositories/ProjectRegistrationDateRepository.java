@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface ProjectRegistrationDateRepository extends JpaRepository<ProjectRegistrationDate, Long> {
 
-    Optional<ProjectRegistrationDate> findByCode(String code);
+    Optional<ProjectRegistrationDate> findByProjectPaperSizeAndCode(ProjectPaperSize projectPaperSize, String code);
 
 
     @Query("SELECT NEW com.tst.models.dtos.project.PaperSizeDTO(" +
