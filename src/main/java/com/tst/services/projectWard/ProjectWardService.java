@@ -24,6 +24,11 @@ public class ProjectWardService implements IProjectWardService {
     }
 
     @Override
+    public Optional<ProjectWard> findByIdAndProjectId(Long id, Long projectId) {
+        return projectWardRepository.findByIdAndProjectId(id, projectId);
+    }
+
+    @Override
     public void updatePaperCountSize(ProjectWard projectWard) {
         PaperSizeDTO paperSizeDTO = projectRegistrationTypeRepository.findByProjectWard(projectWard);
 

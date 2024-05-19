@@ -14,6 +14,7 @@ import com.tst.models.enums.EProjectNumberBookFileStatus;
 import com.tst.models.enums.ERegistrationType;
 import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.locationRegion.LocationResponse;
+import com.tst.models.responses.project.NumberBookFileListResponse;
 import com.tst.models.responses.project.ProjectResponse;
 import com.tst.models.responses.project.RegistrationNumberBookResponse;
 import com.tst.models.responses.project.RegistrationPointResponse;
@@ -471,7 +472,32 @@ public class ProjectAPI {
 //                .build());
 //    }
 
-    // Upload pdf lên thư mục sổ hộ tịch
+    // Lấy danh sách tập tin chờ xét duyệt
+    @GetMapping("/get-all-number-book-file-new/{projectId}/{wardId}")
+    public ResponseEntity<ResponseObject> getAllNumberBookFilePending(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID phường / xã / thị trấn phải là một số") String wardId
+    ) {
+        ProjectWard projectWard = projectWardService.findByIdAndProjectId(
+                Long.parseLong(wardId),
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Phường / xã / thị trấn không thuộc dự án này");
+        });
+
+        List<NumberBookFileListResponse> numberBookFileListResponses = projectNumberBookFileService.findAllNumberBookFileByStatus(
+                projectWard,
+                EProjectNumberBookFileStatus.NEW
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách tập tin chờ xét duyệt thành công.")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(numberBookFileListResponses)
+                .build());
+    }
+
     @PostMapping("/number-book-file/upload-pdf")
     public ResponseEntity<ResponseObject> uploadPdfFilesProjectNumberBook(
             @Validated ProjectNumberBookFileDTO projectNumberBookFileDTO,

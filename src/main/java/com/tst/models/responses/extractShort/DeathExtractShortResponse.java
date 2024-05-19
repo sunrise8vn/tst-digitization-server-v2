@@ -21,6 +21,7 @@ public class DeathExtractShortResponse {
     private String numberPage;
     private String registrationDate;
     private String registrationType;
+    private String signer;
     private String signerPosition;
     private String implementer;
     private String note;

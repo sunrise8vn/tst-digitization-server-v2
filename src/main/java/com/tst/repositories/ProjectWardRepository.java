@@ -33,4 +33,12 @@ public interface ProjectWardRepository extends JpaRepository<ProjectWard, Long> 
             String code
     );
 
+
+    @Query("SELECT pw " +
+            "FROM ProjectWard AS pw " +
+            "WHERE pw.id = :id " +
+            "AND pw.project.id = :projectId"
+    )
+    Optional<ProjectWard> findByIdAndProjectId(Long id, Long projectId);
+
 }
