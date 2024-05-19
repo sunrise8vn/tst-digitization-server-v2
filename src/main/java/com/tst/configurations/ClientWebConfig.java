@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ComponentScan("com.tst")
 public class ClientWebConfig implements WebMvcConfigurer {
     @Bean
-    public MethodValidationPostProcessor methodValidationPostProcessor() {
+    public static MethodValidationPostProcessor methodValidationPostProcessor() {
         return new MethodValidationPostProcessor();
     }
 

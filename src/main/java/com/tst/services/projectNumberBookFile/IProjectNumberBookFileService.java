@@ -2,8 +2,10 @@ package com.tst.services.projectNumberBookFile;
 
 import com.tst.models.entities.ProjectNumberBook;
 import com.tst.models.entities.ProjectNumberBookFile;
-import com.tst.models.entities.User;
+import com.tst.models.entities.ProjectWard;
+import com.tst.models.entities.*;
 import com.tst.models.enums.EProjectNumberBookFileStatus;
+import com.tst.models.responses.project.NumberBookFileListResponse;
 import com.tst.services.IGeneralService;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +17,18 @@ public interface IProjectNumberBookFileService extends IGeneralService<ProjectNu
 
     Optional<ProjectNumberBookFile> findByIdAndStatus(Long id, EProjectNumberBookFileStatus status);
 
-    Optional<ProjectNumberBookFile> findByIdAndRegistrationTypeCodeAndStatus(Long id, String registrationTypeCode, EProjectNumberBookFileStatus status);
+    Optional<ProjectNumberBookFile> findNextByIdAndStatus(Long id, EProjectNumberBookFileStatus status, Project project);
+
+    Optional<ProjectNumberBookFile> findByIdAndRegistrationTypeCodeAndStatus(
+            Long id,
+            String registrationTypeCode,
+            EProjectNumberBookFileStatus status
+    );
+
+    List<NumberBookFileListResponse> findAllNumberBookFileByStatus(
+            ProjectWard projectWard,
+            EProjectNumberBookFileStatus status
+    );
 
     List<String> create(List<MultipartFile> files, String folderPath, ProjectNumberBook projectNumberBook);
 
