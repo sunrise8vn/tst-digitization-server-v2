@@ -42,6 +42,12 @@ public class ProjectNumberBookFile {
     @Column(name = "size_type", nullable = false, length = 2)
     private String sizeType = "KB";
 
+    @Column(name = "number", length = 20)
+    private String number;
+
+    @Column(name = "registration_date", length = 10)
+    private String registrationDate;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "registration_type", nullable = false)
     private ERegistrationType registrationType;

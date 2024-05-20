@@ -86,6 +86,15 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
     }
 
     @Override
+    public Optional<ProjectNumberBookFile> findNextByIdAndStatus(
+            Long id,
+            EProjectNumberBookFileStatus status,
+            Project project
+    ) {
+        return projectNumberBookFileRepository.findNextByIdAndStatus(id, status, project);
+    }
+
+    @Override
     public Optional<ProjectNumberBookFile> findByIdAndRegistrationTypeCodeAndStatus(
             Long id,
             String registrationTypeCode,
@@ -194,6 +203,8 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
             throw new DataInputException("Ngày tháng năm không hợp lệ");
         }
 
+        projectNumberBookFile.setRegistrationDate(dayMonthYear);
+
         dayMonthYear = appUtils.convertDayMonthYearDotToYearMonthDayKebab(dayMonthYear);
 
         // Định dạng lại chuỗi để có độ dài là 3 ký tự, thêm các số 0 vào đầu nếu cần
@@ -222,9 +233,10 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
                 dayMonthYear + "." +
                 number + ".pdf";
 
-        boolean existFileName = projectNumberBookFileRepository.existsByFileNameAndProjectNumberBook(
+        boolean existFileName = projectNumberBookFileRepository.existsByFileNameAndProjectNumberBookAndIdIsNot(
                 newFileName,
-                projectNumberBookFile.getProjectNumberBook()
+                projectNumberBookFile.getProjectNumberBook(),
+                projectNumberBookFile.getId()
         );
 
         if (existFileName) {
@@ -232,6 +244,7 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
         }
 
         projectNumberBookFile.setFileName(newFileName);
+        projectNumberBookFile.setNumber(number);
         projectNumberBookFile.setOrganizedBy(user);
         projectNumberBookFile.setStatus(EProjectNumberBookFileStatus.ORGANIZED);
 
