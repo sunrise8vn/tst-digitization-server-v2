@@ -1,6 +1,7 @@
 package com.tst.repositories;
 
 import com.tst.models.dtos.project.PaperSizeDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectNumberBook;
 import com.tst.models.entities.ProjectRegistrationDate;
 import com.tst.models.enums.EProjectNumberBookStatus;
@@ -25,6 +26,9 @@ public interface ProjectNumberBookRepository extends JpaRepository<ProjectNumber
             String code,
             EProjectNumberBookStatus status
     );
+
+
+    Optional<ProjectNumberBook> findByProjectAndId(Project project, Long id);
 
 
     @Query("SELECT NEW com.tst.models.dtos.project.PaperSizeDTO(" +

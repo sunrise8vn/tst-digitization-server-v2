@@ -7,6 +7,7 @@ import com.tst.models.enums.EPaperSize;
 import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.models.enums.ERegistrationType;
 import com.tst.models.responses.ResponseObject;
+import com.tst.models.responses.project.NumberBookVerifyResponse;
 import com.tst.models.responses.project.RegistrationNumberBookResponse;
 import com.tst.services.project.IProjectService;
 import com.tst.services.projectDistrict.IProjectDistrictService;
@@ -134,6 +135,75 @@ public class NumberBookAPI {
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .data(registrationNumberBookResponses)
+                .build());
+    }
+
+    @GetMapping("/verify/{projectId}/{numberBookId}")
+    public ResponseEntity<ResponseObject> verify(
+            @PathVariable @Pattern(regexp = "\\d+", message = "ID dự án phải là một số") String projectId,
+            @PathVariable @Pattern(regexp = "\\d+", message = "ID quyển số phải là một số") String numberBookId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        ProjectNumberBook projectNumberBook = projectNumberBookService.findByProjectAndId(
+                project,
+                Long.parseLong(numberBookId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Quyển sổ không tồn tại");
+        });
+
+        if (!projectNumberBook.getStatus().equals(EProjectNumberBookStatus.ACCEPT)) {
+            throw new DataInputException("Quyển sổ này chưa được phê duyệt để sử dụng");
+        }
+
+        NumberBookVerifyResponse numberBookVerifyResponse = new NumberBookVerifyResponse()
+                .setId(projectNumberBook.getId())
+                .setProjectName(project.getName())
+                .setProvinceName(projectNumberBook
+                        .getProjectRegistrationDate()
+                        .getProjectPaperSize()
+                        .getProjectRegistrationType()
+                        .getProjectWard()
+                        .getProjectDistrict()
+                        .getProjectProvince()
+                        .getName())
+                .setDistrictName(projectNumberBook
+                        .getProjectRegistrationDate()
+                        .getProjectPaperSize()
+                        .getProjectRegistrationType()
+                        .getProjectWard()
+                        .getProjectDistrict()
+                        .getName())
+                .setWardName(projectNumberBook
+                        .getProjectRegistrationDate()
+                        .getProjectPaperSize()
+                        .getProjectRegistrationType()
+                        .getProjectWard()
+                        .getName())
+                .setRegistrationType(projectNumberBook
+                        .getProjectRegistrationDate()
+                        .getProjectPaperSize()
+                        .getProjectRegistrationType()
+                        .getCode())
+                .setPaperSize(projectNumberBook
+                        .getProjectRegistrationDate()
+                        .getProjectPaperSize()
+                        .getCode())
+                .setRegistrationDate(projectNumberBook
+                        .getProjectRegistrationDate()
+                        .getCode())
+                .setNumberBookCode(projectNumberBook
+                        .getCode());
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Xác thực sổ của dự án thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(numberBookVerifyResponse)
                 .build());
     }
 
