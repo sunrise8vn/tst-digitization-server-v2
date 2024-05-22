@@ -2,9 +2,7 @@ package com.tst.repositories;
 
 import com.tst.models.entities.*;
 import com.tst.models.responses.locationRegion.LocationResponse;
-import com.tst.models.responses.project.ProjectResponse;
-import com.tst.models.responses.project.RegistrationNumberBookResponse;
-import com.tst.models.responses.project.RegistrationPointResponse;
+import com.tst.models.responses.project.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -104,7 +102,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     );
 
 
-    @Query("SELECT DISTINCT NEW com.tst.models.responses.project.RegistrationNumberBookResponse (" +
+    @Query("SELECT DISTINCT NEW com.tst.models.responses.project.NumberBookNewResponse (" +
                 "pnb.id, " +
                 "pd.name, " +
                 "pw.name, " +
@@ -117,66 +115,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "FROM ProjectNumberBook AS pnb " +
             "JOIN ProjectRegistrationDate AS prd " +
             "ON pnb.projectRegistrationDate = prd " +
-            "JOIN ProjectPaperSize AS pps " +
-            "ON prd.projectPaperSize = pps " +
-            "JOIN ProjectRegistrationType AS prt " +
-            "ON pps.projectRegistrationType = prt " +
-            "JOIN ProjectWard AS pw " +
-            "ON prt.projectWard = pw " +
-            "AND pw.project = :project " +
-            "AND pw = :projectWard " +
-            "JOIN ProjectDistrict AS pd " +
-            "ON pw.projectDistrict = pd "
-    )
-    List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectWard(
-            Project project,
-            ProjectWard projectWard
-    );
-
-
-    @Query("SELECT DISTINCT NEW com.tst.models.responses.project.RegistrationNumberBookResponse (" +
-                "pnb.id, " +
-                "pd.name, " +
-                "pw.name, " +
-                "prt.code, " +
-                "pps.code, " +
-                "prd.code, " +
-                "pnb.code, " +
-                "pnb.status" +
-            ") " +
-            "FROM ProjectNumberBook AS pnb " +
-            "JOIN ProjectRegistrationDate AS prd " +
-            "ON pnb.projectRegistrationDate = prd " +
-            "JOIN ProjectPaperSize AS pps " +
-            "ON prd.projectPaperSize = pps " +
-            "JOIN ProjectRegistrationType AS prt " +
-            "ON pps.projectRegistrationType = prt " +
-            "JOIN ProjectWard AS pw " +
-            "ON prt.projectWard = pw " +
-            "AND pw.project = :project " +
-            "JOIN ProjectDistrict AS pd " +
-            "ON pw.projectDistrict = pd " +
-            "AND pd = :projectDistrict"
-    )
-    List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectDistrict(
-            Project project,
-            ProjectDistrict projectDistrict
-    );
-
-
-    @Query("SELECT DISTINCT NEW com.tst.models.responses.project.RegistrationNumberBookResponse (" +
-                "pnb.id, " +
-                "pd.name, " +
-                "pw.name, " +
-                "prt.code, " +
-                "pps.code, " +
-                "prd.code, " +
-                "pnb.code, " +
-                "pnb.status" +
-            ") " +
-            "FROM ProjectNumberBook AS pnb " +
-            "JOIN ProjectRegistrationDate AS prd " +
-            "ON pnb.projectRegistrationDate = prd " +
+            "AND pnb.status = 'NEW' " +
             "JOIN ProjectPaperSize AS pps " +
             "ON prd.projectPaperSize = pps " +
             "JOIN ProjectRegistrationType AS prt " +
@@ -190,8 +129,166 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "ON pd.projectProvince = pp " +
             "AND pp = :projectProvince"
     )
-    List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectProvince(
+    List<NumberBookNewResponse> findAllNewNumberBooksByProjectAndProjectProvince(
             Project project,
             ProjectProvince projectProvince
     );
+
+
+    @Query("SELECT DISTINCT NEW com.tst.models.responses.project.NumberBookNewResponse (" +
+                "pnb.id, " +
+                "pd.name, " +
+                "pw.name, " +
+                "prt.code, " +
+                "pps.code, " +
+                "prd.code, " +
+                "pnb.code, " +
+                "pnb.status" +
+            ") " +
+            "FROM ProjectNumberBook AS pnb " +
+            "JOIN ProjectRegistrationDate AS prd " +
+            "ON pnb.projectRegistrationDate = prd " +
+            "AND pnb.status = 'NEW' " +
+            "JOIN ProjectPaperSize AS pps " +
+            "ON prd.projectPaperSize = pps " +
+            "JOIN ProjectRegistrationType AS prt " +
+            "ON pps.projectRegistrationType = prt " +
+            "JOIN ProjectWard AS pw " +
+            "ON prt.projectWard = pw " +
+            "AND pw.project = :project " +
+            "JOIN ProjectDistrict AS pd " +
+            "ON pw.projectDistrict = pd " +
+            "AND pd = :projectDistrict"
+    )
+    List<NumberBookNewResponse> findAllNewNumberBooksByProjectAndProjectDistrict(
+            Project project,
+            ProjectDistrict projectDistrict
+    );
+
+
+    @Query("SELECT DISTINCT NEW com.tst.models.responses.project.NumberBookNewResponse (" +
+                "pnb.id, " +
+                "pd.name, " +
+                "pw.name, " +
+                "prt.code, " +
+                "pps.code, " +
+                "prd.code, " +
+                "pnb.code, " +
+                "pnb.status" +
+            ") " +
+            "FROM ProjectNumberBook AS pnb " +
+            "JOIN ProjectRegistrationDate AS prd " +
+            "ON pnb.projectRegistrationDate = prd " +
+            "AND pnb.status = 'ACCEPT' " +
+            "JOIN ProjectPaperSize AS pps " +
+            "ON prd.projectPaperSize = pps " +
+            "JOIN ProjectRegistrationType AS prt " +
+            "ON pps.projectRegistrationType = prt " +
+            "JOIN ProjectWard AS pw " +
+            "ON prt.projectWard = pw " +
+            "AND pw.project = :project " +
+            "AND pw = :projectWard " +
+            "JOIN ProjectDistrict AS pd " +
+            "ON pw.projectDistrict = pd "
+    )
+    List<NumberBookNewResponse> findAllNewNumberBooksByProjectAndProjectWard(
+            Project project,
+            ProjectWard projectWard
+    );
+
+
+    @Query("SELECT DISTINCT NEW com.tst.models.responses.project.NumberBookApprovedResponse (" +
+                "pnb.id, " +
+                "pd.name, " +
+                "pw.name, " +
+                "prt.code, " +
+                "pps.code, " +
+                "prd.code, " +
+                "pnb.code, " +
+                "pnb.status" +
+            ") " +
+            "FROM ProjectNumberBook AS pnb " +
+            "JOIN ProjectRegistrationDate AS prd " +
+            "ON pnb.projectRegistrationDate = prd " +
+            "AND pnb.status = 'ACCEPT' " +
+            "JOIN ProjectPaperSize AS pps " +
+            "ON prd.projectPaperSize = pps " +
+            "JOIN ProjectRegistrationType AS prt " +
+            "ON pps.projectRegistrationType = prt " +
+            "JOIN ProjectWard AS pw " +
+            "ON prt.projectWard = pw " +
+            "AND pw.project = :project " +
+            "JOIN ProjectDistrict AS pd " +
+            "ON pw.projectDistrict = pd " +
+            "JOIN ProjectProvince AS pp " +
+            "ON pd.projectProvince = pp " +
+            "AND pp = :projectProvince"
+    )
+    List<NumberBookApprovedResponse> findAllApprovedNumberBooksByProjectAndProjectProvince(
+            Project project,
+            ProjectProvince projectProvince
+    );
+
+
+    @Query("SELECT DISTINCT NEW com.tst.models.responses.project.NumberBookApprovedResponse (" +
+                "pnb.id, " +
+                "pd.name, " +
+                "pw.name, " +
+                "prt.code, " +
+                "pps.code, " +
+                "prd.code, " +
+                "pnb.code, " +
+                "pnb.status" +
+            ") " +
+            "FROM ProjectNumberBook AS pnb " +
+            "JOIN ProjectRegistrationDate AS prd " +
+            "ON pnb.projectRegistrationDate = prd " +
+            "AND pnb.status = 'ACCEPT' " +
+            "JOIN ProjectPaperSize AS pps " +
+            "ON prd.projectPaperSize = pps " +
+            "JOIN ProjectRegistrationType AS prt " +
+            "ON pps.projectRegistrationType = prt " +
+            "JOIN ProjectWard AS pw " +
+            "ON prt.projectWard = pw " +
+            "AND pw.project = :project " +
+            "JOIN ProjectDistrict AS pd " +
+            "ON pw.projectDistrict = pd " +
+            "AND pd = :projectDistrict"
+    )
+    List<NumberBookApprovedResponse> findAllApprovedNumberBooksByProjectAndProjectDistrict(
+            Project project,
+            ProjectDistrict projectDistrict
+    );
+
+
+    @Query("SELECT DISTINCT NEW com.tst.models.responses.project.NumberBookApprovedResponse (" +
+                "pnb.id, " +
+                "pd.name, " +
+                "pw.name, " +
+                "prt.code, " +
+                "pps.code, " +
+                "prd.code, " +
+                "pnb.code, " +
+                "pnb.status" +
+            ") " +
+            "FROM ProjectNumberBook AS pnb " +
+            "JOIN ProjectRegistrationDate AS prd " +
+            "ON pnb.projectRegistrationDate = prd " +
+            "AND pnb.status = 'ACCEPT' " +
+            "JOIN ProjectPaperSize AS pps " +
+            "ON prd.projectPaperSize = pps " +
+            "JOIN ProjectRegistrationType AS prt " +
+            "ON pps.projectRegistrationType = prt " +
+            "JOIN ProjectWard AS pw " +
+            "ON prt.projectWard = pw " +
+            "AND pw.project = :project " +
+            "AND pw = :projectWard " +
+            "JOIN ProjectDistrict AS pd " +
+            "ON pw.projectDistrict = pd "
+    )
+    List<NumberBookApprovedResponse> findAllApprovedNumberBooksByProjectAndProjectWard(
+            Project project,
+            ProjectWard projectWard
+    );
+
 }

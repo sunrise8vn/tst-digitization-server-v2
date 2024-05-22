@@ -8,9 +8,7 @@ import com.tst.models.enums.EPaperSize;
 import com.tst.models.responses.extractFull.ExtractFullResponse;
 import com.tst.models.responses.extractShort.ExtractShortResponse;
 import com.tst.models.responses.locationRegion.LocationResponse;
-import com.tst.models.responses.project.ProjectResponse;
-import com.tst.models.responses.project.RegistrationNumberBookResponse;
-import com.tst.models.responses.project.RegistrationPointResponse;
+import com.tst.models.responses.project.*;
 import com.tst.services.IGeneralService;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,19 +51,34 @@ public interface IProjectService extends IGeneralService<Project, Long> {
             User user
     );
 
-    List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectWard(
+    List<NumberBookNewResponse> findAllNewNumberBooksByProjectAndProjectProvince(
             Project project,
-            ProjectWard projectWard
+            ProjectProvince projectProvince
     );
 
-    List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectDistrict(
+    List<NumberBookNewResponse> findAllNewNumberBooksByProjectAndProjectDistrict(
             Project project,
             ProjectDistrict projectDistrict
     );
 
-    List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectProvince(
+    List<NumberBookNewResponse> findAllNewNumberBooksByProjectAndProjectWard(
+            Project project,
+            ProjectWard projectWard
+    );
+
+    List<NumberBookApprovedResponse> findAllApprovedNumberBooksByProjectAndProjectProvince(
             Project project,
             ProjectProvince projectProvince
+    );
+
+    List<NumberBookApprovedResponse> findAllApprovedNumberBooksByProjectAndProjectDistrict(
+            Project project,
+            ProjectDistrict projectDistrict
+    );
+
+    List<NumberBookApprovedResponse> findAllApprovedNumberBooksByProjectAndProjectWard(
+            Project project,
+            ProjectWard projectWard
     );
 
     void updatePaperCountSize(Project project);
