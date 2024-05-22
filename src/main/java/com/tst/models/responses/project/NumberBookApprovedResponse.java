@@ -13,7 +13,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class RegistrationNumberBookResponse {
+public class NumberBookApprovedResponse {
     private Long numberBookId;
     private String districtName;
     private String wardName;

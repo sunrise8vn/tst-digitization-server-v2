@@ -13,9 +13,7 @@ import com.tst.models.enums.*;
 import com.tst.models.responses.extractFull.ExtractFullResponse;
 import com.tst.models.responses.extractShort.ExtractShortResponse;
 import com.tst.models.responses.locationRegion.LocationResponse;
-import com.tst.models.responses.project.ProjectResponse;
-import com.tst.models.responses.project.RegistrationNumberBookResponse;
-import com.tst.models.responses.project.RegistrationPointResponse;
+import com.tst.models.responses.project.*;
 import com.tst.repositories.*;
 import com.tst.repositories.extractFull.*;
 import com.tst.repositories.extractShort.*;
@@ -898,18 +896,33 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
-    public List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectWard(Project project, ProjectWard projectWard) {
-        return projectRepository.findAllNumberBooksByProjectAndProjectWard(project, projectWard);
+    public List<NumberBookNewResponse> findAllNewNumberBooksByProjectAndProjectProvince(Project project, ProjectProvince projectProvince) {
+        return projectRepository.findAllNewNumberBooksByProjectAndProjectProvince(project, projectProvince);
     }
 
     @Override
-    public List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectDistrict(Project project, ProjectDistrict projectDistrict) {
-        return projectRepository.findAllNumberBooksByProjectAndProjectDistrict(project, projectDistrict);
+    public List<NumberBookNewResponse> findAllNewNumberBooksByProjectAndProjectDistrict(Project project, ProjectDistrict projectDistrict) {
+        return projectRepository.findAllNewNumberBooksByProjectAndProjectDistrict(project, projectDistrict);
     }
 
     @Override
-    public List<RegistrationNumberBookResponse> findAllNumberBooksByProjectAndProjectProvince(Project project, ProjectProvince projectProvince) {
-        return projectRepository.findAllNumberBooksByProjectAndProjectProvince(project, projectProvince);
+    public List<NumberBookNewResponse> findAllNewNumberBooksByProjectAndProjectWard(Project project, ProjectWard projectWard) {
+        return projectRepository.findAllNewNumberBooksByProjectAndProjectWard(project, projectWard);
+    }
+
+    @Override
+    public List<NumberBookApprovedResponse> findAllApprovedNumberBooksByProjectAndProjectProvince(Project project, ProjectProvince projectProvince) {
+        return projectRepository.findAllApprovedNumberBooksByProjectAndProjectProvince(project, projectProvince);
+    }
+
+    @Override
+    public List<NumberBookApprovedResponse> findAllApprovedNumberBooksByProjectAndProjectDistrict(Project project, ProjectDistrict projectDistrict) {
+        return projectRepository.findAllApprovedNumberBooksByProjectAndProjectDistrict(project, projectDistrict);
+    }
+
+    @Override
+    public List<NumberBookApprovedResponse> findAllApprovedNumberBooksByProjectAndProjectWard(Project project, ProjectWard projectWard) {
+        return projectRepository.findAllApprovedNumberBooksByProjectAndProjectWard(project, projectWard);
     }
 
     @Override

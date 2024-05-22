@@ -7,8 +7,10 @@ import com.tst.models.enums.EPaperSize;
 import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.models.enums.ERegistrationType;
 import com.tst.models.responses.ResponseObject;
+import com.tst.models.responses.project.NumberBookNewResponse;
+import com.tst.models.responses.project.NumberBookPendingResponse;
 import com.tst.models.responses.project.NumberBookVerifyResponse;
-import com.tst.models.responses.project.RegistrationNumberBookResponse;
+import com.tst.models.responses.project.NumberBookApprovedResponse;
 import com.tst.services.project.IProjectService;
 import com.tst.services.projectDistrict.IProjectDistrictService;
 import com.tst.services.projectNumberBook.IProjectNumberBookService;
@@ -16,6 +18,7 @@ import com.tst.services.projectNumberBookCover.IProjectNumberBookCoverService;
 import com.tst.services.projectProvince.IProjectProvinceService;
 import com.tst.services.projectWard.IProjectWardService;
 import com.tst.services.registrationType.IRegistrationTypeService;
+import com.tst.services.user.IUserService;
 import com.tst.utils.AppUtils;
 import com.tst.utils.FileUtils;
 import jakarta.validation.constraints.Pattern;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -36,6 +40,7 @@ import java.util.List;
 @Validated
 public class NumberBookAPI {
 
+    private final IUserService userService;
     private final IRegistrationTypeService registrationTypeService;
     private final IProjectService projectService;
     private final IProjectProvinceService projectProvinceService;
@@ -48,8 +53,126 @@ public class NumberBookAPI {
     private final FileUtils fileUtils;
 
 
-    @GetMapping("/get-all-by-project-and-province/{projectId}/{provinceId}")
-    public ResponseEntity<ResponseObject> getAllByProjectAndProvince(
+    @GetMapping("/get-new-by-project-and-id/{projectId}/{numberBookId}")
+    public ResponseEntity<ResponseObject> getNewByProjectAndId(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID sổ phải là một số") String numberBookId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        ProjectNumberBook projectNumberBook = projectNumberBookService.findById(
+                Long.parseLong(numberBookId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Sổ không tồn tại");
+        });
+
+        Optional<NumberBookPendingResponse> numberBookPendingResponse =  projectNumberBookService.findNewByProjectAndId(
+                project,
+                projectNumberBook.getId()
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy thông tin sổ mới của dự án thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(numberBookPendingResponse)
+                .build());
+    }
+
+    @GetMapping("/get-next-new-by-project-and-id/{projectId}/{numberBookId}")
+    public ResponseEntity<ResponseObject> getNextNewByProjectAndId(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID sổ phải là một số") String numberBookId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        ProjectNumberBook projectNumberBook = projectNumberBookService.findById(
+                Long.parseLong(numberBookId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Sổ không tồn tại");
+        });
+
+        User user = userService.getAuthenticatedUser();
+
+        Optional<ProjectNumberBook> projectNumberBookOptional = projectNumberBookService.findNextNewByProjectAndUserIdAndId(
+                project.getId(),
+                user.getId(),
+                projectNumberBook.getId()
+        );
+
+        if (projectNumberBookOptional.isEmpty()) {
+            return ResponseEntity.ok().body(ResponseObject.builder()
+                    .message("Lấy thông tin sổ mới của dự án thành công")
+                    .status(HttpStatus.NO_CONTENT.value())
+                    .statusText(HttpStatus.NO_CONTENT)
+                    .build());
+        }
+
+        projectNumberBook = projectNumberBookOptional.get();
+
+        NumberBookPendingResponse numberBookPendingResponse = new NumberBookPendingResponse()
+                .setNumberBookId(projectNumberBook.getId())
+                .setProvinceName(projectNumberBook
+                        .getProjectRegistrationDate()
+                        .getProjectPaperSize()
+                        .getProjectRegistrationType()
+                        .getProjectWard()
+                        .getProjectDistrict()
+                        .getProjectProvince()
+                        .getName())
+                .setDistrictName(projectNumberBook
+                        .getProjectRegistrationDate()
+                        .getProjectPaperSize()
+                        .getProjectRegistrationType()
+                        .getProjectWard()
+                        .getProjectDistrict()
+                        .getName())
+                .setWardName(projectNumberBook
+                        .getProjectRegistrationDate()
+                        .getProjectPaperSize()
+                        .getProjectRegistrationType()
+                        .getProjectWard()
+                        .getName())
+                .setRegistrationType(projectNumberBook
+                        .getProjectRegistrationDate()
+                        .getProjectPaperSize()
+                        .getProjectRegistrationType()
+                        .getCode())
+                .setPaperSize(projectNumberBook
+                        .getProjectRegistrationDate()
+                        .getProjectPaperSize()
+                        .getCode())
+                .setRegistrationDate(projectNumberBook
+                        .getProjectRegistrationDate()
+                        .getCode())
+                .setNumberBookCode(projectNumberBook
+                        .getCode())
+                .setFolderPath(projectNumberBook
+                        .getProjectNumberBookCover()
+                        .getFolderPath())
+                .setFileName(projectNumberBook
+                        .getProjectNumberBookCover()
+                        .getFileName())
+                .setStatus(projectNumberBook.getStatus());
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy thông tin sổ mới của dự án thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(numberBookPendingResponse)
+                .build());
+    }
+
+    @GetMapping("/get-all-new-by-project-and-province/{projectId}/{provinceId}")
+    public ResponseEntity<ResponseObject> getAllNewByProjectAndProvince(
             @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
             @PathVariable @Pattern(regexp = "^\\d+$", message = "ID tỉnh / thành phố phải là một số") String provinceId
     ) {
@@ -65,21 +188,21 @@ public class NumberBookAPI {
             throw new DataInputException("Tỉnh / Thành phố không tồn tại");
         });
 
-        List<RegistrationNumberBookResponse> registrationNumberBookResponses =  projectService.findAllNumberBooksByProjectAndProjectProvince(
+        List<NumberBookNewResponse> numberBookNewResponses =  projectService.findAllNewNumberBooksByProjectAndProjectProvince(
                 project,
                 projectProvince
         );
 
         return ResponseEntity.ok().body(ResponseObject.builder()
-                .message("Lấy danh sách sổ của dự án theo tỉnh / thành phố thành công")
+                .message("Lấy danh sách sổ mới của dự án theo tỉnh / thành phố thành công")
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
-                .data(registrationNumberBookResponses)
+                .data(numberBookNewResponses)
                 .build());
     }
 
-    @GetMapping("/get-all-by-project-and-district/{projectId}/{districtId}")
-    public ResponseEntity<ResponseObject> getAllByProjectAndDistrict(
+    @GetMapping("/get-all-new-by-project-and-district/{projectId}/{districtId}")
+    public ResponseEntity<ResponseObject> getAllNewByProjectAndDistrict(
             @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
             @PathVariable @Pattern(regexp = "^\\d+$", message = "ID quận / huyện / thành phố phải là một số") String districtId
     ) {
@@ -95,21 +218,21 @@ public class NumberBookAPI {
             throw new DataInputException("Quận / Huyện / Thành phố không tồn tại");
         });
 
-        List<RegistrationNumberBookResponse> registrationNumberBookResponses =  projectService.findAllNumberBooksByProjectAndProjectDistrict(
+        List<NumberBookNewResponse> numberBookNewResponses =  projectService.findAllNewNumberBooksByProjectAndProjectDistrict(
                 project,
                 projectDistrict
         );
 
         return ResponseEntity.ok().body(ResponseObject.builder()
-                .message("Lấy danh sách sổ của dự án theo quận / huyện / thành phố thành công")
+                .message("Lấy danh sách sổ mới của dự án theo quận / huyện / thành phố thành công")
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
-                .data(registrationNumberBookResponses)
+                .data(numberBookNewResponses)
                 .build());
     }
 
-    @GetMapping("/get-all-by-project-and-ward/{projectId}/{wardId}")
-    public ResponseEntity<ResponseObject> getAllByProjectAndWard(
+    @GetMapping("/get-all-new-by-project-and-ward/{projectId}/{wardId}")
+    public ResponseEntity<ResponseObject> getAllNewByProjectAndWard(
             @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
             @PathVariable @Pattern(regexp = "^\\d+$", message = "ID phường / xã / thị trấn phải là một số") String wardId
     ) {
@@ -125,7 +248,98 @@ public class NumberBookAPI {
             throw new DataInputException("Phường / Xã / Thị trấn không tồn tại");
         });
 
-        List<RegistrationNumberBookResponse> registrationNumberBookResponses =  projectService.findAllNumberBooksByProjectAndProjectWard(
+        List<NumberBookNewResponse> numberBookNewResponses =  projectService.findAllNewNumberBooksByProjectAndProjectWard(
+                project,
+                projectWard
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách sổ mới của dự án theo phường / xã / thị trấn thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(numberBookNewResponses)
+                .build());
+    }
+
+
+    @GetMapping("/get-all-approved-by-project-and-province/{projectId}/{provinceId}")
+    public ResponseEntity<ResponseObject> getAllApprovedByProjectAndProvince(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID tỉnh / thành phố phải là một số") String provinceId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        ProjectProvince projectProvince = projectProvinceService.findById(
+                Long.parseLong(provinceId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Tỉnh / Thành phố không tồn tại");
+        });
+
+        List<NumberBookApprovedResponse> numberBookApprovedResponses =  projectService.findAllApprovedNumberBooksByProjectAndProjectProvince(
+                project,
+                projectProvince
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách sổ của dự án theo tỉnh / thành phố thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(numberBookApprovedResponses)
+                .build());
+    }
+
+    @GetMapping("/get-all-approved-by-project-and-district/{projectId}/{districtId}")
+    public ResponseEntity<ResponseObject> getAllApprovedByProjectAndDistrict(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID quận / huyện / thành phố phải là một số") String districtId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        ProjectDistrict projectDistrict = projectDistrictService.findById(
+                Long.parseLong(districtId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Quận / Huyện / Thành phố không tồn tại");
+        });
+
+        List<NumberBookApprovedResponse> numberBookApprovedResponses =  projectService.findAllApprovedNumberBooksByProjectAndProjectDistrict(
+                project,
+                projectDistrict
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách sổ của dự án theo quận / huyện / thành phố thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(numberBookApprovedResponses)
+                .build());
+    }
+
+    @GetMapping("/get-all-approved-by-project-and-ward/{projectId}/{wardId}")
+    public ResponseEntity<ResponseObject> getAllApprovedByProjectAndWard(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID phường / xã / thị trấn phải là một số") String wardId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        ProjectWard projectWard = projectWardService.findById(
+                Long.parseLong(wardId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Phường / Xã / Thị trấn không tồn tại");
+        });
+
+        List<NumberBookApprovedResponse> numberBookApprovedResponses =  projectService.findAllApprovedNumberBooksByProjectAndProjectWard(
                 project,
                 projectWard
         );
@@ -134,7 +348,7 @@ public class NumberBookAPI {
                 .message("Lấy danh sách sổ của dự án theo phường / xã / thị trấn thành công")
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
-                .data(registrationNumberBookResponses)
+                .data(numberBookApprovedResponses)
                 .build());
     }
 
