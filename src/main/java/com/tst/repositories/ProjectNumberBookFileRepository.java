@@ -1,6 +1,5 @@
 package com.tst.repositories;
 
-import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectNumberBook;
 import com.tst.models.entities.ProjectNumberBookFile;
 import com.tst.models.entities.ProjectWard;
@@ -31,14 +30,8 @@ public interface ProjectNumberBookFileRepository extends JpaRepository<ProjectNu
 
     Optional<ProjectNumberBookFile> findByIdAndStatus(Long id, EProjectNumberBookFileStatus status);
 
-
-    @Query("SELECT pnbf " +
-            "FROM ProjectNumberBookFile AS pnbf " +
-            "WHERE pnbf.id > :id " +
-            "AND pnbf.status = :status " +
-            "AND pnbf.project = :project"
-    )
-    Optional<ProjectNumberBookFile> findNextByIdAndStatus(Long id, EProjectNumberBookFileStatus status, Project project);
+    @Query(value = "CALL sp_find_next_number_book_file_by_id_and_status(:projectId, :id, :status)", nativeQuery = true)
+    Optional<ProjectNumberBookFile> findNextByIdAndStatus(Long projectId, Long id, String status);
 
 
     @Query("SELECT pnbf " +

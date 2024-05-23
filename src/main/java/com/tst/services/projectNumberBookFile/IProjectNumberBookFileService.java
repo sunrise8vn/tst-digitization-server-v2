@@ -3,7 +3,6 @@ package com.tst.services.projectNumberBookFile;
 import com.tst.models.entities.ProjectNumberBook;
 import com.tst.models.entities.ProjectNumberBookFile;
 import com.tst.models.entities.ProjectWard;
-import com.tst.models.entities.*;
 import com.tst.models.enums.EProjectNumberBookFileStatus;
 import com.tst.models.responses.project.NumberBookFileListResponse;
 import com.tst.services.IGeneralService;
@@ -17,7 +16,7 @@ public interface IProjectNumberBookFileService extends IGeneralService<ProjectNu
 
     Optional<ProjectNumberBookFile> findByIdAndStatus(Long id, EProjectNumberBookFileStatus status);
 
-    Optional<ProjectNumberBookFile> findNextByIdAndStatus(Long id, EProjectNumberBookFileStatus status, Project project);
+    Optional<ProjectNumberBookFile> findNextByIdAndStatus(Long projectId, Long id, String status);
 
     Optional<ProjectNumberBookFile> findByIdAndRegistrationTypeCodeAndStatus(
             Long id,
