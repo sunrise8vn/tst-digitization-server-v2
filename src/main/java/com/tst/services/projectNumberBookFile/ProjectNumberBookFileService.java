@@ -86,12 +86,8 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
     }
 
     @Override
-    public Optional<ProjectNumberBookFile> findNextByIdAndStatus(
-            Long id,
-            EProjectNumberBookFileStatus status,
-            Project project
-    ) {
-        return projectNumberBookFileRepository.findNextByIdAndStatus(id, status, project);
+    public Optional<ProjectNumberBookFile> findNextByIdAndStatus(Long projectId, Long id, String status) {
+        return projectNumberBookFileRepository.findNextByIdAndStatus(projectId, id, status);
     }
 
     @Override
@@ -286,12 +282,16 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
             ParentsChildrenExtractShort parentsChildrenExtractShort = new ParentsChildrenExtractShort()
                     .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
+                    .setNumber(projectNumberBookFile.getNumber())
+                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
                     .setStatus(EInputStatus.NEW);
             parentsChildrenExtractShortRepository.save(parentsChildrenExtractShort);
 
             ParentsChildrenExtractFull parentsChildrenExtractFull = new ParentsChildrenExtractFull()
                     .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
+                    .setNumber(projectNumberBookFile.getNumber())
+                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
                     .setStatus(EInputStatus.NEW);
             parentsChildrenExtractFullRepository.save(parentsChildrenExtractFull);
         }
@@ -300,12 +300,16 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
             BirthExtractShort birthExtractShort = new BirthExtractShort()
                     .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
+                    .setNumber(projectNumberBookFile.getNumber())
+                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
                     .setStatus(EInputStatus.NEW);
             birthExtractShortRepository.save(birthExtractShort);
 
             BirthExtractFull birthExtractFull = new BirthExtractFull()
                     .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
+                    .setNumber(projectNumberBookFile.getNumber())
+                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
                     .setStatus(EInputStatus.NEW);
             birthExtractFullRepository.save(birthExtractFull);
         }
@@ -314,12 +318,16 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
             MarryExtractShort marryExtractShort = new MarryExtractShort()
                     .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
+                    .setNumber(projectNumberBookFile.getNumber())
+                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
                     .setStatus(EInputStatus.NEW);
             marryExtractShortRepository.save(marryExtractShort);
 
             MarryExtractFull marryExtractFull = new MarryExtractFull()
                     .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
+                    .setNumber(projectNumberBookFile.getNumber())
+                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
                     .setStatus(EInputStatus.NEW);
             marryExtractFullRepository.save(marryExtractFull);
         }
@@ -328,12 +336,16 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
             WedlockExtractShort wedlockExtractShort = new WedlockExtractShort()
                     .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
+                    .setNumber(projectNumberBookFile.getNumber())
+                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
                     .setStatus(EInputStatus.NEW);
             wedlockExtractShortRepository.save(wedlockExtractShort);
 
             WedlockExtractFull wedlockExtractFull = new WedlockExtractFull()
                     .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
+                    .setNumber(projectNumberBookFile.getNumber())
+                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
                     .setStatus(EInputStatus.NEW);
             wedlockExtractFullRepository.save(wedlockExtractFull);
         }
@@ -342,12 +354,16 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
             DeathExtractShort deathExtractShort = new DeathExtractShort()
                     .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
+                    .setNumber(projectNumberBookFile.getNumber())
+                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
                     .setStatus(EInputStatus.NEW);
             deathExtractShortRepository.save(deathExtractShort);
 
             DeathExtractFull deathExtractFull = new DeathExtractFull()
                     .setProject(project)
                     .setProjectNumberBookFile(projectNumberBookFile)
+                    .setNumber(projectNumberBookFile.getNumber())
+                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
                     .setStatus(EInputStatus.NEW);
             deathExtractFullRepository.save(deathExtractFull);
         }

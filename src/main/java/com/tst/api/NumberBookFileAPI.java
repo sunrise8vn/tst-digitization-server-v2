@@ -6,6 +6,7 @@ import com.tst.models.dtos.project.ProjectNumberBookFileOrganizationDTO;
 import com.tst.models.entities.ProjectNumberBook;
 import com.tst.models.entities.ProjectNumberBookFile;
 import com.tst.models.entities.ProjectWard;
+import com.tst.models.entities.User;
 import com.tst.models.enums.EProjectNumberBookFileStatus;
 import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.models.responses.ResponseObject;
@@ -14,6 +15,7 @@ import com.tst.models.responses.project.NumberBookFileResponse;
 import com.tst.services.projectNumberBook.IProjectNumberBookService;
 import com.tst.services.projectNumberBookFile.IProjectNumberBookFileService;
 import com.tst.services.projectWard.IProjectWardService;
+import com.tst.services.user.IUserService;
 import com.tst.utils.AppUtils;
 import com.tst.utils.FileUtils;
 import jakarta.validation.constraints.Pattern;
@@ -34,6 +36,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class NumberBookFileAPI {
+
+    private final IUserService userService;
     private final IProjectWardService projectWardService;
     private final IProjectNumberBookFileService projectNumberBookFileService;
     private final IProjectNumberBookService projectNumberBookService;
@@ -180,9 +184,9 @@ public class NumberBookFileAPI {
         });
 
         ProjectNumberBookFile projectNumberBookFileNext = projectNumberBookFileService.findNextByIdAndStatus(
+                projectNumberBookFile.getProject().getId(),
                 Long.parseLong(id),
-                EProjectNumberBookFileStatus.NEW,
-                projectNumberBookFile.getProject()
+                EProjectNumberBookFileStatus.NEW.getValue()
         ).orElseThrow(() -> {
             throw new DataInputException("Không có tập tin tiếp theo");
         });
@@ -250,9 +254,9 @@ public class NumberBookFileAPI {
         });
 
         ProjectNumberBookFile projectNumberBookFileNext = projectNumberBookFileService.findNextByIdAndStatus(
+                projectNumberBookFile.getProject().getId(),
                 Long.parseLong(id),
-                EProjectNumberBookFileStatus.ORGANIZED,
-                projectNumberBookFile.getProject()
+                EProjectNumberBookFileStatus.ORGANIZED.getValue()
         ).orElseThrow(() -> {
             throw new DataInputException("Không có tập tin tiếp theo");
         });
