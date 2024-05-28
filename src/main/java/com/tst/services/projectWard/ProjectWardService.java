@@ -1,12 +1,15 @@
 package com.tst.services.projectWard;
 
 import com.tst.models.dtos.project.PaperSizeDTO;
+import com.tst.models.entities.ProjectDistrict;
 import com.tst.models.entities.ProjectWard;
+import com.tst.models.responses.statistic.StatisticProjectWardResponse;
 import com.tst.repositories.ProjectRegistrationTypeRepository;
 import com.tst.repositories.ProjectWardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -26,6 +29,11 @@ public class ProjectWardService implements IProjectWardService {
     @Override
     public Optional<ProjectWard> findByIdAndProjectId(Long id, Long projectId) {
         return projectWardRepository.findByIdAndProjectId(id, projectId);
+    }
+
+    @Override
+    public List<StatisticProjectWardResponse> findAllStatisticByProjectDistrict(ProjectDistrict projectDistrict) {
+        return projectWardRepository.findAllStatisticByProjectDistrict(projectDistrict);
     }
 
     @Override

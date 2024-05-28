@@ -9,6 +9,7 @@ import com.tst.models.responses.extractFull.ExtractFullResponse;
 import com.tst.models.responses.extractShort.ExtractShortResponse;
 import com.tst.models.responses.locationRegion.LocationResponse;
 import com.tst.models.responses.project.*;
+import com.tst.models.responses.statistic.StatisticProjectResponse;
 import com.tst.services.IGeneralService;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -79,6 +80,10 @@ public interface IProjectService extends IGeneralService<Project, Long> {
     List<NumberBookApprovedResponse> findAllApprovedNumberBooksByProjectAndProjectWard(
             Project project,
             ProjectWard projectWard
+    );
+
+    StatisticProjectResponse getStatisticById(
+            Long id
     );
 
     void updatePaperCountSize(Project project);

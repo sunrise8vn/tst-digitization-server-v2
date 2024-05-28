@@ -10,16 +10,21 @@ import com.tst.models.entities.locationRegion.LocationProvince;
 import com.tst.models.entities.locationRegion.LocationWard;
 import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.locationRegion.LocationResponse;
-import com.tst.models.responses.project.ProjectResponse;
-import com.tst.models.responses.project.RegistrationPointResponse;
+import com.tst.models.responses.project.*;
+import com.tst.models.responses.statistic.StatisticProjectResponse;
 import com.tst.services.accessPoint.IAccessPointService;
 import com.tst.services.locationDistrict.ILocationDistrictService;
 import com.tst.services.locationProvince.ILocationProvinceService;
 import com.tst.services.locationWard.ILocationWardService;
 import com.tst.services.project.IProjectService;
 import com.tst.services.projectDistrict.IProjectDistrictService;
+import com.tst.services.projectNumberBook.IProjectNumberBookService;
+import com.tst.services.projectPaperSize.IProjectPaperSizeService;
 import com.tst.services.projectProvince.IProjectProvinceService;
+import com.tst.services.projectRegistrationDate.IProjectRegistrationDateService;
+import com.tst.services.projectRegistrationType.IProjectRegistrationTypeService;
 import com.tst.services.projectUser.IProjectUserService;
+import com.tst.services.projectWard.IProjectWardService;
 import com.tst.services.user.IUserService;
 import com.tst.utils.AppUtils;
 import jakarta.validation.constraints.Pattern;
@@ -30,9 +35,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @RestController
@@ -46,6 +49,11 @@ public class ProjectAPI {
     private final IProjectService projectService;
     private final IProjectProvinceService projectProvinceService;
     private final IProjectDistrictService projectDistrictService;
+    private final IProjectWardService projectWardService;
+    private final IProjectRegistrationTypeService projectRegistrationTypeService;
+    private final IProjectPaperSizeService projectPaperSizeService;
+    private final IProjectRegistrationDateService projectRegistrationDateService;
+    private final IProjectNumberBookService projectNumberBookService;
     private final ILocationProvinceService locationProvinceService;
     private final ILocationDistrictService locationDistrictService;
     private final ILocationWardService locationWardService;
@@ -188,6 +196,94 @@ public class ProjectAPI {
                 .build());
     }
 
+    @GetMapping("/get-all-registration-type-by-ward/{wardId}")
+    public ResponseEntity<ResponseObject> getAllRegistrationTypeByWard(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID phường / xã / thị trấn phải là một số") String wardId
+    ) {
+        ProjectWard projectWard = projectWardService.findById(
+                Long.parseLong(wardId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Phường / Xã / Thị trấn không tồn tại");
+        });
+
+        List<ProjectRegistrationTypeResponse> registrationTypeResponses = projectRegistrationTypeService.findAllByProjectWard(
+                projectWard
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách loại sổ thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(registrationTypeResponses)
+                .build());
+    }
+
+    @GetMapping("/get-all-paper-size-by-registration-type/{registrationTypeId}")
+    public ResponseEntity<ResponseObject> getAllPaperSizeByRegistrationType(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID loại sổ phải là một số") String registrationTypeId
+    ) {
+        ProjectRegistrationType projectRegistrationType = projectRegistrationTypeService.findById(
+                Long.parseLong(registrationTypeId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Loại sổ không tồn tại");
+        });
+
+        List<ProjectPaperSizeResponse> paperSizeResponses = projectPaperSizeService.findAllByProjectRegistrationType(
+                projectRegistrationType
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách kích thước sổ thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(paperSizeResponses)
+                .build());
+    }
+
+    @GetMapping("/get-all-registration-date-by-paper-size/{paperSizeId}")
+    public ResponseEntity<ResponseObject> getAllRegistrationDateByPaperSize(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID kích thước sổ phải là một số") String paperSizeId
+    ) {
+        ProjectPaperSize projectPaperSize = projectPaperSizeService.findById(
+                Long.parseLong(paperSizeId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Kích thước sổ không tồn tại");
+        });
+
+        List<ProjectRegistrationDateResponse> registrationDateResponses = projectRegistrationDateService.findAllByProjectPaperSize(
+                projectPaperSize
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách năm đăng ký sổ thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(registrationDateResponses)
+                .build());
+    }
+
+    @GetMapping("/get-all-number-book-by-registration-date/{registrationDateId}")
+    public ResponseEntity<ResponseObject> getAllNumberBookByRegistrationDate(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID năm đăng ký phải là một số") String registrationDateId
+    ) {
+        ProjectRegistrationDate projectRegistrationDate = projectRegistrationDateService.findById(
+                Long.parseLong(registrationDateId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Năm đăng ký sổ không tồn tại");
+        });
+
+        List<ProjectNumberBookResponse> numberBookResponses = projectNumberBookService.findAllByProjectRegistrationDate(
+                projectRegistrationDate
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách sổ thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(numberBookResponses)
+                .build());
+    }
+
     @PostMapping("/verify-project-by-user")
     public ResponseEntity<ResponseObject> verifyProjectByUser(
             @Validated @RequestBody ProjectDTO projectDTO,
@@ -221,6 +317,50 @@ public class ProjectAPI {
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .data(projectResponse)
+                .build());
+    }
+
+    @PostMapping("/verify-project-get-data-by-user")
+    public ResponseEntity<ResponseObject> verifyProjectGetDataByUser(
+            @Validated @RequestBody ProjectDTO projectDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Xác thực dự án không thành công")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        Project project = projectService.findById(
+                Long.parseLong(projectDTO.getId())
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        User user = userService.getAuthenticatedUser();
+
+        Optional<ProjectResponse> projectResponse = projectService.findProjectResponseByProjectAndUser(project, user);
+
+        if (projectResponse.isEmpty()) {
+            throw new PermissionDenyException("Bạn không thuộc dự án này");
+        }
+
+        StatisticProjectResponse statisticProjectResponse = projectService.getStatisticById(
+                project.getId()
+        );
+
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("project", projectResponse);
+        objectMap.put("statistic", statisticProjectResponse);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Xác thực dự án thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(objectMap)
                 .build());
     }
 

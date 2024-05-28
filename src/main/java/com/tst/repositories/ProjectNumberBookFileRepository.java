@@ -5,6 +5,7 @@ import com.tst.models.entities.ProjectNumberBookFile;
 import com.tst.models.entities.ProjectWard;
 import com.tst.models.enums.EProjectNumberBookFileStatus;
 import com.tst.models.responses.project.NumberBookFileListResponse;
+import com.tst.models.responses.statistic.StatictisProjectNumberBookFileResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -79,5 +80,31 @@ public interface ProjectNumberBookFileRepository extends JpaRepository<ProjectNu
             ProjectWard projectWard,
             EProjectNumberBookFileStatus status
     );
+
+
+    @Query("SELECT NEW com.tst.models.responses.statistic.StatictisProjectNumberBookFileResponse (" +
+                "pnbf.id, " +
+                "pnbf.fileName, " +
+                "pnbf.createdAt, " +
+                "pnbf.fileSize, " +
+                "CASE WHEN pnbf.paperSize = 'A0' THEN 1 ELSE 0 END, " +
+                "CASE WHEN pnbf.paperSize = 'A1' THEN 1 ELSE 0 END, " +
+                "CASE WHEN pnbf.paperSize = 'A2' THEN 1 ELSE 0 END, " +
+                "CASE WHEN pnbf.paperSize = 'A3' THEN 1 ELSE 0 END, " +
+                "CASE WHEN pnbf.paperSize = 'A4' THEN 1 ELSE 0 END, " +
+                "(CASE WHEN pnbf.paperSize = 'A0' THEN 16 ELSE 0 END) + " +
+                "(CASE WHEN pnbf.paperSize = 'A1' THEN 8 ELSE 0 END) + " +
+                "(CASE WHEN pnbf.paperSize = 'A2' THEN 4 ELSE 0 END) + " +
+                "(CASE WHEN pnbf.paperSize = 'A3' THEN 2 ELSE 0 END) + " +
+                "(CASE WHEN pnbf.paperSize = 'A4' THEN 1 ELSE 0 END)" +
+            ") " +
+            "FROM ProjectNumberBookFile AS pnbf " +
+            "WHERE pnbf.projectNumberBook = :projectNumberBook " +
+            "AND pnbf.status = 'ACCEPT'"
+    )
+    List<StatictisProjectNumberBookFileResponse> findAllProjectNumberBookFileResponse(ProjectNumberBook projectNumberBook);
+
+
+    List<ProjectNumberBookFile> findAllByProjectNumberBook(ProjectNumberBook projectNumberBook);
 
 }

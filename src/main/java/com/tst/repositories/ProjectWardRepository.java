@@ -3,11 +3,12 @@ package com.tst.repositories;
 import com.tst.models.dtos.project.PaperSizeDTO;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectDistrict;
-import com.tst.models.entities.ProjectProvince;
 import com.tst.models.entities.ProjectWard;
+import com.tst.models.responses.statistic.StatisticProjectWardResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ProjectWardRepository extends JpaRepository<ProjectWard, Long> {
@@ -40,5 +41,25 @@ public interface ProjectWardRepository extends JpaRepository<ProjectWard, Long> 
             "AND pw.project.id = :projectId"
     )
     Optional<ProjectWard> findByIdAndProjectId(Long id, Long projectId);
+
+
+    @Query("SELECT NEW com.tst.models.responses.statistic.StatisticProjectWardResponse (" +
+                "pw.id, " +
+                "pw.name, " +
+                "(pw.a0 + pw.a1 + pw.a2 + pw.a3 + pw.a4), " +
+                "pw.totalSize, " +
+                "pw.a0, " +
+                "pw.a1, " +
+                "pw.a2, " +
+                "pw.a3, " +
+                "pw.a4, " +
+                "pw.convertA4 " +
+            ") " +
+            "FROM ProjectWard AS pw " +
+            "WHERE pw.projectDistrict = :projectDistrict "
+    )
+    List<StatisticProjectWardResponse> findAllStatisticByProjectDistrict(
+            ProjectDistrict projectDistrict
+    );
 
 }

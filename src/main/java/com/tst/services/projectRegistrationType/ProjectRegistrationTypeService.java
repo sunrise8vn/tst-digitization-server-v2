@@ -2,11 +2,15 @@ package com.tst.services.projectRegistrationType;
 
 import com.tst.models.dtos.project.PaperSizeDTO;
 import com.tst.models.entities.ProjectRegistrationType;
+import com.tst.models.entities.ProjectWard;
+import com.tst.models.responses.project.ProjectRegistrationTypeResponse;
+import com.tst.models.responses.statistic.StatisticProjectRegistrationTypeResponse;
 import com.tst.repositories.ProjectPaperSizeRepository;
 import com.tst.repositories.ProjectRegistrationTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -21,6 +25,16 @@ public class ProjectRegistrationTypeService implements IProjectRegistrationTypeS
     @Override
     public Optional<ProjectRegistrationType> findById(Long id) {
         return projectRegistrationTypeRepository.findById(id);
+    }
+
+    @Override
+    public List<ProjectRegistrationTypeResponse> findAllByProjectWard(ProjectWard projectWard) {
+        return projectRegistrationTypeRepository.findAllByProjectWard(projectWard);
+    }
+
+    @Override
+    public List<StatisticProjectRegistrationTypeResponse> findAllStatisticByProjectWard(ProjectWard projectWard) {
+        return projectRegistrationTypeRepository.findAllStatisticByProjectWard(projectWard);
     }
 
     @Override

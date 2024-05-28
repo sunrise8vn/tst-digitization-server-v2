@@ -1,12 +1,15 @@
 package com.tst.services.projectProvince;
 
 import com.tst.models.dtos.project.PaperSizeDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectProvince;
+import com.tst.models.responses.statistic.StatisticProjectProvinceResponse;
 import com.tst.repositories.ProjectDistrictRepository;
 import com.tst.repositories.ProjectProvinceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -20,6 +23,11 @@ public class ProjectProvinceService implements IProjectProvinceService {
     @Override
     public Optional<ProjectProvince> findById(Long id) {
         return projectProvinceRepository.findById(id);
+    }
+
+    @Override
+    public List<StatisticProjectProvinceResponse> findAllStatisticByProject(Project project) {
+        return projectProvinceRepository.findAllStatisticByProject(project);
     }
 
     @Override
