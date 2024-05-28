@@ -2,11 +2,16 @@ package com.tst.services.projectPaperSize;
 
 import com.tst.models.dtos.project.PaperSizeDTO;
 import com.tst.models.entities.ProjectPaperSize;
+import com.tst.models.entities.ProjectRegistrationType;
+import com.tst.models.responses.project.ProjectPaperSizeResponse;
+import com.tst.models.responses.statistic.StatisticProjectNumberBookResponse;
+import com.tst.models.responses.statistic.StatisticProjectPaperSizeResponse;
 import com.tst.repositories.ProjectPaperSizeRepository;
 import com.tst.repositories.ProjectRegistrationDateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -21,6 +26,16 @@ public class ProjectPaperSizeService implements IProjectPaperSizeService {
     @Override
     public Optional<ProjectPaperSize> findById(Long id) {
         return projectPaperSizeRepository.findById(id);
+    }
+
+    @Override
+    public List<ProjectPaperSizeResponse> findAllByProjectRegistrationType(ProjectRegistrationType projectRegistrationType) {
+        return projectPaperSizeRepository.findAllByProjectRegistrationType(projectRegistrationType);
+    }
+
+    @Override
+    public List<StatisticProjectPaperSizeResponse> findAllStatisticByProjectRegistrationType(ProjectRegistrationType projectRegistrationType) {
+        return projectPaperSizeRepository.findAllStatisticByProjectRegistrationType(projectRegistrationType);
     }
 
     @Override

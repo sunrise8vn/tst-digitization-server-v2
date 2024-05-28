@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +24,15 @@ public class TestAPI {
 
     @GetMapping("/hello")
     public ResponseEntity<ResponseObject> getHello() {
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Get Hello successfully")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .build());
+    }
+
+    @PostMapping("/hello")
+    public ResponseEntity<ResponseObject> postHello() {
         User userDetails = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (!userDetails.getRole().getName().equals(EUserRole.ROLE_ADMIN)) {
@@ -34,7 +44,7 @@ public class TestAPI {
         }
 
         return ResponseEntity.ok().body(ResponseObject.builder()
-                .message("Get Hello successfully")
+                .message("Post Hello successfully")
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .build());

@@ -9,6 +9,7 @@ import com.tst.models.enums.EPaperSize;
 import com.tst.models.enums.EProjectNumberBookFileStatus;
 import com.tst.models.enums.ERegistrationType;
 import com.tst.models.responses.project.NumberBookFileListResponse;
+import com.tst.models.responses.statistic.StatictisProjectNumberBookFileResponse;
 import com.tst.repositories.*;
 import com.tst.repositories.extractFull.*;
 import com.tst.repositories.extractShort.*;
@@ -105,6 +106,16 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
             EProjectNumberBookFileStatus status
     ) {
         return projectNumberBookFileRepository.findAllNumberBookFileByStatus(projectWard, status);
+    }
+
+    @Override
+    public List<StatictisProjectNumberBookFileResponse> findAllProjectNumberBookFileResponse(ProjectNumberBook projectNumberBook) {
+        return projectNumberBookFileRepository.findAllProjectNumberBookFileResponse(projectNumberBook);
+    }
+
+    @Override
+    public List<ProjectNumberBookFile> findAllByProjectNumberBook(ProjectNumberBook projectNumberBook) {
+        return projectNumberBookFileRepository.findAllByProjectNumberBook(projectNumberBook);
     }
 
     @Override

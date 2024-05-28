@@ -4,6 +4,8 @@ import com.tst.exceptions.DataInputException;
 import com.tst.models.entities.*;
 import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.models.responses.project.NumberBookPendingResponse;
+import com.tst.models.responses.project.ProjectNumberBookResponse;
+import com.tst.models.responses.statistic.StatisticProjectNumberBookResponse;
 import com.tst.repositories.ProjectNumberBookRepository;
 import com.tst.services.project.IProjectService;
 import com.tst.services.projectDistrict.IProjectDistrictService;
@@ -18,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -58,6 +61,16 @@ public class ProjectNumberBookService implements IProjectNumberBookService {
     @Override
     public Optional<ProjectNumberBook> findNextNewByProjectAndUserIdAndId(Long projectId, String userId, Long id) {
         return projectNumberBookRepository.findNextNewByProjectAndUserIdAndId(projectId, userId, id);
+    }
+
+    @Override
+    public List<ProjectNumberBookResponse> findAllByProjectRegistrationDate(ProjectRegistrationDate projectRegistrationDate) {
+        return projectNumberBookRepository.findAllByProjectRegistrationDate(projectRegistrationDate);
+    }
+
+    @Override
+    public List<StatisticProjectNumberBookResponse> findAllStatisticByProjectRegistrationDate(ProjectRegistrationDate projectRegistrationDate) {
+        return projectNumberBookRepository.findAllStatisticByProjectRegistrationDate(projectRegistrationDate);
     }
 
     @Override

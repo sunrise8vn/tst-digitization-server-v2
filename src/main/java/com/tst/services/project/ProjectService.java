@@ -14,6 +14,7 @@ import com.tst.models.responses.extractFull.ExtractFullResponse;
 import com.tst.models.responses.extractShort.ExtractShortResponse;
 import com.tst.models.responses.locationRegion.LocationResponse;
 import com.tst.models.responses.project.*;
+import com.tst.models.responses.statistic.StatisticProjectResponse;
 import com.tst.repositories.*;
 import com.tst.repositories.extractFull.*;
 import com.tst.repositories.extractShort.*;
@@ -923,6 +924,11 @@ public class ProjectService implements IProjectService {
     @Override
     public List<NumberBookApprovedResponse> findAllApprovedNumberBooksByProjectAndProjectWard(Project project, ProjectWard projectWard) {
         return projectRepository.findAllApprovedNumberBooksByProjectAndProjectWard(project, projectWard);
+    }
+
+    @Override
+    public StatisticProjectResponse getStatisticById(Long id) {
+        return projectRepository.getStatisticById(id);
     }
 
     @Override

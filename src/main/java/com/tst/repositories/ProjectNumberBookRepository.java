@@ -6,9 +6,12 @@ import com.tst.models.entities.ProjectNumberBook;
 import com.tst.models.entities.ProjectRegistrationDate;
 import com.tst.models.enums.EProjectNumberBookStatus;
 import com.tst.models.responses.project.NumberBookPendingResponse;
+import com.tst.models.responses.project.ProjectNumberBookResponse;
+import com.tst.models.responses.statistic.StatisticProjectNumberBookResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -88,5 +91,36 @@ public interface ProjectNumberBookRepository extends JpaRepository<ProjectNumber
             "WHERE pnb.projectRegistrationDate = :projectRegistrationDate"
     )
     PaperSizeDTO findByProjectRegistrationDate(ProjectRegistrationDate projectRegistrationDate);
+
+
+    @Query("SELECT NEW com.tst.models.responses.project.ProjectNumberBookResponse (" +
+                "pnb.id, " +
+                "pnb.code" +
+            ") " +
+            "FROM ProjectNumberBook AS pnb " +
+            "WHERE pnb.projectRegistrationDate = :projectRegistrationDate"
+    )
+    List<ProjectNumberBookResponse> findAllByProjectRegistrationDate(ProjectRegistrationDate projectRegistrationDate);
+
+
+
+    @Query("SELECT NEW com.tst.models.responses.statistic.StatisticProjectNumberBookResponse (" +
+                "pnb.id, " +
+                "pnb.code, " +
+                "(pnb.a0 + pnb.a1 + pnb.a2 + pnb.a3 + pnb.a4), " +
+                "pnb.totalSize, " +
+                "pnb.a0, " +
+                "pnb.a1, " +
+                "pnb.a2, " +
+                "pnb.a3, " +
+                "pnb.a4, " +
+                "pnb.convertA4 " +
+            ") " +
+            "FROM ProjectNumberBook AS pnb " +
+            "WHERE pnb.projectRegistrationDate = :projectRegistrationDate"
+    )
+    List<StatisticProjectNumberBookResponse> findAllStatisticByProjectRegistrationDate(
+            ProjectRegistrationDate projectRegistrationDate
+    );
 
 }

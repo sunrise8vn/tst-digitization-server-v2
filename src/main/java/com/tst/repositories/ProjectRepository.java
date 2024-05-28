@@ -3,6 +3,7 @@ package com.tst.repositories;
 import com.tst.models.entities.*;
 import com.tst.models.responses.locationRegion.LocationResponse;
 import com.tst.models.responses.project.*;
+import com.tst.models.responses.statistic.StatisticProjectResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -179,7 +180,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "FROM ProjectNumberBook AS pnb " +
             "JOIN ProjectRegistrationDate AS prd " +
             "ON pnb.projectRegistrationDate = prd " +
-            "AND pnb.status = 'ACCEPT' " +
+            "AND pnb.status = 'NEW' " +
             "JOIN ProjectPaperSize AS pps " +
             "ON prd.projectPaperSize = pps " +
             "JOIN ProjectRegistrationType AS prt " +
@@ -289,6 +290,26 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<NumberBookApprovedResponse> findAllApprovedNumberBooksByProjectAndProjectWard(
             Project project,
             ProjectWard projectWard
+    );
+
+
+    @Query("SELECT NEW com.tst.models.responses.statistic.StatisticProjectResponse (" +
+                "prj.id, " +
+                "prj.name, " +
+                "(prj.a0 + prj.a1 + prj.a2 + prj.a3 + prj.a4), " +
+                "prj.totalSize, " +
+                "prj.a0, " +
+                "prj.a1, " +
+                "prj.a2, " +
+                "prj.a3, " +
+                "prj.a4, " +
+                "prj.convertA4 " +
+            ") " +
+            "FROM Project AS prj " +
+            "WHERE prj.id = :id "
+    )
+    StatisticProjectResponse getStatisticById(
+            Long id
     );
 
 }
