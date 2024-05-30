@@ -42,13 +42,13 @@ public class ParentsChildrenExtractShortService implements IParentsChildrenExtra
     }
 
     @Override
-    public Optional<ParentsChildrenExtractShort> findByIdAndStatusBeforeCompare(Long id) {
-        return parentsChildrenExtractShortRepository.findByIdAndStatusBeforeCompare(id);
+    public Optional<ParentsChildrenExtractShort> findByIdForImporter(Long id) {
+        return parentsChildrenExtractShortRepository.findByIdForImporter(id);
     }
 
     @Override
-    public Optional<ParentsChildrenExtractShort> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
-        return parentsChildrenExtractShortRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    public Optional<ParentsChildrenExtractShort> findNextIdForImporter(Long projectId, String userId, Long id, String tableName) {
+        return parentsChildrenExtractShortRepository.findNextIdForImporter(projectId, userId, id, tableName);
     }
 
     @Override

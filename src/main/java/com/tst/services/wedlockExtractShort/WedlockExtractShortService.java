@@ -38,13 +38,13 @@ public class WedlockExtractShortService implements IWedlockExtractShortService {
     }
 
     @Override
-    public Optional<WedlockExtractShort> findByIdAndStatusBeforeCompare(Long id) {
-        return wedlockExtractShortRepository.findByIdAndStatusBeforeCompare(id);
+    public Optional<WedlockExtractShort> findByIdForImporter(Long id) {
+        return wedlockExtractShortRepository.findByIdForImporter(id);
     }
 
     @Override
-    public Optional<WedlockExtractShort> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
-        return wedlockExtractShortRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    public Optional<WedlockExtractShort> findNextIdForImporter(Long projectId, String userId, Long id, String tableName) {
+        return wedlockExtractShortRepository.findNextIdForImporter(projectId, userId, id, tableName);
     }
 
     @Override

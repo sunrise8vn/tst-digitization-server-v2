@@ -11,9 +11,9 @@ public interface IBirthExtractShortService extends IGeneralService<BirthExtractS
 
     Optional<BirthExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
-    Optional<BirthExtractShort> findByIdAndStatusBeforeCompare(Long id);
+    Optional<BirthExtractShort> findByIdForImporter(Long id);
 
-    Optional<BirthExtractShort> findNextIdAndStatusBeforeCompare(
+    Optional<BirthExtractShort> findNextIdForImporter(
             Long projectId,
             String userId,
             Long id,

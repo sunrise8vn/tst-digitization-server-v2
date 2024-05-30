@@ -40,13 +40,13 @@ public class DeathExtractFullService implements IDeathExtractFullService {
     }
 
     @Override
-    public Optional<DeathExtractFull> findByIdAndStatusBeforeCompare(Long id) {
-        return deathExtractFullRepository.findByIdAndStatusBeforeCompare(id);
+    public Optional<DeathExtractFull> findByIdForImporter(Long id) {
+        return deathExtractFullRepository.findByIdForImporter(id);
     }
 
     @Override
-    public Optional<DeathExtractFull> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
-        return deathExtractFullRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    public Optional<DeathExtractFull> findNextIdForImporter(Long projectId, String userId, Long id, String tableName) {
+        return deathExtractFullRepository.findNextIdForImporter(projectId, userId, id, tableName);
     }
 
     @Override

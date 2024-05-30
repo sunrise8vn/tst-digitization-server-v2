@@ -133,6 +133,13 @@ public class WedlockExtractShort {
     @JoinColumn(name = "checker")
     private User checker;
 
+    @Column(name = "accepted_at")
+    private LocalDateTime acceptedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "accepter")
+    private User accepter;
+
     @ManyToOne
     @JoinColumn(name = "project_number_book_file_id", nullable = false)
     private ProjectNumberBookFile projectNumberBookFile;

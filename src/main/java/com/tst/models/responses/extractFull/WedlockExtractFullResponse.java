@@ -2,13 +2,8 @@ package com.tst.models.responses.extractFull;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.tst.models.responses.typeList.GenderTypeResponse;
-import com.tst.models.responses.typeList.IdentificationTypeResponse;
-import com.tst.models.responses.typeList.IntendedUseTypeResponse;
-import com.tst.models.responses.typeList.ResidenceTypeResponse;
 import lombok.*;
 
-import java.util.List;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor

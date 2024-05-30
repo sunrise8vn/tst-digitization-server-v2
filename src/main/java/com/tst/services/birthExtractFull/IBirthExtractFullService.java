@@ -11,9 +11,9 @@ public interface IBirthExtractFullService extends IGeneralService<BirthExtractFu
 
     Optional<BirthExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
-    Optional<BirthExtractFull> findByIdAndStatusBeforeCompare(Long id);
+    Optional<BirthExtractFull> findByIdForImporter(Long id);
 
-    Optional<BirthExtractFull> findNextIdAndStatusBeforeCompare(
+    Optional<BirthExtractFull> findNextIdForImporter(
             Long projectId,
             String userId,
             Long id,

@@ -312,4 +312,16 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             Long id
     );
 
+    @Query(value = "CALL sp_report_for_importer_imported(:projectId, :accessPointId, :userId)", nativeQuery = true)
+    List<Object[]> findAllImportedForImporter(Long projectId, Long accessPointId, String userId);
+
+    @Query(value = "CALL sp_report_for_importer_compared(:projectId, :accessPointId, :userId)", nativeQuery = true)
+    List<Object[]> findAllComparedForImporter(Long projectId, Long accessPointId, String userId);
+
+    @Query(value = "CALL sp_report_for_importer_checked(:projectId, :accessPointId, :userId)", nativeQuery = true)
+    List<Object[]> findAllCheckedForImporter(Long projectId, Long accessPointId, String userId);
+
+    @Query(value = "CALL sp_report_for_importer_accepted(:projectId, :accessPointId, :userId)", nativeQuery = true)
+    List<Object[]> findAllAcceptedForImporter(Long projectId, Long accessPointId, String userId);
+
 }

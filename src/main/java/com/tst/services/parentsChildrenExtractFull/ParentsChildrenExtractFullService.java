@@ -40,13 +40,13 @@ public class ParentsChildrenExtractFullService implements IParentsChildrenExtrac
     }
 
     @Override
-    public Optional<ParentsChildrenExtractFull> findByIdAndStatusBeforeCompare(Long id) {
-        return parentsChildrenExtractFullRepository.findByIdAndStatusBeforeCompare(id);
+    public Optional<ParentsChildrenExtractFull> findByIdForImporter(Long id) {
+        return parentsChildrenExtractFullRepository.findByIdForImporter(id);
     }
 
     @Override
-    public Optional<ParentsChildrenExtractFull> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
-        return parentsChildrenExtractFullRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    public Optional<ParentsChildrenExtractFull> findNextIdForImporter(Long projectId, String userId, Long id, String tableName) {
+        return parentsChildrenExtractFullRepository.findNextIdForImporter(projectId, userId, id, tableName);
     }
 
     @Override

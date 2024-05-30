@@ -2,10 +2,6 @@ package com.tst.models.responses.extractFull;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.tst.models.responses.typeList.IdentificationTypeResponse;
-import com.tst.models.responses.typeList.MaritalStatusResponse;
-import com.tst.models.responses.typeList.RegistrationTypeDetailResponse;
-import com.tst.models.responses.typeList.ResidenceTypeResponse;
 import lombok.*;
 
 import java.util.List;

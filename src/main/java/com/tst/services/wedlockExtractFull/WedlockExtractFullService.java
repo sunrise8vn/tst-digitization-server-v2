@@ -38,13 +38,13 @@ public class WedlockExtractFullService implements IWedlockExtractFullService {
     }
 
     @Override
-    public Optional<WedlockExtractFull> findByIdAndStatusBeforeCompare(Long id) {
-        return wedlockExtractFullRepository.findByIdAndStatusBeforeCompare(id);
+    public Optional<WedlockExtractFull> findByIdForImporter(Long id) {
+        return wedlockExtractFullRepository.findByIdForImporter(id);
     }
 
     @Override
-    public Optional<WedlockExtractFull> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
-        return wedlockExtractFullRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    public Optional<WedlockExtractFull> findNextIdForImporter(Long projectId, String userId, Long id, String tableName) {
+        return wedlockExtractFullRepository.findNextIdForImporter(projectId, userId, id, tableName);
     }
 
     @Override

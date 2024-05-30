@@ -2,10 +2,8 @@ package com.tst.models.responses.extractShort;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.tst.models.responses.typeList.*;
 import lombok.*;
 
-import java.util.List;
 
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)

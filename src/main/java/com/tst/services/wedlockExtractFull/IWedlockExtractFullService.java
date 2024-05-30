@@ -11,9 +11,9 @@ public interface IWedlockExtractFullService extends IGeneralService<WedlockExtra
 
     Optional<WedlockExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
-    Optional<WedlockExtractFull> findByIdAndStatusBeforeCompare(Long id);
+    Optional<WedlockExtractFull> findByIdForImporter(Long id);
 
-    Optional<WedlockExtractFull> findNextIdAndStatusBeforeCompare(
+    Optional<WedlockExtractFull> findNextIdForImporter(
             Long projectId,
             String userId,
             Long id,

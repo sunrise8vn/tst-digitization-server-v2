@@ -9,6 +9,10 @@ import com.tst.models.responses.extractFull.ExtractFullResponse;
 import com.tst.models.responses.extractShort.ExtractShortResponse;
 import com.tst.models.responses.locationRegion.LocationResponse;
 import com.tst.models.responses.project.*;
+import com.tst.models.responses.report.ReportImporterAcceptedResponse;
+import com.tst.models.responses.report.ReportImporterCheckedResponse;
+import com.tst.models.responses.report.ReportImporterComparedResponse;
+import com.tst.models.responses.report.ReportImporterImportedResponse;
 import com.tst.models.responses.statistic.StatisticProjectResponse;
 import com.tst.services.IGeneralService;
 import org.springframework.web.multipart.MultipartFile;
@@ -85,6 +89,14 @@ public interface IProjectService extends IGeneralService<Project, Long> {
     StatisticProjectResponse getStatisticById(
             Long id
     );
+
+    List<ReportImporterImportedResponse> findAllImportedForImporter(Long projectId, Long accessPointId, String userId);
+
+    List<ReportImporterComparedResponse> findAllComparedForImporter(Long projectId, Long accessPointId, String userId);
+
+    List<ReportImporterCheckedResponse> findAllCheckedForImporter(Long projectId, Long accessPointId, String userId);
+
+    List<ReportImporterAcceptedResponse> findAllAcceptedForImporter(Long projectId, Long accessPointId, String userId);
 
     void updatePaperCountSize(Project project);
 

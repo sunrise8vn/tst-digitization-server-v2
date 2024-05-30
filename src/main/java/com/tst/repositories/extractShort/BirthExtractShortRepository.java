@@ -22,14 +22,17 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
             "ON bes.projectNumberBookFile = pnbf " +
             "WHERE bes.id = :id " +
             "AND (bes.status = 'NEW' " +
-            "OR bes.status = 'IMPORTED'" +
-            "OR bes.status = 'LATER_PROCESSING')"
+            "OR bes.status = 'IMPORTED' " +
+            "OR bes.status = 'LATER_PROCESSING' " +
+            "OR bes.status = 'NOT_MATCHING' " +
+            "OR bes.status = 'CHECKED_NOT_MATCHING'" +
+            ")"
     )
-    Optional<BirthExtractShort> findByIdAndStatusBeforeCompare(Long id);
+    Optional<BirthExtractShort> findByIdForImporter(Long id);
 
 
-    @Query(value = "CALL sp_find_next_item_all_table_by_next_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
-    Optional<BirthExtractShort> findNextIdAndStatusBeforeCompare(long projectId, String userId, Long id, String tableName);
+    @Query(value = "CALL sp_find_next_item_all_table_by_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
+    Optional<BirthExtractShort> findNextIdForImporter(long projectId, String userId, Long id, String tableName);
 
 
     List<BirthExtractShort> findAllByProjectAndImporterIsNull(Project project);
@@ -43,7 +46,8 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON bes.projectNumberBookFile = pnbf " +
             "WHERE bes.project = :project " +
-            "AND bes.importer = :importer"
+            "AND bes.importer = :importer " +
+            "AND bes.status <> 'ACCEPTED'"
     )
     List<BirthExtractShort> findAllByProjectAndImporter(Project project, User importer);
 

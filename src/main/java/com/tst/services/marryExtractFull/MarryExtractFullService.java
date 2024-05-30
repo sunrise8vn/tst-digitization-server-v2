@@ -41,13 +41,13 @@ public class MarryExtractFullService implements IMarryExtractFullService {
     }
 
     @Override
-    public Optional<MarryExtractFull> findByIdAndStatusBeforeCompare(Long id) {
-        return marryExtractFullRepository.findByIdAndStatusBeforeCompare(id);
+    public Optional<MarryExtractFull> findByIdForImporter(Long id) {
+        return marryExtractFullRepository.findByIdForImporter(id);
     }
 
     @Override
-    public Optional<MarryExtractFull> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
-        return marryExtractFullRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    public Optional<MarryExtractFull> findNextIdForImporter(Long projectId, String userId, Long id, String tableName) {
+        return marryExtractFullRepository.findNextIdForImporter(projectId, userId, id, tableName);
     }
 
     @Override

@@ -12,10 +12,7 @@ import com.tst.services.projectPaperSize.IProjectPaperSizeService;
 import com.tst.services.projectProvince.IProjectProvinceService;
 import com.tst.services.projectRegistrationDate.IProjectRegistrationDateService;
 import com.tst.services.projectRegistrationType.IProjectRegistrationTypeService;
-import com.tst.services.projectUser.IProjectUserService;
 import com.tst.services.projectWard.IProjectWardService;
-import com.tst.services.user.IUserService;
-import com.tst.utils.AppUtils;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,7 +31,6 @@ import java.util.List;
 @Validated
 public class StatisticAPI {
 
-    private final IProjectUserService projectUserService;
     private final IProjectService projectService;
     private final IProjectProvinceService projectProvinceService;
     private final IProjectDistrictService projectDistrictService;
@@ -44,9 +40,6 @@ public class StatisticAPI {
     private final IProjectRegistrationDateService projectRegistrationDateService;
     private final IProjectNumberBookService projectNumberBookService;
     private final IProjectNumberBookFileService projectNumberBookFileService;
-    private final IUserService userService;
-
-    private final AppUtils appUtils;
 
 
     @GetMapping("/get-all-number-book-files/{numberBookId}")

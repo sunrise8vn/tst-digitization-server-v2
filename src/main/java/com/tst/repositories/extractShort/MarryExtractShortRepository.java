@@ -22,14 +22,17 @@ public interface MarryExtractShortRepository extends JpaRepository<MarryExtractS
             "ON mes.projectNumberBookFile = pnbf " +
             "WHERE mes.id = :id " +
             "AND (mes.status = 'NEW' " +
-            "OR mes.status = 'IMPORTED'" +
-            "OR mes.status = 'LATER_PROCESSING')"
+            "OR mes.status = 'IMPORTED' " +
+            "OR mes.status = 'LATER_PROCESSING' " +
+            "OR mes.status = 'NOT_MATCHING' " +
+            "OR mes.status = 'CHECKED_NOT_MATCHING'" +
+            ")"
     )
-    Optional<MarryExtractShort> findByIdAndStatusBeforeCompare(Long id);
+    Optional<MarryExtractShort> findByIdForImporter(Long id);
 
 
-    @Query(value = "CALL sp_find_next_item_all_table_by_next_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
-    Optional<MarryExtractShort> findNextIdAndStatusBeforeCompare(long projectId, String userId, Long id, String tableName);
+    @Query(value = "CALL sp_find_next_item_all_table_by_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
+    Optional<MarryExtractShort> findNextIdForImporter(long projectId, String userId, Long id, String tableName);
 
 
     List<MarryExtractShort> findAllByProjectAndImporterIsNull(Project project);
@@ -42,7 +45,8 @@ public interface MarryExtractShortRepository extends JpaRepository<MarryExtractS
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON mes.projectNumberBookFile = pnbf " +
             "WHERE mes.project = :project " +
-            "AND mes.importer = :importer"
+            "AND mes.importer = :importer " +
+            "AND mes.status <> 'ACCEPTED'"
     )
     List<MarryExtractShort> findAllByProjectAndImporter(Project project, User importer);
 

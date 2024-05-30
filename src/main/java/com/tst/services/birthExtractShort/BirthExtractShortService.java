@@ -40,13 +40,13 @@ public class BirthExtractShortService implements IBirthExtractShortService {
     }
 
     @Override
-    public Optional<BirthExtractShort> findByIdAndStatusBeforeCompare(Long id) {
-        return birthExtractShortRepository.findByIdAndStatusBeforeCompare(id);
+    public Optional<BirthExtractShort> findByIdForImporter(Long id) {
+        return birthExtractShortRepository.findByIdForImporter(id);
     }
 
     @Override
-    public Optional<BirthExtractShort> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
-        return birthExtractShortRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    public Optional<BirthExtractShort> findNextIdForImporter(Long projectId, String userId, Long id, String tableName) {
+        return birthExtractShortRepository.findNextIdForImporter(projectId, userId, id, tableName);
     }
 
     @Override
