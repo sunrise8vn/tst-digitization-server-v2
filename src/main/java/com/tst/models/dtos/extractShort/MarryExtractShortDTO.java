@@ -37,6 +37,7 @@ public class MarryExtractShortDTO {
     @Pattern(regexp = "^\\d*$", message = "Tình trạng hôn nhân phải là số")
     private String maritalStatus;
 
+    private String husbandFullName;
     private String husbandBirthday;
     private String husbandNation;
     private String husbandNationality;

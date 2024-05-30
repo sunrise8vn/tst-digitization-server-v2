@@ -2,7 +2,6 @@ package com.tst.services.marryExtractFull;
 
 import com.tst.models.dtos.extractFull.MarryExtractFullDTO;
 import com.tst.models.entities.extractFull.MarryExtractFull;
-import com.tst.models.entities.extractShort.BirthExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.services.IGeneralService;
 
@@ -12,9 +11,9 @@ public interface IMarryExtractFullService extends IGeneralService<MarryExtractFu
 
     Optional<MarryExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
-    Optional<MarryExtractFull> findByIdAndStatusBeforeCompare(Long id);
+    Optional<MarryExtractFull> findByIdForImporter(Long id);
 
-    Optional<MarryExtractFull> findNextIdAndStatusBeforeCompare(
+    Optional<MarryExtractFull> findNextIdForImporter(
             Long projectId,
             String userId,
             Long id,

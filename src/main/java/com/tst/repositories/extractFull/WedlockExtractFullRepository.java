@@ -23,14 +23,17 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
             "ON wef.projectNumberBookFile = pnbf " +
             "WHERE wef.id = :id " +
             "AND (wef.status = 'NEW' " +
-            "OR wef.status = 'IMPORTED'" +
-            "OR wef.status = 'LATER_PROCESSING')"
+            "OR wef.status = 'IMPORTED' " +
+            "OR wef.status = 'LATER_PROCESSING' " +
+            "OR wef.status = 'NOT_MATCHING' " +
+            "OR wef.status = 'CHECKED_NOT_MATCHING'" +
+            ")"
     )
-    Optional<WedlockExtractFull> findByIdAndStatusBeforeCompare(Long id);
+    Optional<WedlockExtractFull> findByIdForImporter(Long id);
 
 
-    @Query(value = "CALL sp_find_next_item_all_table_by_next_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
-    Optional<WedlockExtractFull> findNextIdAndStatusBeforeCompare(long projectId, String userId, Long id, String tableName);
+    @Query(value = "CALL sp_find_next_item_all_table_by_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
+    Optional<WedlockExtractFull> findNextIdForImporter(long projectId, String userId, Long id, String tableName);
 
 
     Optional<WedlockExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
@@ -43,7 +46,8 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON wef.projectNumberBookFile = pnbf " +
             "WHERE wef.project = :project " +
-            "AND wef.importer = :importer"
+            "AND wef.importer = :importer " +
+            "AND wef.status <> 'ACCEPTED'"
     )
     List<WedlockExtractFull> findAllByProjectAndImporter(Project project, User importer);
 

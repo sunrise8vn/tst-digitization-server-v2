@@ -23,14 +23,17 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
             "ON def.projectNumberBookFile = pnbf " +
             "WHERE def.id = :id " +
             "AND (def.status = 'NEW' " +
-            "OR def.status = 'IMPORTED'" +
-            "OR def.status = 'LATER_PROCESSING')"
+            "OR def.status = 'IMPORTED' " +
+            "OR def.status = 'LATER_PROCESSING' " +
+            "OR def.status = 'NOT_MATCHING' " +
+            "OR def.status = 'CHECKED_NOT_MATCHING'" +
+            ")"
     )
-    Optional<DeathExtractFull> findByIdAndStatusBeforeCompare(Long id);
+    Optional<DeathExtractFull> findByIdForImporter(Long id);
 
 
-    @Query(value = "CALL sp_find_next_item_all_table_by_next_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
-    Optional<DeathExtractFull> findNextIdAndStatusBeforeCompare(long projectId, String userId, Long id, String tableName);
+    @Query(value = "CALL sp_find_next_item_all_table_by_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
+    Optional<DeathExtractFull> findNextIdForImporter(long projectId, String userId, Long id, String tableName);
 
 
     Optional<DeathExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
@@ -43,7 +46,8 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON def.projectNumberBookFile = pnbf " +
             "WHERE def.project = :project " +
-            "AND def.importer = :importer"
+            "AND def.importer = :importer " +
+            "AND def.status <> 'ACCEPTED'"
     )
     List<DeathExtractFull> findAllByProjectAndImporter(Project project, User importer);
 

@@ -2,13 +2,8 @@ package com.tst.models.responses.extractShort;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.tst.models.responses.typeList.IdentificationTypeResponse;
-import com.tst.models.responses.typeList.MaritalStatusResponse;
-import com.tst.models.responses.typeList.RegistrationTypeDetailResponse;
-import com.tst.models.responses.typeList.ResidenceTypeResponse;
 import lombok.*;
 
-import java.util.List;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
@@ -30,6 +25,7 @@ public class MarryExtractShortResponse {
     private String implementer;
     private String note;
     private String maritalStatus;
+    private String husbandFullName;
     private String husbandBirthday;
     private String husbandNation;
     private String husbandNationality;

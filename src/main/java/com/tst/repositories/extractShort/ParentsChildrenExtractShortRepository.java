@@ -28,13 +28,16 @@ public interface ParentsChildrenExtractShortRepository extends JpaRepository<Par
             "WHERE pces.id = :id " +
             "AND (pces.status = 'NEW' " +
             "OR pces.status = 'IMPORTED' " +
-            "OR pces.status = 'LATER_PROCESSING')"
+            "OR pces.status = 'LATER_PROCESSING' " +
+            "OR pces.status = 'NOT_MATCHING' " +
+            "OR pces.status = 'CHECKED_NOT_MATCHING'" +
+            ")"
     )
-    Optional<ParentsChildrenExtractShort> findByIdAndStatusBeforeCompare(Long id);
+    Optional<ParentsChildrenExtractShort> findByIdForImporter(Long id);
 
 
-    @Query(value = "CALL sp_find_next_item_all_table_by_next_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
-    Optional<ParentsChildrenExtractShort> findNextIdAndStatusBeforeCompare(long projectId, String userId, Long id, String tableName);
+    @Query(value = "CALL sp_find_next_item_all_table_by_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
+    Optional<ParentsChildrenExtractShort> findNextIdForImporter(long projectId, String userId, Long id, String tableName);
 
 
     List<ParentsChildrenExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
@@ -47,7 +50,8 @@ public interface ParentsChildrenExtractShortRepository extends JpaRepository<Par
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON pces.projectNumberBookFile = pnbf " +
             "WHERE pces.project = :project " +
-            "AND pces.importer = :importer"
+            "AND pces.importer = :importer " +
+            "AND pces.status <> 'ACCEPTED'"
     )
     List<ParentsChildrenExtractShort> findAllByProjectAndImporter(Project project, User importer);
 

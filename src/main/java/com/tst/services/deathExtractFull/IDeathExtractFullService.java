@@ -11,9 +11,9 @@ public interface IDeathExtractFullService extends IGeneralService<DeathExtractFu
 
     Optional<DeathExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
-    Optional<DeathExtractFull> findByIdAndStatusBeforeCompare(Long id);
+    Optional<DeathExtractFull> findByIdForImporter(Long id);
 
-    Optional<DeathExtractFull> findNextIdAndStatusBeforeCompare(
+    Optional<DeathExtractFull> findNextIdForImporter(
             Long projectId,
             String userId,
             Long id,

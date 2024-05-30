@@ -437,7 +437,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortService.findByIdAndStatusBeforeCompare(
+        ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortService.findByIdForImporter(
                 Long.parseLong(projectExtractDTO.getId())
         ).orElseThrow(() -> {
             throw new DataInputException("ID biểu mẫu không tồn tại");
@@ -496,7 +496,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        Optional<ParentsChildrenExtractShort> parentsChildrenExtractShort = parentsChildrenExtractShortService.findNextIdAndStatusBeforeCompare(
+        Optional<ParentsChildrenExtractShort> parentsChildrenExtractShort = parentsChildrenExtractShortService.findNextIdForImporter(
                 project.getId(),
                 user.getId(),
                 Long.parseLong(projectExtractDTO.getId()),
@@ -556,7 +556,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        BirthExtractShort birthExtractShort = birthExtractShortService.findByIdAndStatusBeforeCompare(
+        BirthExtractShort birthExtractShort = birthExtractShortService.findByIdForImporter(
                 Long.parseLong(projectExtractDTO.getId())
         ).orElseThrow(() -> {
             throw new DataInputException("ID biểu mẫu không tồn tại");
@@ -615,7 +615,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        Optional<BirthExtractShort> birthExtractShort = birthExtractShortService.findNextIdAndStatusBeforeCompare(
+        Optional<BirthExtractShort> birthExtractShort = birthExtractShortService.findNextIdForImporter(
                 project.getId(),
                 user.getId(),
                 Long.parseLong(projectExtractDTO.getId()),
@@ -675,7 +675,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        MarryExtractShort marryExtractShort = marryExtractShortService.findByIdAndStatusBeforeCompare(
+        MarryExtractShort marryExtractShort = marryExtractShortService.findByIdForImporter(
                 Long.parseLong(projectExtractDTO.getId())
         ).orElseThrow(() -> {
             throw new DataInputException("ID biểu mẫu không tồn tại");
@@ -734,7 +734,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        Optional<MarryExtractShort> marryExtractShort = marryExtractShortService.findNextIdAndStatusBeforeCompare(
+        Optional<MarryExtractShort> marryExtractShort = marryExtractShortService.findNextIdForImporter(
                 project.getId(),
                 user.getId(),
                 Long.parseLong(projectExtractDTO.getId()),
@@ -794,7 +794,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        WedlockExtractShort wedlockExtractShort = wedlockExtractShortService.findByIdAndStatusBeforeCompare(
+        WedlockExtractShort wedlockExtractShort = wedlockExtractShortService.findByIdForImporter(
                 Long.parseLong(projectExtractDTO.getId())
         ).orElseThrow(() -> {
             throw new DataInputException("ID biểu mẫu không tồn tại");
@@ -853,7 +853,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        Optional<WedlockExtractShort> wedlockExtractShort = wedlockExtractShortService.findNextIdAndStatusBeforeCompare(
+        Optional<WedlockExtractShort> wedlockExtractShort = wedlockExtractShortService.findNextIdForImporter(
                 project.getId(),
                 user.getId(),
                 Long.parseLong(projectExtractDTO.getId()),
@@ -913,7 +913,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        DeathExtractShort deathExtractShort = deathExtractShortService.findByIdAndStatusBeforeCompare(
+        DeathExtractShort deathExtractShort = deathExtractShortService.findByIdForImporter(
                 Long.parseLong(projectExtractDTO.getId())
         ).orElseThrow(() -> {
             throw new DataInputException("ID biểu mẫu không tồn tại");
@@ -972,7 +972,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        Optional<DeathExtractShort> deathExtractShort = deathExtractShortService.findNextIdAndStatusBeforeCompare(
+        Optional<DeathExtractShort> deathExtractShort = deathExtractShortService.findNextIdForImporter(
                 project.getId(),
                 user.getId(),
                 Long.parseLong(projectExtractDTO.getId()),
@@ -1277,7 +1277,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortService.findByIdAndStatusBeforeCompare(
+        ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortService.findByIdForImporter(
                 Long.parseLong(parentsChildrenExtractShortDTO.getId())
         ).orElseThrow(() -> {
             throw new DataInputException("ID biểu mẫu không tồn tại");
@@ -1325,7 +1325,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        BirthExtractShort birthExtractShort = birthExtractShortService.findByIdAndStatusBeforeCompare(
+        BirthExtractShort birthExtractShort = birthExtractShortService.findByIdForImporter(
                 Long.parseLong(birthExtractShortDTO.getId())
         ).orElseThrow(() -> {
             throw new DataInputException("ID biểu mẫu không tồn tại");
@@ -1373,7 +1373,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        MarryExtractShort marryExtractShort = marryExtractShortService.findByIdAndStatusBeforeCompare(
+        MarryExtractShort marryExtractShort = marryExtractShortService.findByIdForImporter(
                 Long.parseLong(marryExtractShortDTO.getId())
         ).orElseThrow(() -> {
             throw new DataInputException("ID biểu mẫu không tồn tại");
@@ -1421,7 +1421,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        WedlockExtractShort wedlockExtractShort = wedlockExtractShortService.findByIdAndStatusBeforeCompare(
+        WedlockExtractShort wedlockExtractShort = wedlockExtractShortService.findByIdForImporter(
                 Long.parseLong(wedlockExtractShortDTO.getId())
         ).orElseThrow(() -> {
             throw new DataInputException("ID biểu mẫu không tồn tại");
@@ -1469,7 +1469,7 @@ public class ExtractShortAPI {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
         });
 
-        DeathExtractShort deathExtractShort = deathExtractShortService.findByIdAndStatusBeforeCompare(
+        DeathExtractShort deathExtractShort = deathExtractShortService.findByIdForImporter(
                 Long.parseLong(deathExtractShortDTO.getId())
         ).orElseThrow(() -> {
             throw new DataInputException("ID biểu mẫu không tồn tại");

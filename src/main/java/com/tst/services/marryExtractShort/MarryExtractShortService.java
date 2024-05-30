@@ -41,13 +41,13 @@ public class MarryExtractShortService implements IMarryExtractShortService {
     }
 
     @Override
-    public Optional<MarryExtractShort> findByIdAndStatusBeforeCompare(Long id) {
-        return marryExtractShortRepository.findByIdAndStatusBeforeCompare(id);
+    public Optional<MarryExtractShort> findByIdForImporter(Long id) {
+        return marryExtractShortRepository.findByIdForImporter(id);
     }
 
     @Override
-    public Optional<MarryExtractShort> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
-        return marryExtractShortRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    public Optional<MarryExtractShort> findNextIdForImporter(Long projectId, String userId, Long id, String tableName) {
+        return marryExtractShortRepository.findNextIdForImporter(projectId, userId, id, tableName);
     }
 
     @Override

@@ -40,13 +40,13 @@ public class BirthExtractFullService implements IBirthExtractFullService {
     }
 
     @Override
-    public Optional<BirthExtractFull> findByIdAndStatusBeforeCompare(Long id) {
-        return birthExtractFullRepository.findByIdAndStatusBeforeCompare(id);
+    public Optional<BirthExtractFull> findByIdForImporter(Long id) {
+        return birthExtractFullRepository.findByIdForImporter(id);
     }
 
     @Override
-    public Optional<BirthExtractFull> findNextIdAndStatusBeforeCompare(Long projectId, String userId, Long id, String tableName) {
-        return birthExtractFullRepository.findNextIdAndStatusBeforeCompare(projectId, userId, id, tableName);
+    public Optional<BirthExtractFull> findNextIdForImporter(Long projectId, String userId, Long id, String tableName) {
+        return birthExtractFullRepository.findNextIdForImporter(projectId, userId, id, tableName);
     }
 
     @Override

@@ -59,6 +59,9 @@ public class MarryExtractShort {
     @Column(name = "marital_status")
     private String maritalStatus;
 
+    @Column(name = "husband_full_name", length = 50)
+    private String husbandFullName;
+
     @Column(name = "husband_birthday", length = 10)
     private String husbandBirthday;
 
@@ -133,6 +136,13 @@ public class MarryExtractShort {
     @ManyToOne
     @JoinColumn(name = "checker")
     private User checker;
+
+    @Column(name = "accepted_at")
+    private LocalDateTime acceptedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "accepter")
+    private User accepter;
 
     @ManyToOne
     @JoinColumn(name = "project_number_book_file_id", nullable = false)

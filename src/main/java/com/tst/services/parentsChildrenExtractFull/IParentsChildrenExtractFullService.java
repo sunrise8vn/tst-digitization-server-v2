@@ -11,9 +11,9 @@ public interface IParentsChildrenExtractFullService extends IGeneralService<Pare
 
     Optional<ParentsChildrenExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
-    Optional<ParentsChildrenExtractFull> findByIdAndStatusBeforeCompare(Long id);
+    Optional<ParentsChildrenExtractFull> findByIdForImporter(Long id);
 
-    Optional<ParentsChildrenExtractFull> findNextIdAndStatusBeforeCompare(
+    Optional<ParentsChildrenExtractFull> findNextIdForImporter(
             Long projectId,
             String userId,
             Long id,

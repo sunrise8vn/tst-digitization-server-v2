@@ -3,9 +3,13 @@ package com.tst.services.accessPoint;
 import com.tst.exceptions.DataInputException;
 import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.AccessPointHistory;
+import com.tst.models.entities.Project;
+import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.*;
 import com.tst.models.entities.extractShort.*;
+import com.tst.models.enums.EAccessPointStatus;
 import com.tst.models.enums.EInputStatus;
+import com.tst.models.responses.report.AccessPointResponse;
 import com.tst.repositories.AccessPointHistoryRepository;
 import com.tst.repositories.AccessPointRepository;
 import com.tst.repositories.extractFull.*;
@@ -48,6 +52,11 @@ public class AccessPointService implements IAccessPointService {
     public Optional<AccessPoint> findById(Long id) {
         return accessPointRepository.findById(id);
     }
+
+    @Override
+    public List<AccessPointResponse> findAllAccessPointProcessingByProjectAndUserAndStatus(Project project, User user, EAccessPointStatus status) {
+        return accessPointRepository.findAllAccessPointProcessingByProjectAndUserAndStatus(project, user, status);
+   }
 
     @Override
     @Transactional

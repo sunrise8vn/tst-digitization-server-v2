@@ -23,14 +23,17 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
             "ON pcef.projectNumberBookFile = pnbf " +
             "WHERE pcef.id = :id " +
             "AND (pcef.status = 'NEW' " +
-            "OR pcef.status = 'IMPORTED'" +
-            "OR pcef.status = 'LATER_PROCESSING')"
+            "OR pcef.status = 'IMPORTED' " +
+            "OR pcef.status = 'LATER_PROCESSING' " +
+            "OR pcef.status = 'NOT_MATCHING' " +
+            "OR pcef.status = 'CHECKED_NOT_MATCHING'" +
+            ")"
     )
-    Optional<ParentsChildrenExtractFull> findByIdAndStatusBeforeCompare(Long id);
+    Optional<ParentsChildrenExtractFull> findByIdForImporter(Long id);
 
 
-    @Query(value = "CALL sp_find_next_item_all_table_by_next_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
-    Optional<ParentsChildrenExtractFull> findNextIdAndStatusBeforeCompare(long projectId, String userId, Long id, String tableName);
+    @Query(value = "CALL sp_find_next_item_all_table_by_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
+    Optional<ParentsChildrenExtractFull> findNextIdForImporter(long projectId, String userId, Long id, String tableName);
 
 
     Optional<ParentsChildrenExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
@@ -43,7 +46,8 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON pcef.projectNumberBookFile = pnbf " +
             "WHERE pcef.project = :project " +
-            "AND pcef.importer = :importer"
+            "AND pcef.importer = :importer " +
+            "AND pcef.status <> 'ACCEPTED'"
     )
     List<ParentsChildrenExtractFull> findAllByProjectAndImporter(Project project, User importer);
 

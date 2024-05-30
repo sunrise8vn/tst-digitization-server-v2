@@ -14,6 +14,10 @@ import com.tst.models.responses.extractFull.ExtractFullResponse;
 import com.tst.models.responses.extractShort.ExtractShortResponse;
 import com.tst.models.responses.locationRegion.LocationResponse;
 import com.tst.models.responses.project.*;
+import com.tst.models.responses.report.ReportImporterAcceptedResponse;
+import com.tst.models.responses.report.ReportImporterCheckedResponse;
+import com.tst.models.responses.report.ReportImporterComparedResponse;
+import com.tst.models.responses.report.ReportImporterImportedResponse;
 import com.tst.models.responses.statistic.StatisticProjectResponse;
 import com.tst.repositories.*;
 import com.tst.repositories.extractFull.*;
@@ -27,6 +31,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -929,6 +935,73 @@ public class ProjectService implements IProjectService {
     @Override
     public StatisticProjectResponse getStatisticById(Long id) {
         return projectRepository.getStatisticById(id);
+    }
+
+    @Override
+    @Transactional
+    public List<ReportImporterImportedResponse> findAllImportedForImporter(Long projectId, Long accessPointId, String userId) {
+        List<Object[]> results = projectRepository.findAllImportedForImporter(projectId, accessPointId, userId);
+
+        return results.stream()
+                .map(row -> {
+                    ReportImporterImportedResponse response = new ReportImporterImportedResponse();
+                    response.setImportedAt(((Date) row[0]).toLocalDate());
+                    response.setFullLater(((BigDecimal) row[1]).toBigInteger().longValue());
+                    response.setShortLater(((BigDecimal) row[2]).toBigInteger().longValue());
+                    response.setFullImported(((BigDecimal) row[3]).toBigInteger().longValue());
+                    response.setShortImported(((BigDecimal) row[4]).toBigInteger().longValue());
+                    return response;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReportImporterComparedResponse> findAllComparedForImporter(Long projectId, Long accessPointId, String userId) {
+        List<Object[]> results = projectRepository.findAllComparedForImporter(projectId, accessPointId, userId);
+
+        return results.stream()
+                .map(row -> {
+                    ReportImporterComparedResponse response = new ReportImporterComparedResponse();
+                    response.setImportedAt(((Date) row[0]).toLocalDate());
+                    response.setFullNotMatch(((BigDecimal) row[1]).toBigInteger().longValue());
+                    response.setShortNotMatch(((BigDecimal) row[2]).toBigInteger().longValue());
+                    response.setFullMatch(((BigDecimal) row[3]).toBigInteger().longValue());
+                    response.setShortMatch(((BigDecimal) row[4]).toBigInteger().longValue());
+                    return response;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReportImporterCheckedResponse> findAllCheckedForImporter(Long projectId, Long accessPointId, String userId) {
+        List<Object[]> results = projectRepository.findAllCheckedForImporter(projectId, accessPointId, userId);
+
+        return results.stream()
+                .map(row -> {
+                    ReportImporterCheckedResponse response = new ReportImporterCheckedResponse();
+                    response.setCheckedAt(((Date) row[0]).toLocalDate());
+                    response.setFullCheckedMatch(((BigDecimal) row[1]).toBigInteger().longValue());
+                    response.setShortCheckedMatch(((BigDecimal) row[2]).toBigInteger().longValue());
+                    response.setFullCheckedNotMatch(((BigDecimal) row[3]).toBigInteger().longValue());
+                    response.setShortCheckedNotMatch(((BigDecimal) row[4]).toBigInteger().longValue());
+                    return response;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReportImporterAcceptedResponse> findAllAcceptedForImporter(Long projectId, Long accessPointId, String userId) {
+        List<Object[]> results = projectRepository.findAllAcceptedForImporter(projectId, accessPointId, userId);
+
+        return results.stream()
+                .map(row -> {
+                    ReportImporterAcceptedResponse response = new ReportImporterAcceptedResponse();
+                    response.setAcceptedAt(((Date) row[0]).toLocalDate());
+                    response.setFullAccepted(((BigDecimal) row[1]).toBigInteger().longValue());
+                    response.setShortAccepted(((BigDecimal) row[2]).toBigInteger().longValue());
+                    return response;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

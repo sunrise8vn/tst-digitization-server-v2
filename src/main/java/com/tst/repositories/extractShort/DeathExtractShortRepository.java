@@ -22,14 +22,17 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
             "ON des.projectNumberBookFile = pnbf " +
             "WHERE des.id = :id " +
             "AND (des.status = 'NEW' " +
-            "OR des.status = 'IMPORTED'" +
-            "OR des.status = 'LATER_PROCESSING')"
+            "OR des.status = 'IMPORTED' " +
+            "OR des.status = 'LATER_PROCESSING' " +
+            "OR des.status = 'NOT_MATCHING' " +
+            "OR des.status = 'CHECKED_NOT_MATCHING'" +
+            ")"
     )
-    Optional<DeathExtractShort> findByIdAndStatusBeforeCompare(Long id);
+    Optional<DeathExtractShort> findByIdForImporter(Long id);
 
 
-    @Query(value = "CALL sp_find_next_item_all_table_by_next_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
-    Optional<DeathExtractShort> findNextIdAndStatusBeforeCompare(long projectId, String userId, Long id, String tableName);
+    @Query(value = "CALL sp_find_next_item_all_table_by_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
+    Optional<DeathExtractShort> findNextIdForImporter(long projectId, String userId, Long id, String tableName);
 
 
     List<DeathExtractShort> findAllByProjectAndImporterIsNull(Project project);
@@ -42,7 +45,8 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
             "JOIN ProjectNumberBookFile AS pnbf " +
             "ON des.projectNumberBookFile = pnbf " +
             "WHERE des.project = :project " +
-            "AND des.importer = :importer"
+            "AND des.importer = :importer " +
+            "AND des.status <> 'ACCEPTED'"
     )
     List<DeathExtractShort> findAllByProjectAndImporter(Project project, User importer);
 

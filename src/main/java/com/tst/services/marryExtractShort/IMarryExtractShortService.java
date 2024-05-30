@@ -11,9 +11,9 @@ public interface IMarryExtractShortService extends IGeneralService<MarryExtractS
 
     Optional<MarryExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
-    Optional<MarryExtractShort> findByIdAndStatusBeforeCompare(Long id);
+    Optional<MarryExtractShort> findByIdForImporter(Long id);
 
-    Optional<MarryExtractShort> findNextIdAndStatusBeforeCompare(
+    Optional<MarryExtractShort> findNextIdForImporter(
             Long projectId,
             String userId,
             Long id,
