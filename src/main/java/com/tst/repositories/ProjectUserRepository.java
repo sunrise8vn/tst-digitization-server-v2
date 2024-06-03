@@ -4,6 +4,7 @@ import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectUser;
 import com.tst.models.entities.User;
 import com.tst.models.responses.project.ProjectResponse;
+import com.tst.models.responses.user.UserAssignResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -26,4 +27,20 @@ public interface ProjectUserRepository extends JpaRepository<ProjectUser, Long> 
             "WHERE prju.user = :user"
     )
     List<ProjectResponse> findAllProjectResponseByUser(User user);
+
+
+    @Query("SELECT NEW com.tst.models.responses.user.UserAssignResponse (" +
+                "us.id, " +
+                "us.username, " +
+                "CASE WHEN ui.fullName IS NULL THEN us.username ELSE ui.fullName " +
+                "END" +
+            ") " +
+            "FROM ProjectUser AS pu " +
+            "JOIN User AS us " +
+            "ON pu.user = us " +
+            "AND pu.project = :project " +
+            "LEFT JOIN UserInfo AS ui " +
+            "ON ui.user = us"
+    )
+    List<UserAssignResponse> findAllByProject(Project project);
 }

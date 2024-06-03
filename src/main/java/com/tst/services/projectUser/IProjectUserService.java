@@ -4,6 +4,7 @@ import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectUser;
 import com.tst.models.entities.User;
 import com.tst.models.responses.project.ProjectResponse;
+import com.tst.models.responses.user.UserAssignResponse;
 import com.tst.services.IGeneralService;
 
 import java.util.List;
@@ -14,5 +15,7 @@ public interface IProjectUserService extends IGeneralService<ProjectUser, Long> 
     Optional<ProjectUser> findByProjectAndUser(Project project, User user);
 
     List<ProjectResponse> findAllProjectResponseByUser(User user);
+
+    List<UserAssignResponse> findAllByProject(Project project);
 
 }

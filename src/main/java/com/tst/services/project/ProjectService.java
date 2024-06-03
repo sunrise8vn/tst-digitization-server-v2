@@ -938,6 +938,44 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
+    public Long getRemainingTotal(Project project) {
+        long totalCountExtractShort = 0L;
+        long totalCountExtractFull = 0L;
+
+        List<ParentsChildrenExtractShort> parentsChildrenExtractShorts = parentsChildrenExtractShortRepository.findAllByProjectAndImporterIsNull(project);
+        totalCountExtractShort += parentsChildrenExtractShorts.size();
+
+        List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findByProjectAndImporterIsNull(project);
+        totalCountExtractFull += parentsChildrenExtractFulls.size();
+
+        List<BirthExtractShort> birthExtractShorts = birthExtractShortRepository.findAllByProjectAndImporterIsNull(project);
+        totalCountExtractShort += birthExtractShorts.size();
+
+        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findAllByProjectAndImporterIsNull(project);
+        totalCountExtractFull += birthExtractFulls.size();
+
+        List<MarryExtractShort> marryExtractShorts = marryExtractShortRepository.findAllByProjectAndImporterIsNull(project);
+        totalCountExtractShort += marryExtractShorts.size();
+
+        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findAllByProjectAndImporterIsNull(project);
+        totalCountExtractFull += marryExtractFulls.size();
+
+        List<WedlockExtractShort> wedlockExtractShorts = wedlockExtractShortRepository.findAllByProjectAndImporterIsNull(project);
+        totalCountExtractShort += wedlockExtractShorts.size();
+
+        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findAllByProjectAndImporterIsNull(project);
+        totalCountExtractFull += wedlockExtractFulls.size();
+
+        List<DeathExtractShort> deathExtractShorts = deathExtractShortRepository.findAllByProjectAndImporterIsNull(project);
+        totalCountExtractShort += deathExtractShorts.size();
+
+        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findAllByProjectAndImporterIsNull(project);
+        totalCountExtractFull += deathExtractFulls.size();
+
+        return totalCountExtractShort + totalCountExtractFull;
+    }
+
+    @Override
     @Transactional
     public List<ReportImporterImportedResponse> findAllImportedForImporter(Long projectId, Long accessPointId, String userId) {
         List<Object[]> results = projectRepository.findAllImportedForImporter(projectId, accessPointId, userId);
