@@ -90,6 +90,8 @@ public interface IProjectService extends IGeneralService<Project, Long> {
             Long id
     );
 
+    Long getRemainingTotal(Project project);
+
     List<ReportImporterImportedResponse> findAllImportedForImporter(Long projectId, Long accessPointId, String userId);
 
     List<ReportImporterComparedResponse> findAllComparedForImporter(Long projectId, Long accessPointId, String userId);
