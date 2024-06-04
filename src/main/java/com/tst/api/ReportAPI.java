@@ -1,18 +1,23 @@
 package com.tst.api;
 
 import com.tst.exceptions.DataInputException;
+import com.tst.models.entities.AccessPoint;
+import com.tst.models.entities.AccessPointHistory;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.User;
 import com.tst.models.enums.EAccessPointStatus;
 import com.tst.models.responses.ResponseObject;
+import com.tst.models.responses.accessPoint.ImporterAccessPointHistoryResponse;
 import com.tst.models.responses.report.*;
 import com.tst.services.accessPoint.IAccessPointService;
+import com.tst.services.accessPointHistory.IAccessPointHistoryService;
 import com.tst.services.project.IProjectService;
 import com.tst.services.projectUser.IProjectUserService;
 import com.tst.services.user.IUserService;
 import com.tst.utils.AppUtils;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("${api.prefix}/reports")
@@ -30,10 +36,11 @@ import java.util.List;
 public class ReportAPI {
 
     private final IAccessPointService accessPointService;
+    private final IAccessPointHistoryService accessPointHistoryService;
     private final IProjectService projectService;
     private final IUserService userService;
 
-    private final AppUtils appUtils;
+    private final ModelMapper modelMapper;
 
 
     @GetMapping("/get-all-access-point-processing-of-user/{projectId}")
@@ -60,6 +67,79 @@ public class ReportAPI {
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .data(accessPointResponses)
+                .build());
+    }
+
+    @GetMapping("/importer-total/{projectId}/{accessPointId}")
+    public ResponseEntity<ResponseObject> getTotalExtractFormOfImporter(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID Dự án phải là một số") String projectId,
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID đợt phân phối phải là một số") String accessPointId
+    ) {
+
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        AccessPoint accessPoint = accessPointService.findById(
+                Long.parseLong(accessPointId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Đợt phân phối không tồn tại");
+        });
+
+        User user = userService.getAuthenticatedUser();
+
+        Optional<AccessPointHistory> accessPointHistoryOptional = accessPointHistoryService.findByProjectAndAccessPointAndAssignees(
+                project,
+                accessPoint,
+                user
+        );
+
+        if (accessPointHistoryOptional.isEmpty()) {
+            return ResponseEntity.ok().body(ResponseObject.builder()
+                    .message("Không có dữ liệu biểu mẫu được phân phối")
+                    .status(HttpStatus.NO_CONTENT.value())
+                    .statusText(HttpStatus.NO_CONTENT)
+                    .build());
+        }
+
+        ImporterAccessPointHistoryResponse importerAccessPointHistoryResponse = modelMapper.map(
+                accessPointHistoryOptional.get(),
+                ImporterAccessPointHistoryResponse.class
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu tổng số biểu mẫu được phân phối thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(importerAccessPointHistoryResponse)
+                .build());
+    }
+
+    @GetMapping("/importer-all-total-not-done/{projectId}")
+    public ResponseEntity<ResponseObject> getAllTotalExtractFormNotDoneOfImporter(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID Dự án phải là một số") String projectId
+    ) {
+
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        User user = userService.getAuthenticatedUser();
+
+        List<ImporterAccessPointHistoryResponse> accessPointHistoryResponses = accessPointHistoryService.findAllNotDoneByProjectAndAssignees(
+          project,
+          user
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu tổng số biểu mẫu được phân phối thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(accessPointHistoryResponses)
                 .build());
     }
 
