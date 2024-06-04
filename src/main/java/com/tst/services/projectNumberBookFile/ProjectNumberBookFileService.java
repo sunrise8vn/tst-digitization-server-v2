@@ -215,7 +215,9 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
         dayMonthYear = appUtils.convertDayMonthYearDotToYearMonthDayKebab(dayMonthYear);
 
         // Định dạng lại chuỗi để có độ dài là 3 ký tự, thêm các số 0 vào đầu nếu cần
-        number = String.format("%03d", Integer.parseInt(number));
+        if (number != null && number.length() > 0) {
+            number = String.format("%03d", Integer.parseInt(number));
+        }
 
         String registrationType = projectNumberBookFile.getProjectNumberBook()
                 .getProjectRegistrationDate()

@@ -19,7 +19,7 @@ public class ProjectNumberBookFileOrganizationDTO {
     @NotBlank(message = "Ngày tháng năm là bắt buộc")
     private String day_month_year;
 
-    @NotBlank(message = "Số đăng ký là bắt buộc")
+//    @NotBlank(message = "Số đăng ký là bắt buộc")
     @Pattern(regexp = "\\d{1,3}", message = "ID số đăng ký phải là số từ 1 đến 3 ký tự")
     private String number;
 }
