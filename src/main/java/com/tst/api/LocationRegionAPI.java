@@ -2,10 +2,10 @@ package com.tst.api;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.models.responses.ResponseObject;
-import com.tst.models.responses.locationRegion.LocationDistrictResponse;
-import com.tst.models.responses.locationRegion.LocationProvinceResponse;
-import com.tst.models.responses.locationRegion.LocationWardResponse;
+import com.tst.models.responses.locationRegion.*;
 import com.tst.services.locationDistrict.ILocationDistrictService;
+import com.tst.services.locationNation.ILocationNationService;
+import com.tst.services.locationNationality.ILocationNationalityService;
 import com.tst.services.locationProvince.ILocationProvinceService;
 import com.tst.services.locationWard.ILocationWardService;
 import jakarta.validation.constraints.Pattern;
@@ -27,10 +27,36 @@ import java.util.List;
 @Validated
 public class LocationRegionAPI {
 
+    private final ILocationNationService locationNationService;
+    private final ILocationNationalityService locationNationalityService;
     private final ILocationProvinceService locationProvinceService;
     private final ILocationDistrictService locationDistrictService;
     private final ILocationWardService locationWardService;
 
+
+    @GetMapping("/nations")
+    public ResponseEntity<ResponseObject> getAllNation() {
+        List<LocationNationResponse> locationNationResponses = locationNationService.findAllLocationNationResponse();
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách dân tộc thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(locationNationResponses)
+                .build());
+    }
+
+    @GetMapping("/nationalities")
+    public ResponseEntity<ResponseObject> getAllNationality() {
+        List<LocationNationalityResponse> locationNationalityResponses = locationNationalityService.findAllLocationNationalityResponse();
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách quốc gia thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(locationNationalityResponses)
+                .build());
+    }
 
     @GetMapping("/provinces")
     public ResponseEntity<ResponseObject> getAllProvinces() {
