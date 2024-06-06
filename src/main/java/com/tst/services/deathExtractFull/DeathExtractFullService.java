@@ -10,6 +10,7 @@ import com.tst.repositories.extractFull.DeathExtractFullRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,6 +19,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DeathExtractFullService implements IDeathExtractFullService {
 
+    private final AccessPointRepository accessPointRepository;
+    private final AccessPointHistoryRepository accessPointHistoryRepository;
     private final DeathExtractFullRepository deathExtractFullRepository;
 
     private final RegistrationTypeDetailRepository registrationTypeDetailRepository;
@@ -50,6 +53,7 @@ public class DeathExtractFullService implements IDeathExtractFullService {
     }
 
     @Override
+    @Transactional
     public void importBeforeCompare(DeathExtractFull deathExtractFull, DeathExtractFullDTO deathExtractFullDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 deathExtractFullDTO.getRegistrationType(),
@@ -92,6 +96,13 @@ public class DeathExtractFullService implements IDeathExtractFullService {
                 deathExtractFullDTO,
                 deathExtractFull
         );
+
+        if (deathExtractFull.getStatus() == EInputStatus.NOT_MATCHING
+                || deathExtractFull.getStatus() == EInputStatus.CHECKED_NOT_MATCHING
+        ) {
+            accessPointHistoryRepository.minusCountExtractFullError(deathExtractFull.getAccessPoint(), deathExtractFull.getImporter());
+            accessPointRepository.minusCountExtractFullError(deathExtractFull.getAccessPoint());
+        }
 
         deathExtractFull.setStatus(EInputStatus.IMPORTED);
 

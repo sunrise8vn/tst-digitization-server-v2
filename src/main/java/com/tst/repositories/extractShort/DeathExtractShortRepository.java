@@ -34,6 +34,9 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
     @Query(value = "CALL sp_find_next_item_all_table_by_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
     Optional<DeathExtractShort> findNextIdForImporter(long projectId, String userId, Long id, String tableName);
 
+    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
     List<DeathExtractShort> findAllByProjectAndImporterIsNull(Project project);
 

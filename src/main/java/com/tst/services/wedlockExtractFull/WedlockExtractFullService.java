@@ -9,6 +9,7 @@ import com.tst.repositories.extractFull.WedlockExtractFullRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -17,6 +18,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class WedlockExtractFullService implements IWedlockExtractFullService {
 
+    private final AccessPointRepository accessPointRepository;
+    private final AccessPointHistoryRepository accessPointHistoryRepository;
     private final WedlockExtractFullRepository wedlockExtractFullRepository;
     private final GenderTypeRepository genderTypeRepository;
     private final IntendedUseTypeRepository intendedUseTypeRepository;
@@ -48,6 +51,7 @@ public class WedlockExtractFullService implements IWedlockExtractFullService {
     }
 
     @Override
+    @Transactional
     public void importBeforeCompare(WedlockExtractFull wedlockExtractFull, WedlockExtractFullDTO wedlockExtractFullDTO) {
         genderTypeRepository.findByCode(
                 wedlockExtractFullDTO.getConfirmerGender()
@@ -83,6 +87,13 @@ public class WedlockExtractFullService implements IWedlockExtractFullService {
                 wedlockExtractFullDTO,
                 wedlockExtractFull
         );
+
+        if (wedlockExtractFull.getStatus() == EInputStatus.NOT_MATCHING
+                || wedlockExtractFull.getStatus() == EInputStatus.CHECKED_NOT_MATCHING
+        ) {
+            accessPointHistoryRepository.minusCountExtractFullError(wedlockExtractFull.getAccessPoint(), wedlockExtractFull.getImporter());
+            accessPointRepository.minusCountExtractFullError(wedlockExtractFull.getAccessPoint());
+        }
 
         wedlockExtractFull.setStatus(EInputStatus.IMPORTED);
 

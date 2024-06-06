@@ -5,6 +5,7 @@ import com.tst.models.entities.AccessPointHistory;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.User;
 import com.tst.models.responses.accessPoint.ImporterAccessPointHistoryResponse;
+import com.tst.models.responses.report.TotalAccessPointHistoryResponse;
 import com.tst.services.IGeneralService;
 
 import java.util.List;
@@ -22,4 +23,8 @@ public interface IAccessPointHistoryService extends IGeneralService<AccessPointH
             Project project,
             User assignees
     );
+
+    List<TotalAccessPointHistoryResponse> findAllNotDoneByProject(Project project);
+
+    List<TotalAccessPointHistoryResponse> findAllNotDoneByProjectAndAccessPoint(Project project, AccessPoint accessPoint);
 }

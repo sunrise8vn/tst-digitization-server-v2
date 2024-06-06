@@ -10,6 +10,7 @@ import com.tst.repositories.extractShort.DeathExtractShortRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,6 +19,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DeathExtractShortService implements IDeathExtractShortService {
 
+    private final AccessPointRepository accessPointRepository;
+    private final AccessPointHistoryRepository accessPointHistoryRepository;
     private final DeathExtractShortRepository deathExtractShortRepository;
 
     private final RegistrationTypeDetailRepository registrationTypeDetailRepository;
@@ -50,6 +53,7 @@ public class DeathExtractShortService implements IDeathExtractShortService {
     }
 
     @Override
+    @Transactional
     public void importBeforeCompare(DeathExtractShort deathExtractShort, DeathExtractShortDTO deathExtractShortDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 deathExtractShortDTO.getRegistrationType(),
@@ -92,6 +96,13 @@ public class DeathExtractShortService implements IDeathExtractShortService {
                 deathExtractShortDTO,
                 deathExtractShort
         );
+
+        if (deathExtractShort.getStatus() == EInputStatus.NOT_MATCHING
+                || deathExtractShort.getStatus() == EInputStatus.CHECKED_NOT_MATCHING
+        ) {
+            accessPointHistoryRepository.minusCountExtractShortError(deathExtractShort.getAccessPoint(), deathExtractShort.getImporter());
+            accessPointRepository.minusCountExtractShortError(deathExtractShort.getAccessPoint());
+        }
 
         deathExtractShort.setStatus(EInputStatus.IMPORTED);
 

@@ -5,6 +5,7 @@ import com.tst.models.entities.AccessPointHistory;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.User;
 import com.tst.models.responses.accessPoint.ImporterAccessPointHistoryResponse;
+import com.tst.models.responses.report.TotalAccessPointHistoryResponse;
 import com.tst.repositories.AccessPointHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,16 @@ public class AccessPointHistoryService implements IAccessPointHistoryService {
     @Override
     public List<ImporterAccessPointHistoryResponse> findAllNotDoneByProjectAndAssignees(Project project, User assignees) {
         return accessPointHistoryRepository.findAllNotDoneByProjectAndAssignees(project, assignees);
+    }
+
+    @Override
+    public List<TotalAccessPointHistoryResponse> findAllNotDoneByProject(Project project) {
+        return accessPointHistoryRepository.findAllNotDoneByProject(project);
+    }
+
+    @Override
+    public List<TotalAccessPointHistoryResponse> findAllNotDoneByProjectAndAccessPoint(Project project, AccessPoint accessPoint) {
+        return accessPointHistoryRepository.findAllNotDoneByProjectAndAccessPoint(project, accessPoint);
     }
 
     @Override

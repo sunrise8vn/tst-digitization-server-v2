@@ -38,6 +38,10 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
 
     Optional<MarryExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
+    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
+
     List<MarryExtractFull> findAllByProjectAndImporterIsNull(Project project);
 
 

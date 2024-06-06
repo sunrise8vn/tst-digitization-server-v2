@@ -16,14 +16,19 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "access_point_histories")
+@Table(
+    name = "access_point_histories",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "unique_access_point_id_assignees", columnNames = {"access_point_id", "assignees"})
+    }
+)
 public class AccessPointHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "access_point", nullable = false)
+    @JoinColumn(name = "access_point_id", nullable = false)
     private AccessPoint accessPoint;
 
     @ManyToOne

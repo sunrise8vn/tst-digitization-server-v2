@@ -10,6 +10,7 @@ import com.tst.repositories.extractFull.BirthExtractFullRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,6 +19,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BirthExtractFullService implements IBirthExtractFullService {
 
+    private final AccessPointRepository accessPointRepository;
+    private final AccessPointHistoryRepository accessPointHistoryRepository;
     private final BirthExtractFullRepository birthExtractFullRepository;
 
     private final RegistrationTypeDetailRepository registrationTypeDetailRepository;
@@ -50,6 +53,7 @@ public class BirthExtractFullService implements IBirthExtractFullService {
     }
 
     @Override
+    @Transactional
     public void importBeforeCompare(BirthExtractFull birthExtractFull, BirthExtractFullDTO birthExtractFullDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 birthExtractFullDTO.getRegistrationType(),
@@ -104,6 +108,13 @@ public class BirthExtractFullService implements IBirthExtractFullService {
                 birthExtractFullDTO,
                 birthExtractFull
         );
+
+        if (birthExtractFull.getStatus() == EInputStatus.NOT_MATCHING
+                || birthExtractFull.getStatus() == EInputStatus.CHECKED_NOT_MATCHING
+        ) {
+            accessPointHistoryRepository.minusCountExtractFullError(birthExtractFull.getAccessPoint(), birthExtractFull.getImporter());
+            accessPointRepository.minusCountExtractFullError(birthExtractFull.getAccessPoint());
+        }
 
         birthExtractFull.setStatus(EInputStatus.IMPORTED);
 

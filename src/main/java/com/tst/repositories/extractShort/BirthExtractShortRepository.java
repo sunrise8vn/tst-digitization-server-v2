@@ -34,9 +34,11 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
     @Query(value = "CALL sp_find_next_item_all_table_by_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
     Optional<BirthExtractShort> findNextIdForImporter(long projectId, String userId, Long id, String tableName);
 
+    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
     List<BirthExtractShort> findAllByProjectAndImporterIsNull(Project project);
-
 
     List<BirthExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
 

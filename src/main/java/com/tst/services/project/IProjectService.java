@@ -24,6 +24,10 @@ public interface IProjectService extends IGeneralService<Project, Long> {
 
     Optional<ProjectResponse> findProjectResponseByProjectAndUser(Project project, User user);
 
+    TotalCountExtractFormResponse getTotalCountExtractForm(Project project, AccessPoint accessPoint);
+
+    TotalCountExtractFormNewResponse getTotalCountExtractFormNew(Project project, AccessPoint accessPoint);
+
     List<ExtractShortResponse> findAllExtractShortResponse(Project project, User importer);
 
     List<ExtractFullResponse> findAllExtractFullResponse(Project project, User importer);
