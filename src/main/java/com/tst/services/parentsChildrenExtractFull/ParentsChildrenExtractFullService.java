@@ -10,6 +10,7 @@ import com.tst.repositories.extractFull.ParentsChildrenExtractFullRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,6 +19,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ParentsChildrenExtractFullService implements IParentsChildrenExtractFullService {
 
+    private final AccessPointRepository accessPointRepository;
+    private final AccessPointHistoryRepository accessPointHistoryRepository;
     private final ParentsChildrenExtractFullRepository parentsChildrenExtractFullRepository;
 
     private final RegistrationTypeDetailRepository registrationTypeDetailRepository;
@@ -50,6 +53,7 @@ public class ParentsChildrenExtractFullService implements IParentsChildrenExtrac
     }
 
     @Override
+    @Transactional
     public void importBeforeCompare(ParentsChildrenExtractFull parentsChildrenExtractFull, ParentsChildrenExtractFullDTO parentsChildrenExtractFullDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 parentsChildrenExtractFullDTO.getRegistrationType(),
@@ -104,6 +108,13 @@ public class ParentsChildrenExtractFullService implements IParentsChildrenExtrac
                 parentsChildrenExtractFullDTO,
                 parentsChildrenExtractFull
         );
+
+        if (parentsChildrenExtractFull.getStatus() == EInputStatus.NOT_MATCHING
+                || parentsChildrenExtractFull.getStatus() == EInputStatus.CHECKED_NOT_MATCHING
+        ) {
+            accessPointHistoryRepository.minusCountExtractFullError(parentsChildrenExtractFull.getAccessPoint(), parentsChildrenExtractFull.getImporter());
+            accessPointRepository.minusCountExtractFullError(parentsChildrenExtractFull.getAccessPoint());
+        }
 
         parentsChildrenExtractFull.setStatus(EInputStatus.IMPORTED);
 

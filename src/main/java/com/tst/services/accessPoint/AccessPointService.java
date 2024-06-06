@@ -54,9 +54,14 @@ public class AccessPointService implements IAccessPointService {
     }
 
     @Override
-    public List<AccessPointResponse> findAllAccessPointProcessingByProjectAndUserAndStatus(Project project, User user, EAccessPointStatus status) {
-        return accessPointRepository.findAllAccessPointProcessingByProjectAndUserAndStatus(project, user, status);
+    public List<AccessPointResponse> findAllAccessPointProcessingByProjectAndUserAndStatusNot(Project project, User user, EAccessPointStatus status) {
+        return accessPointRepository.findAllAccessPointProcessingByProjectAndUserAndStatusNot(project, user, status);
    }
+
+    @Override
+    public List<AccessPointResponse> findAllAccessPointProcessingByProjectAndStatusNot(Project project, EAccessPointStatus status) {
+        return accessPointRepository.findAllAccessPointProcessingByProjectAndStatusNot(project, status);
+    }
 
     @Override
     @Transactional

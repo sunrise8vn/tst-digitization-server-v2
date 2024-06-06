@@ -38,6 +38,10 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
 
     Optional<DeathExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
+    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
+
     List<DeathExtractFull> findAllByProjectAndImporterIsNull(Project project);
 
 

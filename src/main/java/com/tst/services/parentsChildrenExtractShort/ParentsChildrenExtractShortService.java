@@ -5,14 +5,12 @@ import com.tst.models.dtos.extractShort.ParentsChildrenExtractShortDTO;
 import com.tst.models.entities.extractShort.ParentsChildrenExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
-import com.tst.repositories.ConfirmationTypeRepository;
-import com.tst.repositories.IdentificationTypeRepository;
-import com.tst.repositories.RegistrationTypeDetailRepository;
-import com.tst.repositories.ResidenceTypeRepository;
+import com.tst.repositories.*;
 import com.tst.repositories.extractShort.ParentsChildrenExtractShortRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -21,6 +19,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ParentsChildrenExtractShortService implements IParentsChildrenExtractShortService {
 
+    private final AccessPointRepository accessPointRepository;
+    private final AccessPointHistoryRepository accessPointHistoryRepository;
     private final ParentsChildrenExtractShortRepository parentsChildrenExtractShortRepository;
 
     private final RegistrationTypeDetailRepository registrationTypeDetailRepository;
@@ -52,6 +52,7 @@ public class ParentsChildrenExtractShortService implements IParentsChildrenExtra
     }
 
     @Override
+    @Transactional
     public void importBeforeCompare(ParentsChildrenExtractShort parentsChildrenExtractShort, ParentsChildrenExtractShortDTO parentsChildrenExtractShortDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 parentsChildrenExtractShortDTO.getRegistrationType(),
@@ -100,6 +101,13 @@ public class ParentsChildrenExtractShortService implements IParentsChildrenExtra
                 parentsChildrenExtractShortDTO,
                 parentsChildrenExtractShort
         );
+
+        if (parentsChildrenExtractShort.getStatus() == EInputStatus.NOT_MATCHING
+            || parentsChildrenExtractShort.getStatus() == EInputStatus.CHECKED_NOT_MATCHING
+        ) {
+            accessPointHistoryRepository.minusCountExtractShortError(parentsChildrenExtractShort.getAccessPoint(), parentsChildrenExtractShort.getImporter());
+            accessPointRepository.minusCountExtractShortError(parentsChildrenExtractShort.getAccessPoint());
+        }
 
         parentsChildrenExtractShort.setStatus(EInputStatus.IMPORTED);
 

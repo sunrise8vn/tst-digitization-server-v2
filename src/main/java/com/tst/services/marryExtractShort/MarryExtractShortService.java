@@ -5,14 +5,12 @@ import com.tst.models.dtos.extractShort.MarryExtractShortDTO;
 import com.tst.models.entities.extractShort.MarryExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
-import com.tst.repositories.IdentificationTypeRepository;
-import com.tst.repositories.MaritalStatusTypeRepository;
-import com.tst.repositories.RegistrationTypeDetailRepository;
-import com.tst.repositories.ResidenceTypeRepository;
+import com.tst.repositories.*;
 import com.tst.repositories.extractShort.MarryExtractShortRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -21,6 +19,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MarryExtractShortService implements IMarryExtractShortService {
 
+    private final AccessPointRepository accessPointRepository;
+    private final AccessPointHistoryRepository accessPointHistoryRepository;
     private final MarryExtractShortRepository marryExtractShortRepository;
     private final MaritalStatusTypeRepository maritalStatusTypeRepository;
     private final RegistrationTypeDetailRepository registrationTypeDetailRepository;
@@ -51,6 +51,7 @@ public class MarryExtractShortService implements IMarryExtractShortService {
     }
 
     @Override
+    @Transactional
     public void importBeforeCompare(MarryExtractShort marryExtractShort, MarryExtractShortDTO marryExtractShortDTO) {
         registrationTypeDetailRepository.findByCodeAndERegistrationType(
                 marryExtractShortDTO.getRegistrationType(),
@@ -93,6 +94,13 @@ public class MarryExtractShortService implements IMarryExtractShortService {
                 marryExtractShortDTO,
                 marryExtractShort
         );
+
+        if (marryExtractShort.getStatus() == EInputStatus.NOT_MATCHING
+                || marryExtractShort.getStatus() == EInputStatus.CHECKED_NOT_MATCHING
+        ) {
+            accessPointHistoryRepository.minusCountExtractShortError(marryExtractShort.getAccessPoint(), marryExtractShort.getImporter());
+            accessPointRepository.minusCountExtractShortError(marryExtractShort.getAccessPoint());
+        }
 
         marryExtractShort.setStatus(EInputStatus.IMPORTED);
 

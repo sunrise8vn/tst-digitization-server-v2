@@ -38,6 +38,10 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
 
     Optional<WedlockExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
+    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
+
     List<WedlockExtractFull> findAllByProjectAndImporterIsNull(Project project);
 
 

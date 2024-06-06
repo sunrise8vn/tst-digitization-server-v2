@@ -284,6 +284,60 @@ public class ProjectAPI {
                 .build());
     }
 
+    @GetMapping("/get-total-count-extract-form-for-compare/{projectId}/{accessPointId}")
+    public ResponseEntity<ResponseObject> getTotalCountExtractFormForCompare(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID đợt phân phối phải là một số") String accessPointId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        AccessPoint accessPoint = accessPointService.findById(
+                Long.parseLong(accessPointId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Đợt phân phối không tồn tại");
+        });
+
+        TotalCountExtractFormResponse totalCountExtractFormResponse = projectService.getTotalCountExtractForm(project, accessPoint);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy tổng số lượng biểu mẫu thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(totalCountExtractFormResponse)
+                .build());
+    }
+
+    @GetMapping("/get-total-count-extract-form-new/{projectId}/{accessPointId}")
+    public ResponseEntity<ResponseObject> getTotalCountExtractFormNew(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID đợt phân phối phải là một số") String accessPointId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        AccessPoint accessPoint = accessPointService.findById(
+                Long.parseLong(accessPointId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Đợt phân phối không tồn tại");
+        });
+
+        TotalCountExtractFormNewResponse totalCountExtractFormNewResponse = projectService.getTotalCountExtractFormNew(project, accessPoint);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy tổng số lượng biểu mẫu chưa nhập thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(totalCountExtractFormNewResponse)
+                .build());
+    }
+
     @PostMapping("/verify-project-by-user")
     public ResponseEntity<ResponseObject> verifyProjectByUser(
             @Validated @RequestBody ProjectDTO projectDTO,
@@ -486,7 +540,7 @@ public class ProjectAPI {
 
     // So sánh tự động các biểu mẫu trường ngắn và trường dài đã nhập
     @PostMapping("/auto-compare-extract-short-full/{accessPointId}")
-    public ResponseEntity<ResponseObject> assignExtractFormToUser(
+    public ResponseEntity<ResponseObject> autoCompareExtractForm(
             @PathVariable @Pattern(regexp = "\\d+", message = "ID điểm truy cập phải là một số") String accessPointId
     ) {
         AccessPoint accessPoint = accessPointService.findById(

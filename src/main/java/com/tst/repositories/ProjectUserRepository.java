@@ -32,8 +32,7 @@ public interface ProjectUserRepository extends JpaRepository<ProjectUser, Long> 
     @Query("SELECT NEW com.tst.models.responses.user.UserAssignResponse (" +
                 "us.id, " +
                 "us.username, " +
-                "CASE WHEN ui.fullName IS NULL THEN us.username ELSE ui.fullName " +
-                "END" +
+                "CASE WHEN ui.fullName IS NULL THEN us.username ELSE ui.fullName END" +
             ") " +
             "FROM ProjectUser AS pu " +
             "JOIN User AS us " +

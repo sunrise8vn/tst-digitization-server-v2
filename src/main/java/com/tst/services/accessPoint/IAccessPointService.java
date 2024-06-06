@@ -11,7 +11,16 @@ import java.util.List;
 
 public interface IAccessPointService extends IGeneralService<AccessPoint, Long> {
 
-    List<AccessPointResponse> findAllAccessPointProcessingByProjectAndUserAndStatus(Project project, User user, EAccessPointStatus status);
+    List<AccessPointResponse> findAllAccessPointProcessingByProjectAndUserAndStatusNot(
+            Project project,
+            User user,
+            EAccessPointStatus status
+    );
+
+    List<AccessPointResponse> findAllAccessPointProcessingByProjectAndStatusNot(
+            Project project,
+            EAccessPointStatus status
+    );
 
     void revokeExtractForm(AccessPoint accessPoint, Long totalCountRevoke);
 

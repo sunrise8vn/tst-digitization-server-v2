@@ -83,6 +83,66 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
+    public TotalCountExtractFormResponse getTotalCountExtractForm(Project project, AccessPoint accessPoint) {
+        Long countAllParentsAndChildrenShortFormImported = parentsChildrenExtractShortRepository.countAllByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+        Long countAllParentsAndChildrenFullFormImported = parentsChildrenExtractFullRepository.countAllByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+        Long countAllBirthShortFormImported = birthExtractShortRepository.countAllByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+        Long countAllBirthFullFormImported = birthExtractFullRepository.countAllByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+        Long countAllMarryShortFormImported = marryExtractShortRepository.countAllByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+        Long countAllMarryFullFormImported = marryExtractFullRepository.countAllByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+        Long countAllWedlockShortFormImported = wedlockExtractShortRepository.countAllByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+        Long countAllWedlockFullFormImported = wedlockExtractFullRepository.countAllByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+        Long countAllDeathShortFormImported = deathExtractShortRepository.countAllByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+        Long countAllDeathFullFormImported = deathExtractFullRepository.countAllByAccessPointAndStatusAndImporterIsNotNull(accessPoint, EInputStatus.IMPORTED);
+
+        Long totalExtractFormImported = countAllParentsAndChildrenShortFormImported +
+                countAllParentsAndChildrenFullFormImported +
+                countAllBirthShortFormImported +
+                countAllBirthFullFormImported +
+                countAllMarryShortFormImported +
+                countAllMarryFullFormImported +
+                countAllWedlockShortFormImported +
+                countAllWedlockFullFormImported +
+                countAllDeathShortFormImported +
+                countAllDeathFullFormImported;
+
+        Long totalExtractFormAssigned = accessPoint.getTotalCount();
+
+
+        return new TotalCountExtractFormResponse()
+                .setTotalExtractFormAssigned(totalExtractFormAssigned)
+                .setTotalExtractFormImported(totalExtractFormImported);
+    }
+
+    @Override
+    public TotalCountExtractFormNewResponse getTotalCountExtractFormNew(Project project, AccessPoint accessPoint) {
+        Long countAllParentsAndChildrenShortFormNew = parentsChildrenExtractShortRepository.countAllByAccessPointAndStatus(accessPoint, EInputStatus.NEW);
+        Long countAllParentsAndChildrenFullFormNew = parentsChildrenExtractFullRepository.countAllByAccessPointAndStatus(accessPoint, EInputStatus.NEW);
+        Long countAllBirthShortFormNew = birthExtractShortRepository.countAllByAccessPointAndStatus(accessPoint, EInputStatus.NEW);
+        Long countAllBirthFullFormNew = birthExtractFullRepository.countAllByAccessPointAndStatus(accessPoint, EInputStatus.NEW);
+        Long countAllMarryShortFormNew = marryExtractShortRepository.countAllByAccessPointAndStatus(accessPoint, EInputStatus.NEW);
+        Long countAllMarryFullFormNew = marryExtractFullRepository.countAllByAccessPointAndStatus(accessPoint, EInputStatus.NEW);
+        Long countAllWedlockShortFormNew = wedlockExtractShortRepository.countAllByAccessPointAndStatus(accessPoint, EInputStatus.NEW);
+        Long countAllWedlockFullFormNew = wedlockExtractFullRepository.countAllByAccessPointAndStatus(accessPoint, EInputStatus.NEW);
+        Long countAllDeathShortFormNew = deathExtractShortRepository.countAllByAccessPointAndStatus(accessPoint, EInputStatus.NEW);
+        Long countAllDeathFullFormNew = deathExtractFullRepository.countAllByAccessPointAndStatus(accessPoint, EInputStatus.NEW);
+
+        Long totalExtractFormNew = countAllParentsAndChildrenShortFormNew +
+                countAllParentsAndChildrenFullFormNew +
+                countAllBirthShortFormNew +
+                countAllBirthFullFormNew +
+                countAllMarryShortFormNew +
+                countAllMarryFullFormNew +
+                countAllWedlockShortFormNew +
+                countAllWedlockFullFormNew +
+                countAllDeathShortFormNew +
+                countAllDeathFullFormNew;
+
+        return new TotalCountExtractFormNewResponse()
+                .setTotalExtractFormNew(totalExtractFormNew);
+    }
+
+    @Override
     public List<ExtractShortResponse> findAllExtractShortResponse(Project project, User importer) {
         List<ExtractShortResponse> extractShortResponses = new ArrayList<>();
 

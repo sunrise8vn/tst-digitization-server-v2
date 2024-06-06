@@ -4,13 +4,12 @@ import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractShort.WedlockExtractShortDTO;
 import com.tst.models.entities.extractShort.WedlockExtractShort;
 import com.tst.models.enums.EInputStatus;
-import com.tst.repositories.GenderTypeRepository;
-import com.tst.repositories.IdentificationTypeRepository;
-import com.tst.repositories.ResidenceTypeRepository;
+import com.tst.repositories.*;
 import com.tst.repositories.extractShort.WedlockExtractShortRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -19,6 +18,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class WedlockExtractShortService implements IWedlockExtractShortService {
 
+    private final AccessPointRepository accessPointRepository;
+    private final AccessPointHistoryRepository accessPointHistoryRepository;
     private final WedlockExtractShortRepository wedlockExtractShortRepository;
     private final GenderTypeRepository genderTypeRepository;
     private final ResidenceTypeRepository residenceTypeRepository;
@@ -48,6 +49,7 @@ public class WedlockExtractShortService implements IWedlockExtractShortService {
     }
 
     @Override
+    @Transactional
     public void importBeforeCompare(WedlockExtractShort wedlockExtractShort, WedlockExtractShortDTO wedlockExtractShortDTO) {
         genderTypeRepository.findByCode(
                 wedlockExtractShortDTO.getConfirmerGender()
@@ -77,6 +79,13 @@ public class WedlockExtractShortService implements IWedlockExtractShortService {
                 wedlockExtractShortDTO,
                 wedlockExtractShort
         );
+
+        if (wedlockExtractShort.getStatus() == EInputStatus.NOT_MATCHING
+                || wedlockExtractShort.getStatus() == EInputStatus.CHECKED_NOT_MATCHING
+        ) {
+            accessPointHistoryRepository.minusCountExtractShortError(wedlockExtractShort.getAccessPoint(), wedlockExtractShort.getImporter());
+            accessPointRepository.minusCountExtractShortError(wedlockExtractShort.getAccessPoint());
+        }
 
         wedlockExtractShort.setStatus(EInputStatus.IMPORTED);
 

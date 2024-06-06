@@ -12,9 +12,7 @@ import com.tst.models.responses.report.*;
 import com.tst.services.accessPoint.IAccessPointService;
 import com.tst.services.accessPointHistory.IAccessPointHistoryService;
 import com.tst.services.project.IProjectService;
-import com.tst.services.projectUser.IProjectUserService;
 import com.tst.services.user.IUserService;
-import com.tst.utils.AppUtils;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -43,7 +41,7 @@ public class ReportAPI {
     private final ModelMapper modelMapper;
 
 
-    @GetMapping("/get-all-access-point-processing-of-user/{projectId}")
+    @GetMapping("/get-all-access-point-not-done-of-user/{projectId}")
     public ResponseEntity<ResponseObject> getAllAccessPointProcessingOfUser(
             @PathVariable @Pattern(regexp = "^\\d+$", message = "ID Dự án phải là một số") String projectId
     ) {
@@ -56,10 +54,34 @@ public class ReportAPI {
 
         User user = userService.getAuthenticatedUser();
 
-        List<AccessPointResponse> accessPointResponses = accessPointService.findAllAccessPointProcessingByProjectAndUserAndStatus(
+        List<AccessPointResponse> accessPointResponses = accessPointService.findAllAccessPointProcessingByProjectAndUserAndStatusNot(
                 project,
                 user,
-                EAccessPointStatus.PROCESSING
+                EAccessPointStatus.DONE
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách đợt phân phối đang xử lý biểu mẫu thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(accessPointResponses)
+                .build());
+    }
+
+    @GetMapping("/get-all-access-point-not-done-for-manager/{projectId}")
+    public ResponseEntity<ResponseObject> getAllAccessPointProcessingForManager(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID Dự án phải là một số") String projectId
+    ) {
+
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        List<AccessPointResponse> accessPointResponses = accessPointService.findAllAccessPointProcessingByProjectAndStatusNot(
+                project,
+                EAccessPointStatus.DONE
         );
 
         return ResponseEntity.ok().body(ResponseObject.builder()
@@ -133,6 +155,60 @@ public class ReportAPI {
         List<ImporterAccessPointHistoryResponse> accessPointHistoryResponses = accessPointHistoryService.findAllNotDoneByProjectAndAssignees(
           project,
           user
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu tổng số biểu mẫu được phân phối thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(accessPointHistoryResponses)
+                .build());
+    }
+
+    @GetMapping("/get-all-total-not-done-for-manager/{projectId}")
+    public ResponseEntity<ResponseObject> getAllTotalExtractFormNotDoneForManager(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID Dự án phải là một số") String projectId
+    ) {
+
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        List<TotalAccessPointHistoryResponse> accessPointHistoryResponses = accessPointHistoryService.findAllNotDoneByProject(
+                project
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu tổng số biểu mẫu được phân phối thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(accessPointHistoryResponses)
+                .build());
+    }
+
+    @GetMapping("/get-all-total-not-done-by-access-point-for-manager/{projectId}/{accessPointId}")
+    public ResponseEntity<ResponseObject> getAllTotalExtractFormNotDoneByAccessPointForManager(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID đợt phân phối phải là một số") String accessPointId
+    ) {
+
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        AccessPoint accessPoint = accessPointService.findById(
+                Long.parseLong(accessPointId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Đợt phân phối không tồn tại");
+        });
+
+        List<TotalAccessPointHistoryResponse> accessPointHistoryResponses = accessPointHistoryService.findAllNotDoneByProjectAndAccessPoint(
+                project,
+                accessPoint
         );
 
         return ResponseEntity.ok().body(ResponseObject.builder()

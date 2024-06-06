@@ -38,6 +38,10 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
 
     Optional<ParentsChildrenExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
+    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
+
     List<ParentsChildrenExtractFull> findByProjectAndImporterIsNull(Project project);
 
 
