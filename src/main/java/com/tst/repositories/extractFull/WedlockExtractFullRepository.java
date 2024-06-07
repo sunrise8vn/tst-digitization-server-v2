@@ -4,6 +4,7 @@ import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectNumberBookFile;
 import com.tst.models.entities.User;
+import com.tst.models.entities.extractFull.MarryExtractFull;
 import com.tst.models.entities.extractFull.WedlockExtractFull;
 import com.tst.models.enums.EInputStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtractFull, Long> {
+
+    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
     Optional<WedlockExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
@@ -38,9 +43,24 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
 
     Optional<WedlockExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
-    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
 
-    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
+    @Query("SELECT wef " +
+            "FROM WedlockExtractFull AS wef " +
+            "WHERE wef.id > :id " +
+            "AND wef.status = :status " +
+            "AND wef.project = :project"
+    )
+    Optional<WedlockExtractFull> findNextIdByStatusForChecked(Project project, EInputStatus status, Long id);
+
+
+    @Query("SELECT wef " +
+            "FROM WedlockExtractFull AS wef " +
+            "WHERE wef.id < :id " +
+            "AND wef.status = :status " +
+            "AND wef.project = :project"
+    )
+    Optional<WedlockExtractFull> findPrevIdByStatusForChecked(Project project, EInputStatus status, Long id);
+
 
     List<WedlockExtractFull> findAllByProjectAndImporterIsNull(Project project);
 
@@ -102,5 +122,13 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
             "ORDER BY wef.id DESC"
     )
     List<WedlockExtractFull> findAllWedlockSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
+
+
+    @Query("SELECT wef " +
+            "FROM WedlockExtractFull AS wef " +
+            "WHERE wef.project = :project " +
+            "AND wef.status = :status"
+    )
+    List<WedlockExtractFull> findAllByProjectAndStatus(Project project, EInputStatus status);
 
 }

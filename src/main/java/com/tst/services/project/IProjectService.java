@@ -4,6 +4,7 @@ import com.tst.models.entities.*;
 import com.tst.models.entities.locationRegion.LocationDistrict;
 import com.tst.models.entities.locationRegion.LocationProvince;
 import com.tst.models.entities.locationRegion.LocationWard;
+import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.EPaperSize;
 import com.tst.models.responses.extractFull.ExtractFullResponse;
 import com.tst.models.responses.extractShort.ExtractShortResponse;
@@ -103,6 +104,8 @@ public interface IProjectService extends IGeneralService<Project, Long> {
     List<ReportImporterCheckedResponse> findAllCheckedForImporter(Long projectId, Long accessPointId, String userId);
 
     List<ReportImporterAcceptedResponse> findAllAcceptedForImporter(Long projectId, Long accessPointId, String userId);
+
+    List<ExtractFormMatchComparedResponse> findAllByProjectAndStatus(Project project, EInputStatus status);
 
     void updatePaperCountSize(Project project);
 

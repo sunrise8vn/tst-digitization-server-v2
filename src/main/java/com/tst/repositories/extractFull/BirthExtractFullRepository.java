@@ -14,6 +14,10 @@ import java.util.Optional;
 
 public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFull, Long> {
 
+    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
+
     Optional<BirthExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
 
@@ -38,9 +42,24 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
 
     Optional<BirthExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
-    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
 
-    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
+    @Query("SELECT bef " +
+            "FROM BirthExtractFull AS bef " +
+            "WHERE bef.id > :id " +
+            "AND bef.status = :status " +
+            "AND bef.project = :project"
+    )
+    Optional<BirthExtractFull> findNextIdByStatusForChecked(Project project, EInputStatus status, Long id);
+
+
+    @Query("SELECT bef " +
+            "FROM BirthExtractFull AS bef " +
+            "WHERE bef.id < :id " +
+            "AND bef.status = :status " +
+            "AND bef.project = :project"
+    )
+    Optional<BirthExtractFull> findPrevIdByStatusForChecked(Project project, EInputStatus status, Long id);
+
 
     List<BirthExtractFull> findAllByProjectAndImporterIsNull(Project project);
 
@@ -102,5 +121,13 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
             "ORDER BY bef.id DESC"
     )
     List<BirthExtractFull> findAllBirthSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
+
+
+    @Query("SELECT bef " +
+            "FROM BirthExtractFull AS bef " +
+            "WHERE bef.project = :project " +
+            "AND bef.status = :status"
+    )
+    List<BirthExtractFull> findAllByProjectAndStatus(Project project, EInputStatus status);
 
 }

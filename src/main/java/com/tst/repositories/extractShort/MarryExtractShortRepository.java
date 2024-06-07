@@ -2,6 +2,7 @@ package com.tst.repositories.extractShort;
 
 import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.ProjectNumberBookFile;
 import com.tst.models.entities.User;
 import com.tst.models.entities.extractShort.MarryExtractShort;
 import com.tst.models.enums.EInputStatus;
@@ -12,6 +13,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MarryExtractShortRepository extends JpaRepository<MarryExtractShort, Long> {
+
+    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
+
+    MarryExtractShort getByProjectNumberBookFile(ProjectNumberBookFile projectNumberBookFile);
 
     Optional<MarryExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
@@ -33,10 +40,6 @@ public interface MarryExtractShortRepository extends JpaRepository<MarryExtractS
 
     @Query(value = "CALL sp_find_next_item_all_table_by_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
     Optional<MarryExtractShort> findNextIdForImporter(long projectId, String userId, Long id, String tableName);
-
-    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
-
-    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
     List<MarryExtractShort> findAllByProjectAndImporterIsNull(Project project);
 

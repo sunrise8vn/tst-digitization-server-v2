@@ -2,6 +2,7 @@ package com.tst.repositories.extractShort;
 
 import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.ProjectNumberBookFile;
 import com.tst.models.entities.User;
 import com.tst.models.entities.extractShort.WedlockExtractShort;
 import com.tst.models.enums.EInputStatus;
@@ -12,6 +13,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WedlockExtractShortRepository extends JpaRepository<WedlockExtractShort, Long> {
+
+    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
+
+    WedlockExtractShort getByProjectNumberBookFile(ProjectNumberBookFile projectNumberBookFile);
 
     Optional<WedlockExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
@@ -33,10 +40,6 @@ public interface WedlockExtractShortRepository extends JpaRepository<WedlockExtr
 
     @Query(value = "CALL sp_find_next_item_all_table_by_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
     Optional<WedlockExtractShort> findNextIdForImporter(long projectId, String userId, Long id, String tableName);
-
-    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
-
-    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
     List<WedlockExtractShort> findAllByProjectAndImporterIsNull(Project project);
 

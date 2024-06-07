@@ -1,6 +1,7 @@
 package com.tst.services.birthExtractFull;
 
 import com.tst.models.dtos.extractFull.BirthExtractFullDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.BirthExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.services.IGeneralService;
@@ -20,9 +21,17 @@ public interface IBirthExtractFullService extends IGeneralService<BirthExtractFu
             String tableName
     );
 
+    Optional<BirthExtractFull> findNextIdByStatusForChecked(Project project, EInputStatus status, Long id);
+
+    Optional<BirthExtractFull> findPrevIdByStatusForChecked(Project project, EInputStatus status, Long id);
+
     void importBeforeCompare(
             BirthExtractFull birthExtractFull,
             BirthExtractFullDTO birthExtractFullDTO
     );
+
+    void verifyCheckedMatch(BirthExtractFull birthExtractFull);
+
+    void verifyCheckedNotMatch(BirthExtractFull birthExtractFull);
 
 }

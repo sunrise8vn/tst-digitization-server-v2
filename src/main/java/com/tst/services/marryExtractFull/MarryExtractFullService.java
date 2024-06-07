@@ -2,11 +2,14 @@ package com.tst.services.marryExtractFull;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.MarryExtractFullDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.MarryExtractFull;
+import com.tst.models.entities.extractShort.MarryExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
 import com.tst.repositories.*;
 import com.tst.repositories.extractFull.MarryExtractFullRepository;
+import com.tst.repositories.extractShort.MarryExtractShortRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ public class MarryExtractFullService implements IMarryExtractFullService {
     private final AccessPointRepository accessPointRepository;
     private final AccessPointHistoryRepository accessPointHistoryRepository;
     private final MarryExtractFullRepository marryExtractFullRepository;
+    private final MarryExtractShortRepository marryExtractShortRepository;
     private final MaritalStatusTypeRepository maritalStatusTypeRepository;
     private final RegistrationTypeDetailRepository registrationTypeDetailRepository;
     private final ResidenceTypeRepository residenceTypeRepository;
@@ -48,6 +52,16 @@ public class MarryExtractFullService implements IMarryExtractFullService {
     @Override
     public Optional<MarryExtractFull> findNextIdForImporter(Long projectId, String userId, Long id, String tableName) {
         return marryExtractFullRepository.findNextIdForImporter(projectId, userId, id, tableName);
+    }
+
+    @Override
+    public Optional<MarryExtractFull> findNextIdByStatusForChecked(Project project, EInputStatus status, Long id) {
+        return marryExtractFullRepository.findNextIdByStatusForChecked(project, status, id);
+    }
+
+    @Override
+    public Optional<MarryExtractFull> findPrevIdByStatusForChecked(Project project, EInputStatus status, Long id) {
+        return marryExtractFullRepository.findPrevIdByStatusForChecked(project, status, id);
     }
 
     @Override
@@ -105,6 +119,31 @@ public class MarryExtractFullService implements IMarryExtractFullService {
         marryExtractFull.setStatus(EInputStatus.IMPORTED);
 
         marryExtractFullRepository.save(marryExtractFull);
+    }
+
+    @Override
+    @Transactional
+    public void verifyCheckedMatch(MarryExtractFull marryExtractFull) {
+        marryExtractFull.setStatus(EInputStatus.CHECKED_MATCHING);
+        marryExtractFullRepository.save(marryExtractFull);
+
+        MarryExtractShort marryExtractShort = marryExtractShortRepository.getByProjectNumberBookFile(
+                marryExtractFull.getProjectNumberBookFile()
+        );
+        marryExtractShort.setStatus(EInputStatus.CHECKED_MATCHING);
+        marryExtractShortRepository.save(marryExtractShort);
+    }
+
+    @Override
+    public void verifyCheckedNotMatch(MarryExtractFull marryExtractFull) {
+        marryExtractFull.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        marryExtractFullRepository.save(marryExtractFull);
+
+        MarryExtractShort marryExtractShort = marryExtractShortRepository.getByProjectNumberBookFile(
+                marryExtractFull.getProjectNumberBookFile()
+        );
+        marryExtractShort.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        marryExtractShortRepository.save(marryExtractShort);
     }
 
     @Override

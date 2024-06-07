@@ -22,6 +22,9 @@ import java.time.LocalDateTime;
     name = "marry_extract_short",
     indexes = {
         @Index(name = "index_status", columnList = "status")
+    },
+    uniqueConstraints = {
+        @UniqueConstraint(name = "unique_project_number_book_file_id", columnNames = {"project_number_book_file_id"})
     }
 )
 public class MarryExtractShort {
