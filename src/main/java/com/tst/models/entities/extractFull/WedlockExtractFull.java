@@ -24,6 +24,9 @@ import java.time.LocalDateTime;
     name = "wedlock_extract_full",
     indexes = {
         @Index(name = "index_status", columnList = "status")
+    },
+    uniqueConstraints = {
+        @UniqueConstraint(name = "unique_project_number_book_file_id", columnNames = {"project_number_book_file_id"})
     }
 )
 public class WedlockExtractFull {

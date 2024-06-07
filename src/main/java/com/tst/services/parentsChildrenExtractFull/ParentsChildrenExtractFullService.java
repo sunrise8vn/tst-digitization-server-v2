@@ -2,11 +2,14 @@ package com.tst.services.parentsChildrenExtractFull;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.ParentsChildrenExtractFullDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.ParentsChildrenExtractFull;
+import com.tst.models.entities.extractShort.ParentsChildrenExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
 import com.tst.repositories.*;
 import com.tst.repositories.extractFull.ParentsChildrenExtractFullRepository;
+import com.tst.repositories.extractShort.ParentsChildrenExtractShortRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ public class ParentsChildrenExtractFullService implements IParentsChildrenExtrac
     private final AccessPointRepository accessPointRepository;
     private final AccessPointHistoryRepository accessPointHistoryRepository;
     private final ParentsChildrenExtractFullRepository parentsChildrenExtractFullRepository;
+    private final ParentsChildrenExtractShortRepository parentsChildrenExtractShortRepository;
 
     private final RegistrationTypeDetailRepository registrationTypeDetailRepository;
     private final ConfirmationTypeRepository confirmationTypeRepository;
@@ -50,6 +54,16 @@ public class ParentsChildrenExtractFullService implements IParentsChildrenExtrac
     @Override
     public Optional<ParentsChildrenExtractFull> findNextIdForImporter(Long projectId, String userId, Long id, String tableName) {
         return parentsChildrenExtractFullRepository.findNextIdForImporter(projectId, userId, id, tableName);
+    }
+
+    @Override
+    public Optional<ParentsChildrenExtractFull> findNextIdByStatusForChecked(Project project, EInputStatus status, Long id) {
+        return parentsChildrenExtractFullRepository.findNextIdByStatusForChecked(project, status, id);
+    }
+
+    @Override
+    public Optional<ParentsChildrenExtractFull> findPrevIdByStatusForChecked(Project project, EInputStatus status, Long id) {
+        return parentsChildrenExtractFullRepository.findPrevIdByStatusForChecked(project, status, id);
     }
 
     @Override
@@ -119,6 +133,31 @@ public class ParentsChildrenExtractFullService implements IParentsChildrenExtrac
         parentsChildrenExtractFull.setStatus(EInputStatus.IMPORTED);
 
         parentsChildrenExtractFullRepository.save(parentsChildrenExtractFull);
+    }
+
+    @Override
+    @Transactional
+    public void verifyCheckedMatch(ParentsChildrenExtractFull parentsChildrenExtractFull) {
+        parentsChildrenExtractFull.setStatus(EInputStatus.CHECKED_MATCHING);
+        parentsChildrenExtractFullRepository.save(parentsChildrenExtractFull);
+
+        ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortRepository.getByProjectNumberBookFile(
+                parentsChildrenExtractFull.getProjectNumberBookFile()
+        );
+        parentsChildrenExtractShort.setStatus(EInputStatus.CHECKED_MATCHING);
+        parentsChildrenExtractShortRepository.save(parentsChildrenExtractShort);
+    }
+
+    @Override
+    public void verifyCheckedNotMatch(ParentsChildrenExtractFull parentsChildrenExtractFull) {
+        parentsChildrenExtractFull.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        parentsChildrenExtractFullRepository.save(parentsChildrenExtractFull);
+
+        ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortRepository.getByProjectNumberBookFile(
+                parentsChildrenExtractFull.getProjectNumberBookFile()
+        );
+        parentsChildrenExtractShort.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        parentsChildrenExtractShortRepository.save(parentsChildrenExtractShort);
     }
 
     @Override

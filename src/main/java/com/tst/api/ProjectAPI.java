@@ -8,6 +8,7 @@ import com.tst.models.entities.*;
 import com.tst.models.entities.locationRegion.LocationDistrict;
 import com.tst.models.entities.locationRegion.LocationProvince;
 import com.tst.models.entities.locationRegion.LocationWard;
+import com.tst.models.enums.EInputStatus;
 import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.locationRegion.LocationResponse;
 import com.tst.models.responses.project.*;
@@ -335,6 +336,29 @@ public class ProjectAPI {
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .data(totalCountExtractFormNewResponse)
+                .build());
+    }
+
+    @GetMapping("/get-all-extract-form-match-compared/{projectId}")
+    public ResponseEntity<ResponseObject> getAllExtractFormMatchCompared(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        List<ExtractFormMatchComparedResponse> extractFormMatchComparedResponses = projectService.findAllByProjectAndStatus(
+                project,
+                EInputStatus.MATCHING
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách biểu mẫu đã so sánh khớp thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(extractFormMatchComparedResponses)
                 .build());
     }
 

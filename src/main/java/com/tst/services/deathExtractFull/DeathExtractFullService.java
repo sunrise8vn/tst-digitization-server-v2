@@ -2,11 +2,14 @@ package com.tst.services.deathExtractFull;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.DeathExtractFullDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.DeathExtractFull;
+import com.tst.models.entities.extractShort.DeathExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
 import com.tst.repositories.*;
 import com.tst.repositories.extractFull.DeathExtractFullRepository;
+import com.tst.repositories.extractShort.DeathExtractShortRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ public class DeathExtractFullService implements IDeathExtractFullService {
     private final AccessPointRepository accessPointRepository;
     private final AccessPointHistoryRepository accessPointHistoryRepository;
     private final DeathExtractFullRepository deathExtractFullRepository;
+    private final DeathExtractShortRepository deathExtractShortRepository;
 
     private final RegistrationTypeDetailRepository registrationTypeDetailRepository;
     private final ResidenceTypeRepository residenceTypeRepository;
@@ -50,6 +54,16 @@ public class DeathExtractFullService implements IDeathExtractFullService {
     @Override
     public Optional<DeathExtractFull> findNextIdForImporter(Long projectId, String userId, Long id, String tableName) {
         return deathExtractFullRepository.findNextIdForImporter(projectId, userId, id, tableName);
+    }
+
+    @Override
+    public Optional<DeathExtractFull> findNextIdByStatusForChecked(Project project, EInputStatus status, Long id) {
+        return deathExtractFullRepository.findNextIdByStatusForChecked(project, status, id);
+    }
+
+    @Override
+    public Optional<DeathExtractFull> findPrevIdByStatusForChecked(Project project, EInputStatus status, Long id) {
+        return deathExtractFullRepository.findPrevIdByStatusForChecked(project, status, id);
     }
 
     @Override
@@ -107,6 +121,31 @@ public class DeathExtractFullService implements IDeathExtractFullService {
         deathExtractFull.setStatus(EInputStatus.IMPORTED);
 
         deathExtractFullRepository.save(deathExtractFull);
+    }
+
+    @Override
+    @Transactional
+    public void verifyCheckedMatch(DeathExtractFull deathExtractFull) {
+        deathExtractFull.setStatus(EInputStatus.CHECKED_MATCHING);
+        deathExtractFullRepository.save(deathExtractFull);
+
+        DeathExtractShort deathExtractShort = deathExtractShortRepository.getByProjectNumberBookFile(
+                deathExtractFull.getProjectNumberBookFile()
+        );
+        deathExtractShort.setStatus(EInputStatus.CHECKED_MATCHING);
+        deathExtractShortRepository.save(deathExtractShort);
+    }
+
+    @Override
+    public void verifyCheckedNotMatch(DeathExtractFull deathExtractFull) {
+        deathExtractFull.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        deathExtractFullRepository.save(deathExtractFull);
+
+        DeathExtractShort deathExtractShort = deathExtractShortRepository.getByProjectNumberBookFile(
+                deathExtractFull.getProjectNumberBookFile()
+        );
+        deathExtractShort.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        deathExtractShortRepository.save(deathExtractShort);
     }
 
     @Override

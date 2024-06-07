@@ -2,11 +2,10 @@ package com.tst.repositories.extractShort;
 
 import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.ProjectNumberBookFile;
 import com.tst.models.entities.User;
 import com.tst.models.entities.extractShort.ParentsChildrenExtractShort;
 import com.tst.models.enums.EInputStatus;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,8 +14,11 @@ import java.util.Optional;
 
 public interface ParentsChildrenExtractShortRepository extends JpaRepository<ParentsChildrenExtractShort, Long> {
 
-    @PersistenceContext
-    EntityManager entityManager = null;
+    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
+
+    ParentsChildrenExtractShort getByProjectNumberBookFile(ProjectNumberBookFile projectNumberBookFile);
 
     Optional<ParentsChildrenExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
@@ -38,10 +40,6 @@ public interface ParentsChildrenExtractShortRepository extends JpaRepository<Par
 
     @Query(value = "CALL sp_find_next_item_all_table_by_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
     Optional<ParentsChildrenExtractShort> findNextIdForImporter(long projectId, String userId, Long id, String tableName);
-
-    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
-
-    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
     List<ParentsChildrenExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
 

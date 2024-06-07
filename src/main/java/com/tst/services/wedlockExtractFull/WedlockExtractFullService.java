@@ -2,10 +2,13 @@ package com.tst.services.wedlockExtractFull;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.WedlockExtractFullDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.WedlockExtractFull;
+import com.tst.models.entities.extractShort.WedlockExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.repositories.*;
 import com.tst.repositories.extractFull.WedlockExtractFullRepository;
+import com.tst.repositories.extractShort.WedlockExtractShortRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ public class WedlockExtractFullService implements IWedlockExtractFullService {
     private final AccessPointRepository accessPointRepository;
     private final AccessPointHistoryRepository accessPointHistoryRepository;
     private final WedlockExtractFullRepository wedlockExtractFullRepository;
+    private final WedlockExtractShortRepository wedlockExtractShortRepository;
     private final GenderTypeRepository genderTypeRepository;
     private final IntendedUseTypeRepository intendedUseTypeRepository;
 
@@ -48,6 +52,16 @@ public class WedlockExtractFullService implements IWedlockExtractFullService {
     @Override
     public Optional<WedlockExtractFull> findNextIdForImporter(Long projectId, String userId, Long id, String tableName) {
         return wedlockExtractFullRepository.findNextIdForImporter(projectId, userId, id, tableName);
+    }
+
+    @Override
+    public Optional<WedlockExtractFull> findNextIdByStatusForChecked(Project project, EInputStatus status, Long id) {
+        return wedlockExtractFullRepository.findNextIdByStatusForChecked(project, status, id);
+    }
+
+    @Override
+    public Optional<WedlockExtractFull> findPrevIdByStatusForChecked(Project project, EInputStatus status, Long id) {
+        return wedlockExtractFullRepository.findPrevIdByStatusForChecked(project, status, id);
     }
 
     @Override
@@ -98,6 +112,31 @@ public class WedlockExtractFullService implements IWedlockExtractFullService {
         wedlockExtractFull.setStatus(EInputStatus.IMPORTED);
 
         wedlockExtractFullRepository.save(wedlockExtractFull);
+    }
+
+    @Override
+    @Transactional
+    public void verifyCheckedMatch(WedlockExtractFull wedlockExtractFull) {
+        wedlockExtractFull.setStatus(EInputStatus.CHECKED_MATCHING);
+        wedlockExtractFullRepository.save(wedlockExtractFull);
+
+        WedlockExtractShort wedlockExtractShort = wedlockExtractShortRepository.getByProjectNumberBookFile(
+                wedlockExtractFull.getProjectNumberBookFile()
+        );
+        wedlockExtractShort.setStatus(EInputStatus.CHECKED_MATCHING);
+        wedlockExtractShortRepository.save(wedlockExtractShort);
+    }
+
+    @Override
+    public void verifyCheckedNotMatch(WedlockExtractFull wedlockExtractFull) {
+        wedlockExtractFull.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        wedlockExtractFullRepository.save(wedlockExtractFull);
+
+        WedlockExtractShort wedlockExtractShort = wedlockExtractShortRepository.getByProjectNumberBookFile(
+                wedlockExtractFull.getProjectNumberBookFile()
+        );
+        wedlockExtractShort.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        wedlockExtractShortRepository.save(wedlockExtractShort);
     }
 
     @Override

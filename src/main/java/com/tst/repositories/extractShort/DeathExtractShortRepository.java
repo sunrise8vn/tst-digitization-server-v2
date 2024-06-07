@@ -2,6 +2,7 @@ package com.tst.repositories.extractShort;
 
 import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.ProjectNumberBookFile;
 import com.tst.models.entities.User;
 import com.tst.models.entities.extractShort.DeathExtractShort;
 import com.tst.models.enums.EInputStatus;
@@ -12,6 +13,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DeathExtractShortRepository extends JpaRepository<DeathExtractShort, Long> {
+
+    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
+
+    DeathExtractShort getByProjectNumberBookFile(ProjectNumberBookFile projectNumberBookFile);
 
     Optional<DeathExtractShort> findByIdAndStatus(Long id, EInputStatus status);
 
@@ -33,10 +40,6 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
 
     @Query(value = "CALL sp_find_next_item_all_table_by_id(:projectId, :userId, :id, :tableName)", nativeQuery = true)
     Optional<DeathExtractShort> findNextIdForImporter(long projectId, String userId, Long id, String tableName);
-
-    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
-
-    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
     List<DeathExtractShort> findAllByProjectAndImporterIsNull(Project project);
 

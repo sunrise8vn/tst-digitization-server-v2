@@ -1103,6 +1103,78 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
+    public List<ExtractFormMatchComparedResponse> findAllByProjectAndStatus(Project project, EInputStatus status) {
+        List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findAllByProjectAndStatus(project, status);
+
+        List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findAllByProjectAndStatus(project, status);
+
+        List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findAllByProjectAndStatus(project, status);
+
+        List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findAllByProjectAndStatus(project, status);
+
+        List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findAllByProjectAndStatus(project, status);
+
+        List<ExtractFormMatchComparedResponse> extractFormMatchComparedResponses = new ArrayList<>();
+
+        for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
+            ExtractFormMatchComparedResponse extractFormMatchComparedResponse = new ExtractFormMatchComparedResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setImportedAt(item.getImportedAt());
+
+            extractFormMatchComparedResponses.add(extractFormMatchComparedResponse);
+        }
+
+        for (BirthExtractFull item : birthExtractFulls) {
+            ExtractFormMatchComparedResponse extractFormMatchComparedResponse = new ExtractFormMatchComparedResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setImportedAt(item.getImportedAt());
+
+            extractFormMatchComparedResponses.add(extractFormMatchComparedResponse);
+        }
+
+        for (MarryExtractFull item : marryExtractFulls) {
+            ExtractFormMatchComparedResponse extractFormMatchComparedResponse = new ExtractFormMatchComparedResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setImportedAt(item.getImportedAt());
+
+            extractFormMatchComparedResponses.add(extractFormMatchComparedResponse);
+        }
+
+        for (WedlockExtractFull item : wedlockExtractFulls) {
+            ExtractFormMatchComparedResponse extractFormMatchComparedResponse = new ExtractFormMatchComparedResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setImportedAt(item.getImportedAt());
+
+            extractFormMatchComparedResponses.add(extractFormMatchComparedResponse);
+        }
+
+        for (DeathExtractFull item : deathExtractFulls) {
+            ExtractFormMatchComparedResponse extractFormMatchComparedResponse = new ExtractFormMatchComparedResponse()
+                    .setId(item.getId())
+                    .setFolderPath(item.getProjectNumberBookFile().getFolderPath())
+                    .setFileName(item.getProjectNumberBookFile().getFileName())
+                    .setRegistrationType(item.getProjectNumberBookFile().getRegistrationType().getValue())
+                    .setImportedAt(item.getImportedAt());
+
+            extractFormMatchComparedResponses.add(extractFormMatchComparedResponse);
+        }
+
+        return extractFormMatchComparedResponses;
+    }
+
+    @Override
     @Transactional
     public void createRegistrationPoint(
             Project project,

@@ -14,6 +14,10 @@ import java.util.Optional;
 
 public interface ParentsChildrenExtractFullRepository extends JpaRepository<ParentsChildrenExtractFull, Long> {
 
+    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
+
     Optional<ParentsChildrenExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
 
@@ -36,11 +40,26 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
     Optional<ParentsChildrenExtractFull> findNextIdForImporter(long projectId, String userId, Long id, String tableName);
 
 
+    @Query("SELECT pcef " +
+            "FROM ParentsChildrenExtractFull AS pcef " +
+            "WHERE pcef.id > :id " +
+            "AND pcef.status = :status " +
+            "AND pcef.project = :project"
+    )
+    Optional<ParentsChildrenExtractFull> findNextIdByStatusForChecked(Project project, EInputStatus status, Long id);
+
+
+    @Query("SELECT pcef " +
+            "FROM ParentsChildrenExtractFull AS pcef " +
+            "WHERE pcef.id < :id " +
+            "AND pcef.status = :status " +
+            "AND pcef.project = :project"
+    )
+    Optional<ParentsChildrenExtractFull> findPrevIdByStatusForChecked(Project project, EInputStatus status, Long id);
+
+
     Optional<ParentsChildrenExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
-    Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
-
-    Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
     List<ParentsChildrenExtractFull> findByProjectAndImporterIsNull(Project project);
 
@@ -103,5 +122,13 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
             "ORDER BY pcef.id DESC"
     )
     List<ParentsChildrenExtractFull> findAllParentsChildrenSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
+
+
+    @Query("SELECT pcef " +
+            "FROM ParentsChildrenExtractFull AS pcef " +
+            "WHERE pcef.project = :project " +
+            "AND pcef.status = :status"
+    )
+    List<ParentsChildrenExtractFull> findAllByProjectAndStatus(Project project, EInputStatus status);
 
 }

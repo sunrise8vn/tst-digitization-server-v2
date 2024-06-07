@@ -2,11 +2,14 @@ package com.tst.services.birthExtractFull;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.BirthExtractFullDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.BirthExtractFull;
+import com.tst.models.entities.extractShort.BirthExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
 import com.tst.repositories.*;
 import com.tst.repositories.extractFull.BirthExtractFullRepository;
+import com.tst.repositories.extractShort.BirthExtractShortRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ public class BirthExtractFullService implements IBirthExtractFullService {
     private final AccessPointRepository accessPointRepository;
     private final AccessPointHistoryRepository accessPointHistoryRepository;
     private final BirthExtractFullRepository birthExtractFullRepository;
+    private final BirthExtractShortRepository birthExtractShortRepository;
 
     private final RegistrationTypeDetailRepository registrationTypeDetailRepository;
     private final ResidenceTypeRepository residenceTypeRepository;
@@ -50,6 +54,16 @@ public class BirthExtractFullService implements IBirthExtractFullService {
     @Override
     public Optional<BirthExtractFull> findNextIdForImporter(Long projectId, String userId, Long id, String tableName) {
         return birthExtractFullRepository.findNextIdForImporter(projectId, userId, id, tableName);
+    }
+
+    @Override
+    public Optional<BirthExtractFull> findNextIdByStatusForChecked(Project project, EInputStatus status, Long id) {
+        return birthExtractFullRepository.findNextIdByStatusForChecked(project, status, id);
+    }
+
+    @Override
+    public Optional<BirthExtractFull> findPrevIdByStatusForChecked(Project project, EInputStatus status, Long id) {
+        return birthExtractFullRepository.findPrevIdByStatusForChecked(project, status, id);
     }
 
     @Override
@@ -119,6 +133,31 @@ public class BirthExtractFullService implements IBirthExtractFullService {
         birthExtractFull.setStatus(EInputStatus.IMPORTED);
 
         birthExtractFullRepository.save(birthExtractFull);
+    }
+
+    @Override
+    @Transactional
+    public void verifyCheckedMatch(BirthExtractFull birthExtractFull) {
+        birthExtractFull.setStatus(EInputStatus.CHECKED_MATCHING);
+        birthExtractFullRepository.save(birthExtractFull);
+
+        BirthExtractShort birthExtractShort = birthExtractShortRepository.getByProjectNumberBookFile(
+                birthExtractFull.getProjectNumberBookFile()
+        );
+        birthExtractShort.setStatus(EInputStatus.CHECKED_MATCHING);
+        birthExtractShortRepository.save(birthExtractShort);
+    }
+
+    @Override
+    public void verifyCheckedNotMatch(BirthExtractFull birthExtractFull) {
+        birthExtractFull.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        birthExtractFullRepository.save(birthExtractFull);
+
+        BirthExtractShort birthExtractShort = birthExtractShortRepository.getByProjectNumberBookFile(
+                birthExtractFull.getProjectNumberBookFile()
+        );
+        birthExtractShort.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        birthExtractShortRepository.save(birthExtractShort);
     }
 
     @Override

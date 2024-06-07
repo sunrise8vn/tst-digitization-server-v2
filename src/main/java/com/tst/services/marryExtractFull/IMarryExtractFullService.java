@@ -1,6 +1,7 @@
 package com.tst.services.marryExtractFull;
 
 import com.tst.models.dtos.extractFull.MarryExtractFullDTO;
+import com.tst.models.entities.Project;
 import com.tst.models.entities.extractFull.MarryExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.services.IGeneralService;
@@ -20,9 +21,17 @@ public interface IMarryExtractFullService extends IGeneralService<MarryExtractFu
             String tableName
     );
 
+    Optional<MarryExtractFull> findNextIdByStatusForChecked(Project project, EInputStatus status, Long id);
+
+    Optional<MarryExtractFull> findPrevIdByStatusForChecked(Project project, EInputStatus status, Long id);
+
     void importBeforeCompare(
             MarryExtractFull marryExtractFull,
             MarryExtractFullDTO marryExtractFullDTO
     );
+
+    void verifyCheckedMatch(MarryExtractFull marryExtractFull);
+
+    void verifyCheckedNotMatch(MarryExtractFull marryExtractFull);
 
 }
