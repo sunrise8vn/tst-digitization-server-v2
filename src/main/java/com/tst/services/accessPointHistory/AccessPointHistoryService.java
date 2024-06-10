@@ -5,6 +5,7 @@ import com.tst.models.entities.AccessPointHistory;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.User;
 import com.tst.models.responses.accessPoint.ImporterAccessPointHistoryResponse;
+import com.tst.models.responses.report.ExtractFormImportedForManagerResponse;
 import com.tst.models.responses.report.TotalAccessPointHistoryResponse;
 import com.tst.repositories.AccessPointHistoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -48,6 +50,36 @@ public class AccessPointHistoryService implements IAccessPointHistoryService {
     @Override
     public List<TotalAccessPointHistoryResponse> findAllNotDoneByProjectAndAccessPoint(Project project, AccessPoint accessPoint) {
         return accessPointHistoryRepository.findAllNotDoneByProjectAndAccessPoint(project, accessPoint);
+    }
+
+    @Override
+    public List<ExtractFormImportedForManagerResponse> findAllExtractFormImportedForManager(Long projectId) {
+        List<Object[]> results = accessPointHistoryRepository.findAllExtractFormImportedForManager(projectId);
+
+        return results.stream()
+                .map(row -> new ExtractFormImportedForManagerResponse()
+                        .setAccessPointId(((Long) row[0]))
+                        .setFullName(((String) row[1]))
+                        .setCountExtractShort(((Long) row[2]))
+                        .setCountExtractFull(((Long) row[3]))
+                        .setCountExtractShortImported(((Long) row[4]))
+                        .setCountExtractFullImported(((Long) row[5])))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ExtractFormImportedForManagerResponse> findAllExtractFormImportedByAccessPointForManager(Long projectId, Long accessPointId) {
+        List<Object[]> results = accessPointHistoryRepository.findAllExtractFormImportedByAccessPointForManager(projectId, accessPointId);
+
+        return results.stream()
+                .map(row -> new ExtractFormImportedForManagerResponse()
+                        .setAccessPointId(((Long) row[0]))
+                        .setFullName(((String) row[1]))
+                        .setCountExtractShort(((Long) row[2]))
+                        .setCountExtractFull(((Long) row[3]))
+                        .setCountExtractShortImported(((Long) row[4]))
+                        .setCountExtractFullImported(((Long) row[5])))
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.tst.models.entities.AccessPointHistory;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.User;
 import com.tst.models.responses.accessPoint.ImporterAccessPointHistoryResponse;
+import com.tst.models.responses.report.ExtractFormImportedForManagerResponse;
 import com.tst.models.responses.report.TotalAccessPointHistoryResponse;
 import com.tst.services.IGeneralService;
 
@@ -27,4 +28,10 @@ public interface IAccessPointHistoryService extends IGeneralService<AccessPointH
     List<TotalAccessPointHistoryResponse> findAllNotDoneByProject(Project project);
 
     List<TotalAccessPointHistoryResponse> findAllNotDoneByProjectAndAccessPoint(Project project, AccessPoint accessPoint);
+
+    List<ExtractFormImportedForManagerResponse> findAllExtractFormImportedForManager(Long projectId);
+
+    List<ExtractFormImportedForManagerResponse> findAllExtractFormImportedByAccessPointForManager(
+            Long projectId, Long accessPointId
+    );
 }
