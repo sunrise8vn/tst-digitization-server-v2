@@ -18,6 +18,8 @@ public interface MarryExtractShortRepository extends JpaRepository<MarryExtractS
 
     Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
+    Long countAllByProjectAndAccessPointIsNull(Project project);
+
     MarryExtractShort getByProjectNumberBookFile(ProjectNumberBookFile projectNumberBookFile);
 
     Optional<MarryExtractShort> findByIdAndStatus(Long id, EInputStatus status);

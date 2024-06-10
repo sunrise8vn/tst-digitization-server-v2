@@ -18,6 +18,8 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
 
     Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
+    Long countAllByProjectAndAccessPointIsNull(Project project);
+
     BirthExtractShort getByProjectNumberBookFile(ProjectNumberBookFile projectNumberBookFile);
 
     Optional<BirthExtractShort> findByIdAndStatus(Long id, EInputStatus status);

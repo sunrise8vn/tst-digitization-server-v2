@@ -29,6 +29,8 @@ public interface IProjectService extends IGeneralService<Project, Long> {
 
     TotalCountExtractFormNewResponse getTotalCountExtractFormNew(Project project, AccessPoint accessPoint);
 
+    CountExtractFormNotAssignResponse getCountExtractFormNotAssign(Project project);
+
     List<ExtractShortResponse> findAllExtractShortResponse(Project project, User importer);
 
     List<ExtractFullResponse> findAllExtractFullResponse(Project project, User importer);

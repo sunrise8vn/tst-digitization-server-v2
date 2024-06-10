@@ -18,6 +18,8 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
 
     Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
+    Long countAllByProjectAndAccessPointIsNull(Project project);
+
     Optional<ParentsChildrenExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
 

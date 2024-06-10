@@ -4,7 +4,6 @@ import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectNumberBookFile;
 import com.tst.models.entities.User;
-import com.tst.models.entities.extractFull.MarryExtractFull;
 import com.tst.models.entities.extractFull.WedlockExtractFull;
 import com.tst.models.enums.EInputStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +17,8 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
     Long countAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
 
     Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
+
+    Long countAllByProjectAndAccessPointIsNull(Project project);
 
     Optional<WedlockExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 

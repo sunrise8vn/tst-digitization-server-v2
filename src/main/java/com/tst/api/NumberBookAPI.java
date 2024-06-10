@@ -110,7 +110,7 @@ public class NumberBookAPI {
 
         if (projectNumberBookOptional.isEmpty()) {
             return ResponseEntity.ok().body(ResponseObject.builder()
-                    .message("Lấy thông tin sổ mới của dự án thành công")
+                    .message("Không có thông tin sổ mới tiếp theo")
                     .status(HttpStatus.NO_CONTENT.value())
                     .statusText(HttpStatus.NO_CONTENT)
                     .build());

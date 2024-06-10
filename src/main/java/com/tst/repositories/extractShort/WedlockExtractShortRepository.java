@@ -18,6 +18,8 @@ public interface WedlockExtractShortRepository extends JpaRepository<WedlockExtr
 
     Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
+    Long countAllByProjectAndAccessPointIsNull(Project project);
+
     WedlockExtractShort getByProjectNumberBookFile(ProjectNumberBookFile projectNumberBookFile);
 
     Optional<WedlockExtractShort> findByIdAndStatus(Long id, EInputStatus status);
