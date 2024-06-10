@@ -18,6 +18,8 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
 
     Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
+    Long countAllByProjectAndAccessPointIsNull(Project project);
+
     Optional<BirthExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
 

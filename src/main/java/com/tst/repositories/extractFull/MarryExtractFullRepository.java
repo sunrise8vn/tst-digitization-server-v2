@@ -18,6 +18,8 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
 
     Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
+    Long countAllByProjectAndAccessPointIsNull(Project project);
+
     Optional<MarryExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
 

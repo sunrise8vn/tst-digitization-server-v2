@@ -18,6 +18,8 @@ public interface ParentsChildrenExtractShortRepository extends JpaRepository<Par
 
     Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
+    Long countAllByProjectAndAccessPointIsNull(Project project);
+
     ParentsChildrenExtractShort getByProjectNumberBookFile(ProjectNumberBookFile projectNumberBookFile);
 
     Optional<ParentsChildrenExtractShort> findByIdAndStatus(Long id, EInputStatus status);

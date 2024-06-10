@@ -143,6 +143,32 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
+    public CountExtractFormNotAssignResponse getCountExtractFormNotAssign(Project project) {
+        Long countAllParentsAndChildrenShort = parentsChildrenExtractShortRepository.countAllByProjectAndAccessPointIsNull(project);
+        Long countAllParentsAndChildrenFull = parentsChildrenExtractFullRepository.countAllByProjectAndAccessPointIsNull(project);
+        Long countAllBirthShort = birthExtractShortRepository.countAllByProjectAndAccessPointIsNull(project);
+        Long countAllBirthFull = birthExtractFullRepository.countAllByProjectAndAccessPointIsNull(project);
+        Long countAllMarryShort = marryExtractShortRepository.countAllByProjectAndAccessPointIsNull(project);
+        Long countAllMarryFull = marryExtractFullRepository.countAllByProjectAndAccessPointIsNull(project);
+        Long countAllWedlockShort = wedlockExtractShortRepository.countAllByProjectAndAccessPointIsNull(project);
+        Long countAllWedlockFull = wedlockExtractFullRepository.countAllByProjectAndAccessPointIsNull(project);
+        Long countAllDeathShort = deathExtractShortRepository.countAllByProjectAndAccessPointIsNull(project);
+        Long countAllDeathFull = deathExtractFullRepository.countAllByProjectAndAccessPointIsNull(project);
+
+        return new CountExtractFormNotAssignResponse()
+                .setCountParentsChildrenShort(countAllParentsAndChildrenShort)
+                .setCountParentsChildrenFull(countAllParentsAndChildrenFull)
+                .setCountBirthShort(countAllBirthShort)
+                .setCountBirthFull(countAllBirthFull)
+                .setCountMarryShort(countAllMarryShort)
+                .setCountMarryFull(countAllMarryFull)
+                .setCountWedlockShort(countAllWedlockShort)
+                .setCountWedlockFull(countAllWedlockFull)
+                .setCountDeathShort(countAllDeathShort)
+                .setCountDeathFull(countAllDeathFull);
+    }
+
+    @Override
     public List<ExtractShortResponse> findAllExtractShortResponse(Project project, User importer) {
         List<ExtractShortResponse> extractShortResponses = new ArrayList<>();
 

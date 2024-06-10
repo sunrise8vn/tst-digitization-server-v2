@@ -18,6 +18,8 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
 
     Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
+    Long countAllByProjectAndAccessPointIsNull(Project project);
+
     DeathExtractShort getByProjectNumberBookFile(ProjectNumberBookFile projectNumberBookFile);
 
     Optional<DeathExtractShort> findByIdAndStatus(Long id, EInputStatus status);

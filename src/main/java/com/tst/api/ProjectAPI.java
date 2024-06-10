@@ -362,6 +362,26 @@ public class ProjectAPI {
                 .build());
     }
 
+    @GetMapping("/get-count-extract-form-not-assign/{projectId}")
+    public ResponseEntity<ResponseObject> getCountExtractFormNotAssign(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        CountExtractFormNotAssignResponse countExtractFormNotAssignResponse = projectService.getCountExtractFormNotAssign(project);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy số lượng biểu mẫu chưa phân phối thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(countExtractFormNotAssignResponse)
+                .build());
+    }
+
     @PostMapping("/verify-project-by-user")
     public ResponseEntity<ResponseObject> verifyProjectByUser(
             @Validated @RequestBody ProjectDTO projectDTO,

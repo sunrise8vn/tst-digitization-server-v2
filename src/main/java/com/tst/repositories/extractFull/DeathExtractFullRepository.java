@@ -18,6 +18,8 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
 
     Long countAllByAccessPointAndStatus(AccessPoint accessPoint, EInputStatus status);
 
+    Long countAllByProjectAndAccessPointIsNull(Project project);
+
     Optional<DeathExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
 
