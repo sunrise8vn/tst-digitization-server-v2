@@ -1,5 +1,6 @@
 package com.tst.services.projectUser;
 
+import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectUser;
 import com.tst.models.entities.User;
@@ -17,5 +18,7 @@ public interface IProjectUserService extends IGeneralService<ProjectUser, Long> 
     List<ProjectResponse> findAllProjectResponseByUser(User user);
 
     List<UserAssignResponse> findAllByProject(Project project);
+
+    List<UserAssignResponse> findAllByProjectAndAccessPoint(Project project, AccessPoint accessPoint);
 
 }

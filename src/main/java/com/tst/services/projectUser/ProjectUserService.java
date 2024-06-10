@@ -1,5 +1,6 @@
 package com.tst.services.projectUser;
 
+import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectUser;
 import com.tst.models.entities.User;
@@ -37,6 +38,11 @@ public class ProjectUserService implements IProjectUserService {
     @Override
     public List<UserAssignResponse> findAllByProject(Project project) {
         return projectUserRepository.findAllByProject(project);
+    }
+
+    @Override
+    public List<UserAssignResponse> findAllByProjectAndAccessPoint(Project project, AccessPoint accessPoint) {
+        return projectUserRepository.findAllByProjectAndAccessPoint(project, accessPoint);
     }
 
     @Override

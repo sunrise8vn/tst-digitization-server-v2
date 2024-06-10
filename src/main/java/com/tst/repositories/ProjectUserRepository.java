@@ -1,5 +1,6 @@
 package com.tst.repositories;
 
+import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectUser;
 import com.tst.models.entities.User;
@@ -42,4 +43,25 @@ public interface ProjectUserRepository extends JpaRepository<ProjectUser, Long> 
             "ON ui.user = us"
     )
     List<UserAssignResponse> findAllByProject(Project project);
+
+
+    @Query("SELECT NEW com.tst.models.responses.user.UserAssignResponse (" +
+                "us.id, " +
+                "us.username, " +
+                "CASE WHEN ui.fullName IS NULL THEN us.username ELSE ui.fullName END" +
+            ") " +
+            "FROM AccessPointHistory AS aph " +
+            "JOIN User AS us " +
+            "ON aph.assignees = us " +
+            "AND aph.project = :project " +
+            "AND aph.accessPoint = :accessPoint " +
+            "JOIN AccessPoint AS ap " +
+            "ON aph.accessPoint = ap " +
+            "LEFT JOIN UserInfo AS ui " +
+            "ON ui.user = us"
+    )
+    List<UserAssignResponse> findAllByProjectAndAccessPoint(Project project, AccessPoint accessPoint);
+
+
+
 }
