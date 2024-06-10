@@ -2,6 +2,7 @@ package com.tst.api;
 
 import com.tst.components.LocalizationUtils;
 import com.tst.exceptions.DataInputException;
+import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectUser;
 import com.tst.models.entities.User;
@@ -11,6 +12,7 @@ import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.user.UserAssignResponse;
 import com.tst.models.responses.user.UserAssignWithRemainingTotalResponse;
 import com.tst.models.responses.user.UserResponse;
+import com.tst.services.accessPoint.IAccessPointService;
 import com.tst.services.project.IProjectService;
 import com.tst.services.projectUser.IProjectUserService;
 import com.tst.services.user.IUserService;
@@ -37,6 +39,7 @@ public class UserAPI {
     private final IUserService userService;
     private final IProjectService projectService;
     private final IProjectUserService projectUserService;
+    private final IAccessPointService accessPointService;
 
 
     @GetMapping("")
@@ -132,6 +135,33 @@ public class UserAPI {
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .data(userAssignWithRemainingTotal)
+                .build());
+    }
+
+    @GetMapping("/get-all-by-project-and-access-point/{projectId}/{accessPointId}")
+    public ResponseEntity<ResponseObject> getAllUserByProject(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String accessPointId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        AccessPoint accessPoint = accessPointService.findById(
+                Long.parseLong(accessPointId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("ID điểm truy cập không tồn tại");
+        });
+
+        List<UserAssignResponse> users = projectUserService.findAllByProjectAndAccessPoint(project, accessPoint);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách người nhập liệu theo mốc phân phối thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(users)
                 .build());
     }
 }
