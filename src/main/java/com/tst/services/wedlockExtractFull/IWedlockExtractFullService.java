@@ -2,6 +2,7 @@ package com.tst.services.wedlockExtractFull;
 
 import com.tst.models.dtos.extractFull.WedlockExtractFullDTO;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.WedlockExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.services.IGeneralService;
@@ -30,8 +31,12 @@ public interface IWedlockExtractFullService extends IGeneralService<WedlockExtra
             WedlockExtractFullDTO wedlockExtractFullDTO
     );
 
-    void verifyCheckedMatch(WedlockExtractFull wedlockExtractFull);
+    void verifyComparedMatch(WedlockExtractFull wedlockExtractFull, User compareChecker);
 
-    void verifyCheckedNotMatch(WedlockExtractFull wedlockExtractFull);
+    void verifyComparedNotMatch(WedlockExtractFull wedlockExtractFull, User compareChecker);
+
+    void verifyCheckedComparedMatch(WedlockExtractFull wedlockExtractFull, User finalChecker);
+
+    void verifyCheckedComparedNotMatch(WedlockExtractFull wedlockExtractFull, User finalChecker);
 
 }

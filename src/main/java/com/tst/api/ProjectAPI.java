@@ -349,7 +349,7 @@ public class ProjectAPI {
             throw new DataInputException("Dự án không tồn tại");
         });
 
-        List<ExtractFormMatchComparedResponse> extractFormMatchComparedResponses = projectService.findAllByProjectAndStatus(
+        List<ExtractFormMatchComparedResponse> extractFormMatchComparedResponses = projectService.findAllExtractFormMatchCompared(
                 project,
                 EInputStatus.MATCHING
         );
@@ -359,6 +359,29 @@ public class ProjectAPI {
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .data(extractFormMatchComparedResponses)
+                .build());
+    }
+
+    @GetMapping("/get-all-extract-form-checked-matching/{projectId}")
+    public ResponseEntity<ResponseObject> getAllExtractFormCheckedMatching(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        List<ExtractFormCheckedMatchingResponse> extractFormCheckedMatchingResponses = projectService.findAllExtractFormCheckedMatching(
+                project,
+                EInputStatus.CHECKED_MATCHING
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách biểu mẫu đã kiểm tra so sánh khớp thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(extractFormCheckedMatchingResponses)
                 .build());
     }
 

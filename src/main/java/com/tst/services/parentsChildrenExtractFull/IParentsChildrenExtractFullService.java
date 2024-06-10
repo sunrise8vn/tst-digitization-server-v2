@@ -2,6 +2,7 @@ package com.tst.services.parentsChildrenExtractFull;
 
 import com.tst.models.dtos.extractFull.ParentsChildrenExtractFullDTO;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.ParentsChildrenExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.services.IGeneralService;
@@ -30,8 +31,12 @@ public interface IParentsChildrenExtractFullService extends IGeneralService<Pare
             ParentsChildrenExtractFullDTO parentsChildrenExtractFullDTO
     );
 
-    void verifyCheckedMatch(ParentsChildrenExtractFull parentsChildrenExtractFull);
+    void verifyComparedMatch(ParentsChildrenExtractFull parentsChildrenExtractFull, User compareChecker);
 
-    void verifyCheckedNotMatch(ParentsChildrenExtractFull parentsChildrenExtractFull);
+    void verifyComparedNotMatch(ParentsChildrenExtractFull parentsChildrenExtractFull, User compareChecker);
+
+    void verifyCheckedComparedMatch(ParentsChildrenExtractFull parentsChildrenExtractFull, User finalChecker);
+
+    void verifyCheckedComparedNotMatch(ParentsChildrenExtractFull parentsChildrenExtractFull, User finalChecker);
 
 }

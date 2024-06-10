@@ -107,7 +107,10 @@ public interface IProjectService extends IGeneralService<Project, Long> {
 
     List<ReportImporterAcceptedResponse> findAllAcceptedForImporter(Long projectId, Long accessPointId, String userId);
 
-    List<ExtractFormMatchComparedResponse> findAllByProjectAndStatus(Project project, EInputStatus status);
+    List<ExtractFormMatchComparedResponse> findAllExtractFormMatchCompared(Project project, EInputStatus status);
+
+    List<ExtractFormCheckedMatchingResponse> findAllExtractFormCheckedMatching(Project project, EInputStatus status);
+
 
     void updatePaperCountSize(Project project);
 

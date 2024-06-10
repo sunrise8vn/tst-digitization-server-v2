@@ -2,6 +2,7 @@ package com.tst.services.deathExtractFull;
 
 import com.tst.models.dtos.extractFull.DeathExtractFullDTO;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.DeathExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.services.IGeneralService;
@@ -30,8 +31,12 @@ public interface IDeathExtractFullService extends IGeneralService<DeathExtractFu
             DeathExtractFullDTO deathExtractFullDTO
     );
 
-    void verifyCheckedMatch(DeathExtractFull deathExtractFull);
+    void verifyComparedMatch(DeathExtractFull deathExtractFull, User compareChecker);
 
-    void verifyCheckedNotMatch(DeathExtractFull deathExtractFull);
+    void verifyComparedNotMatch(DeathExtractFull deathExtractFull, User compareChecker);
+
+    void verifyCheckedComparedMatch(DeathExtractFull deathExtractFull, User finalChecker);
+
+    void verifyCheckedComparedNotMatch(DeathExtractFull deathExtractFull, User finalChecker);
 
 }

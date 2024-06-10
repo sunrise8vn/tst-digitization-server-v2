@@ -3,6 +3,7 @@ package com.tst.services.marryExtractFull;
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.MarryExtractFullDTO;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.MarryExtractFull;
 import com.tst.models.entities.extractShort.MarryExtractShort;
 import com.tst.models.enums.EInputStatus;
@@ -15,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
@@ -122,27 +124,66 @@ public class MarryExtractFullService implements IMarryExtractFullService {
     }
 
     @Override
-    @Transactional
-    public void verifyCheckedMatch(MarryExtractFull marryExtractFull) {
+    public void verifyComparedMatch(MarryExtractFull marryExtractFull, User compareChecker) {
         marryExtractFull.setStatus(EInputStatus.CHECKED_MATCHING);
+        marryExtractFull.setCompareCheckedAt(LocalDateTime.now());
+        marryExtractFull.setCompareChecker(compareChecker);
         marryExtractFullRepository.save(marryExtractFull);
 
         MarryExtractShort marryExtractShort = marryExtractShortRepository.getByProjectNumberBookFile(
                 marryExtractFull.getProjectNumberBookFile()
         );
         marryExtractShort.setStatus(EInputStatus.CHECKED_MATCHING);
+        marryExtractShort.setCompareCheckedAt(LocalDateTime.now());
+        marryExtractShort.setCompareChecker(compareChecker);
         marryExtractShortRepository.save(marryExtractShort);
     }
 
     @Override
-    public void verifyCheckedNotMatch(MarryExtractFull marryExtractFull) {
+    public void verifyComparedNotMatch(MarryExtractFull marryExtractFull, User compareChecker) {
         marryExtractFull.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        marryExtractFull.setCompareCheckedAt(LocalDateTime.now());
+        marryExtractFull.setCompareChecker(compareChecker);
         marryExtractFullRepository.save(marryExtractFull);
 
         MarryExtractShort marryExtractShort = marryExtractShortRepository.getByProjectNumberBookFile(
                 marryExtractFull.getProjectNumberBookFile()
         );
         marryExtractShort.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        marryExtractShort.setCompareCheckedAt(LocalDateTime.now());
+        marryExtractShort.setCompareChecker(compareChecker);
+        marryExtractShortRepository.save(marryExtractShort);
+    }
+
+    @Override
+    public void verifyCheckedComparedMatch(MarryExtractFull marryExtractFull, User finalChecker) {
+        marryExtractFull.setStatus(EInputStatus.FINAL_MATCHING);
+        marryExtractFull.setFinalCheckedAt(LocalDateTime.now());
+        marryExtractFull.setFinalChecker(finalChecker);
+        marryExtractFullRepository.save(marryExtractFull);
+
+        MarryExtractShort marryExtractShort = marryExtractShortRepository.getByProjectNumberBookFile(
+                marryExtractFull.getProjectNumberBookFile()
+        );
+        marryExtractShort.setStatus(EInputStatus.FINAL_MATCHING);
+        marryExtractShort.setFinalCheckedAt(LocalDateTime.now());
+        marryExtractShort.setFinalChecker(finalChecker);
+        marryExtractShortRepository.save(marryExtractShort);
+    }
+
+    @Override
+    public void verifyCheckedComparedNotMatch(MarryExtractFull marryExtractFull, User finalChecker) {
+        marryExtractFull.setStatus(EInputStatus.FINAL_NOT_MATCHING);
+        marryExtractFull.setFinalCheckedAt(LocalDateTime.now());
+        marryExtractFull.setFinalChecker(finalChecker);
+        marryExtractFullRepository.save(marryExtractFull);
+
+        MarryExtractShort marryExtractShort = marryExtractShortRepository.getByProjectNumberBookFile(
+                marryExtractFull.getProjectNumberBookFile()
+        );
+        marryExtractShort.setStatus(EInputStatus.FINAL_NOT_MATCHING);
+        marryExtractShort.setFinalCheckedAt(LocalDateTime.now());
+        marryExtractShort.setFinalChecker(finalChecker);
         marryExtractShortRepository.save(marryExtractShort);
     }
 

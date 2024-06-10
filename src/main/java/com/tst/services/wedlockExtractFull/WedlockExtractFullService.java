@@ -3,6 +3,7 @@ package com.tst.services.wedlockExtractFull;
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.WedlockExtractFullDTO;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.WedlockExtractFull;
 import com.tst.models.entities.extractShort.WedlockExtractShort;
 import com.tst.models.enums.EInputStatus;
@@ -14,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
@@ -115,27 +117,66 @@ public class WedlockExtractFullService implements IWedlockExtractFullService {
     }
 
     @Override
-    @Transactional
-    public void verifyCheckedMatch(WedlockExtractFull wedlockExtractFull) {
+    public void verifyComparedMatch(WedlockExtractFull wedlockExtractFull, User compareChecker) {
         wedlockExtractFull.setStatus(EInputStatus.CHECKED_MATCHING);
+        wedlockExtractFull.setCompareCheckedAt(LocalDateTime.now());
+        wedlockExtractFull.setCompareChecker(compareChecker);
         wedlockExtractFullRepository.save(wedlockExtractFull);
 
         WedlockExtractShort wedlockExtractShort = wedlockExtractShortRepository.getByProjectNumberBookFile(
                 wedlockExtractFull.getProjectNumberBookFile()
         );
         wedlockExtractShort.setStatus(EInputStatus.CHECKED_MATCHING);
+        wedlockExtractShort.setCompareCheckedAt(LocalDateTime.now());
+        wedlockExtractShort.setCompareChecker(compareChecker);
         wedlockExtractShortRepository.save(wedlockExtractShort);
     }
 
     @Override
-    public void verifyCheckedNotMatch(WedlockExtractFull wedlockExtractFull) {
+    public void verifyComparedNotMatch(WedlockExtractFull wedlockExtractFull, User compareChecker) {
         wedlockExtractFull.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        wedlockExtractFull.setCompareCheckedAt(LocalDateTime.now());
+        wedlockExtractFull.setCompareChecker(compareChecker);
         wedlockExtractFullRepository.save(wedlockExtractFull);
 
         WedlockExtractShort wedlockExtractShort = wedlockExtractShortRepository.getByProjectNumberBookFile(
                 wedlockExtractFull.getProjectNumberBookFile()
         );
         wedlockExtractShort.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        wedlockExtractShort.setCompareCheckedAt(LocalDateTime.now());
+        wedlockExtractShort.setCompareChecker(compareChecker);
+        wedlockExtractShortRepository.save(wedlockExtractShort);
+    }
+
+    @Override
+    public void verifyCheckedComparedMatch(WedlockExtractFull wedlockExtractFull, User finalChecker) {
+        wedlockExtractFull.setStatus(EInputStatus.FINAL_MATCHING);
+        wedlockExtractFull.setFinalCheckedAt(LocalDateTime.now());
+        wedlockExtractFull.setFinalChecker(finalChecker);
+        wedlockExtractFullRepository.save(wedlockExtractFull);
+
+        WedlockExtractShort wedlockExtractShort = wedlockExtractShortRepository.getByProjectNumberBookFile(
+                wedlockExtractFull.getProjectNumberBookFile()
+        );
+        wedlockExtractShort.setStatus(EInputStatus.FINAL_MATCHING);
+        wedlockExtractShort.setFinalCheckedAt(LocalDateTime.now());
+        wedlockExtractShort.setFinalChecker(finalChecker);
+        wedlockExtractShortRepository.save(wedlockExtractShort);
+    }
+
+    @Override
+    public void verifyCheckedComparedNotMatch(WedlockExtractFull wedlockExtractFull, User finalChecker) {
+        wedlockExtractFull.setStatus(EInputStatus.FINAL_NOT_MATCHING);
+        wedlockExtractFull.setFinalCheckedAt(LocalDateTime.now());
+        wedlockExtractFull.setFinalChecker(finalChecker);
+        wedlockExtractFullRepository.save(wedlockExtractFull);
+
+        WedlockExtractShort wedlockExtractShort = wedlockExtractShortRepository.getByProjectNumberBookFile(
+                wedlockExtractFull.getProjectNumberBookFile()
+        );
+        wedlockExtractShort.setStatus(EInputStatus.FINAL_NOT_MATCHING);
+        wedlockExtractShort.setFinalCheckedAt(LocalDateTime.now());
+        wedlockExtractShort.setFinalChecker(finalChecker);
         wedlockExtractShortRepository.save(wedlockExtractShort);
     }
 

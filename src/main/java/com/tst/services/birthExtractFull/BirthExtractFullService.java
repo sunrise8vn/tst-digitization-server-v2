@@ -3,7 +3,9 @@ package com.tst.services.birthExtractFull;
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.BirthExtractFullDTO;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.BirthExtractFull;
+import com.tst.models.entities.extractFull.ParentsChildrenExtractFull;
 import com.tst.models.entities.extractShort.BirthExtractShort;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
@@ -15,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
@@ -136,27 +139,66 @@ public class BirthExtractFullService implements IBirthExtractFullService {
     }
 
     @Override
-    @Transactional
-    public void verifyCheckedMatch(BirthExtractFull birthExtractFull) {
+    public void verifyComparedMatch(BirthExtractFull birthExtractFull, User compareChecker) {
         birthExtractFull.setStatus(EInputStatus.CHECKED_MATCHING);
+        birthExtractFull.setCompareCheckedAt(LocalDateTime.now());
+        birthExtractFull.setCompareChecker(compareChecker);
         birthExtractFullRepository.save(birthExtractFull);
 
         BirthExtractShort birthExtractShort = birthExtractShortRepository.getByProjectNumberBookFile(
                 birthExtractFull.getProjectNumberBookFile()
         );
         birthExtractShort.setStatus(EInputStatus.CHECKED_MATCHING);
+        birthExtractShort.setCompareCheckedAt(LocalDateTime.now());
+        birthExtractShort.setCompareChecker(compareChecker);
         birthExtractShortRepository.save(birthExtractShort);
     }
 
     @Override
-    public void verifyCheckedNotMatch(BirthExtractFull birthExtractFull) {
+    public void verifyComparedNotMatch(BirthExtractFull birthExtractFull, User compareChecker) {
         birthExtractFull.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        birthExtractFull.setCompareCheckedAt(LocalDateTime.now());
+        birthExtractFull.setCompareChecker(compareChecker);
         birthExtractFullRepository.save(birthExtractFull);
 
         BirthExtractShort birthExtractShort = birthExtractShortRepository.getByProjectNumberBookFile(
                 birthExtractFull.getProjectNumberBookFile()
         );
         birthExtractShort.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        birthExtractShort.setCompareCheckedAt(LocalDateTime.now());
+        birthExtractShort.setCompareChecker(compareChecker);
+        birthExtractShortRepository.save(birthExtractShort);
+    }
+
+    @Override
+    public void verifyCheckedComparedMatch(BirthExtractFull birthExtractFull, User finalChecker) {
+        birthExtractFull.setStatus(EInputStatus.FINAL_MATCHING);
+        birthExtractFull.setFinalCheckedAt(LocalDateTime.now());
+        birthExtractFull.setFinalChecker(finalChecker);
+        birthExtractFullRepository.save(birthExtractFull);
+
+        BirthExtractShort birthExtractShort = birthExtractShortRepository.getByProjectNumberBookFile(
+                birthExtractFull.getProjectNumberBookFile()
+        );
+        birthExtractShort.setStatus(EInputStatus.FINAL_MATCHING);
+        birthExtractShort.setFinalCheckedAt(LocalDateTime.now());
+        birthExtractShort.setFinalChecker(finalChecker);
+        birthExtractShortRepository.save(birthExtractShort);
+    }
+
+    @Override
+    public void verifyCheckedComparedNotMatch(BirthExtractFull birthExtractFull, User finalChecker) {
+        birthExtractFull.setStatus(EInputStatus.FINAL_NOT_MATCHING);
+        birthExtractFull.setFinalCheckedAt(LocalDateTime.now());
+        birthExtractFull.setFinalChecker(finalChecker);
+        birthExtractFullRepository.save(birthExtractFull);
+
+        BirthExtractShort birthExtractShort = birthExtractShortRepository.getByProjectNumberBookFile(
+                birthExtractFull.getProjectNumberBookFile()
+        );
+        birthExtractShort.setStatus(EInputStatus.FINAL_NOT_MATCHING);
+        birthExtractShort.setFinalCheckedAt(LocalDateTime.now());
+        birthExtractShort.setFinalChecker(finalChecker);
         birthExtractShortRepository.save(birthExtractShort);
     }
 
