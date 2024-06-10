@@ -128,4 +128,12 @@ public interface AccessPointHistoryRepository extends JpaRepository<AccessPointH
     )
     void minusCountExtractFullError(AccessPoint accessPoint, User user);
 
+
+
+    @Query(value = "CALL sp_find_all_extract_form_imported_for_manager(:projectId)", nativeQuery = true)
+    List<Object[]> findAllExtractFormImportedForManager(Long projectId);
+
+    @Query(value = "CALL sp_find_all_extract_form_imported_by_access_point_for_manager(:projectId, :accessPointId)", nativeQuery = true)
+    List<Object[]> findAllExtractFormImportedByAccessPointForManager(Long projectId, Long accessPointId);
+
 }

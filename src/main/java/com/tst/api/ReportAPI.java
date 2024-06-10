@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -216,6 +217,46 @@ public class ReportAPI {
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .data(accessPointHistoryResponses)
+                .build());
+    }
+
+    @GetMapping("/get-all-extract-form-imported-for-manager/{projectId}/{accessPointId}")
+    public ResponseEntity<ResponseObject> getAllExtractFormImportedForManager(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID đợt phân phối phải là một số") String accessPointId
+    ) {
+
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        List<ExtractFormImportedForManagerResponse> extractFormImportedForManagerResponses;
+
+        if (Long.parseLong(accessPointId) == 0) {
+            extractFormImportedForManagerResponses = accessPointHistoryService.findAllExtractFormImportedForManager(
+                    project.getId()
+            );
+        }
+        else {
+            AccessPoint accessPoint = accessPointService.findById(
+                    Long.parseLong(accessPointId)
+            ).orElseThrow(() -> {
+                throw new DataInputException("Đợt phân phối không tồn tại");
+            });
+
+            extractFormImportedForManagerResponses = accessPointHistoryService.findAllExtractFormImportedByAccessPointForManager(
+                    project.getId(),
+                    accessPoint.getId()
+            );
+        }
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy dữ liệu tổng số biểu mẫu đã nhập thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(extractFormImportedForManagerResponses)
                 .build());
     }
 
