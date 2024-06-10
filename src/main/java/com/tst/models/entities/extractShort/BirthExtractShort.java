@@ -160,19 +160,26 @@ public class BirthExtractShort {
     @JoinColumn(name = "importer")
     private User importer;
 
-    @Column(name = "checked_at")
-    private LocalDateTime checkedAt;
+    @Column(name = "compare_checked_at")
+    private LocalDateTime compareCheckedAt;
 
     @ManyToOne
-    @JoinColumn(name = "checker")
-    private User checker;
+    @JoinColumn(name = "compare_checker")
+    private User compareChecker;
 
-    @Column(name = "accepted_at")
-    private LocalDateTime acceptedAt;
+    @Column(name = "final_checked_at")
+    private LocalDateTime finalCheckedAt;
 
     @ManyToOne
-    @JoinColumn(name = "accepter")
-    private User accepter;
+    @JoinColumn(name = "final_checker")
+    private User finalChecker;
+
+    @Column(name = "released_at")
+    private LocalDateTime releasedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "releaser")
+    private User releaser;
 
     @ManyToOne
     @JoinColumn(name = "project_number_book_file_id", nullable = false)

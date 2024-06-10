@@ -3,6 +3,7 @@ package com.tst.services.deathExtractFull;
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.DeathExtractFullDTO;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.DeathExtractFull;
 import com.tst.models.entities.extractShort.DeathExtractShort;
 import com.tst.models.enums.EInputStatus;
@@ -15,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
@@ -124,27 +126,66 @@ public class DeathExtractFullService implements IDeathExtractFullService {
     }
 
     @Override
-    @Transactional
-    public void verifyCheckedMatch(DeathExtractFull deathExtractFull) {
+    public void verifyComparedMatch(DeathExtractFull deathExtractFull, User compareChecker) {
         deathExtractFull.setStatus(EInputStatus.CHECKED_MATCHING);
+        deathExtractFull.setCompareCheckedAt(LocalDateTime.now());
+        deathExtractFull.setCompareChecker(compareChecker);
         deathExtractFullRepository.save(deathExtractFull);
 
         DeathExtractShort deathExtractShort = deathExtractShortRepository.getByProjectNumberBookFile(
                 deathExtractFull.getProjectNumberBookFile()
         );
         deathExtractShort.setStatus(EInputStatus.CHECKED_MATCHING);
+        deathExtractShort.setCompareCheckedAt(LocalDateTime.now());
+        deathExtractShort.setCompareChecker(compareChecker);
         deathExtractShortRepository.save(deathExtractShort);
     }
 
     @Override
-    public void verifyCheckedNotMatch(DeathExtractFull deathExtractFull) {
+    public void verifyComparedNotMatch(DeathExtractFull deathExtractFull, User compareChecker) {
         deathExtractFull.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        deathExtractFull.setCompareCheckedAt(LocalDateTime.now());
+        deathExtractFull.setCompareChecker(compareChecker);
         deathExtractFullRepository.save(deathExtractFull);
 
         DeathExtractShort deathExtractShort = deathExtractShortRepository.getByProjectNumberBookFile(
                 deathExtractFull.getProjectNumberBookFile()
         );
         deathExtractShort.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        deathExtractShort.setCompareCheckedAt(LocalDateTime.now());
+        deathExtractShort.setCompareChecker(compareChecker);
+        deathExtractShortRepository.save(deathExtractShort);
+    }
+
+    @Override
+    public void verifyCheckedComparedMatch(DeathExtractFull deathExtractFull, User finalChecker) {
+        deathExtractFull.setStatus(EInputStatus.FINAL_MATCHING);
+        deathExtractFull.setFinalCheckedAt(LocalDateTime.now());
+        deathExtractFull.setFinalChecker(finalChecker);
+        deathExtractFullRepository.save(deathExtractFull);
+
+        DeathExtractShort deathExtractShort = deathExtractShortRepository.getByProjectNumberBookFile(
+                deathExtractFull.getProjectNumberBookFile()
+        );
+        deathExtractShort.setStatus(EInputStatus.FINAL_MATCHING);
+        deathExtractShort.setFinalCheckedAt(LocalDateTime.now());
+        deathExtractShort.setFinalChecker(finalChecker);
+        deathExtractShortRepository.save(deathExtractShort);
+    }
+
+    @Override
+    public void verifyCheckedComparedNotMatch(DeathExtractFull deathExtractFull, User finalChecker) {
+        deathExtractFull.setStatus(EInputStatus.FINAL_NOT_MATCHING);
+        deathExtractFull.setFinalCheckedAt(LocalDateTime.now());
+        deathExtractFull.setFinalChecker(finalChecker);
+        deathExtractFullRepository.save(deathExtractFull);
+
+        DeathExtractShort deathExtractShort = deathExtractShortRepository.getByProjectNumberBookFile(
+                deathExtractFull.getProjectNumberBookFile()
+        );
+        deathExtractShort.setStatus(EInputStatus.FINAL_NOT_MATCHING);
+        deathExtractShort.setFinalCheckedAt(LocalDateTime.now());
+        deathExtractShort.setFinalChecker(finalChecker);
         deathExtractShortRepository.save(deathExtractShort);
     }
 

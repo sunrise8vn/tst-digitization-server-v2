@@ -3,6 +3,7 @@ package com.tst.services.parentsChildrenExtractFull;
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.extractFull.ParentsChildrenExtractFullDTO;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.ParentsChildrenExtractFull;
 import com.tst.models.entities.extractShort.ParentsChildrenExtractShort;
 import com.tst.models.enums.EInputStatus;
@@ -15,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
@@ -136,27 +138,67 @@ public class ParentsChildrenExtractFullService implements IParentsChildrenExtrac
     }
 
     @Override
-    @Transactional
-    public void verifyCheckedMatch(ParentsChildrenExtractFull parentsChildrenExtractFull) {
+    public void verifyComparedMatch(ParentsChildrenExtractFull parentsChildrenExtractFull, User compareChecker) {
         parentsChildrenExtractFull.setStatus(EInputStatus.CHECKED_MATCHING);
+        parentsChildrenExtractFull.setCompareCheckedAt(LocalDateTime.now());
+        parentsChildrenExtractFull.setCompareChecker(compareChecker);
         parentsChildrenExtractFullRepository.save(parentsChildrenExtractFull);
 
         ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortRepository.getByProjectNumberBookFile(
                 parentsChildrenExtractFull.getProjectNumberBookFile()
         );
         parentsChildrenExtractShort.setStatus(EInputStatus.CHECKED_MATCHING);
+        parentsChildrenExtractShort.setCompareCheckedAt(LocalDateTime.now());
+        parentsChildrenExtractShort.setCompareChecker(compareChecker);
         parentsChildrenExtractShortRepository.save(parentsChildrenExtractShort);
     }
 
     @Override
-    public void verifyCheckedNotMatch(ParentsChildrenExtractFull parentsChildrenExtractFull) {
+    public void verifyComparedNotMatch(ParentsChildrenExtractFull parentsChildrenExtractFull, User compareChecker) {
         parentsChildrenExtractFull.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        parentsChildrenExtractFull.setCompareCheckedAt(LocalDateTime.now());
+        parentsChildrenExtractFull.setCompareChecker(compareChecker);
         parentsChildrenExtractFullRepository.save(parentsChildrenExtractFull);
 
         ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortRepository.getByProjectNumberBookFile(
                 parentsChildrenExtractFull.getProjectNumberBookFile()
         );
         parentsChildrenExtractShort.setStatus(EInputStatus.CHECKED_NOT_MATCHING);
+        parentsChildrenExtractShort.setCompareCheckedAt(LocalDateTime.now());
+        parentsChildrenExtractShort.setCompareChecker(compareChecker);
+        parentsChildrenExtractShortRepository.save(parentsChildrenExtractShort);
+    }
+
+    @Override
+    @Transactional
+    public void verifyCheckedComparedMatch(ParentsChildrenExtractFull parentsChildrenExtractFull, User finalChecker) {
+        parentsChildrenExtractFull.setStatus(EInputStatus.FINAL_MATCHING);
+        parentsChildrenExtractFull.setFinalCheckedAt(LocalDateTime.now());
+        parentsChildrenExtractFull.setFinalChecker(finalChecker);
+        parentsChildrenExtractFullRepository.save(parentsChildrenExtractFull);
+
+        ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortRepository.getByProjectNumberBookFile(
+                parentsChildrenExtractFull.getProjectNumberBookFile()
+        );
+        parentsChildrenExtractShort.setStatus(EInputStatus.FINAL_MATCHING);
+        parentsChildrenExtractShort.setFinalCheckedAt(LocalDateTime.now());
+        parentsChildrenExtractShort.setFinalChecker(finalChecker);
+        parentsChildrenExtractShortRepository.save(parentsChildrenExtractShort);
+    }
+
+    @Override
+    public void verifyCheckedComparedNotMatch(ParentsChildrenExtractFull parentsChildrenExtractFull, User finalChecker) {
+        parentsChildrenExtractFull.setStatus(EInputStatus.FINAL_NOT_MATCHING);
+        parentsChildrenExtractFull.setFinalCheckedAt(LocalDateTime.now());
+        parentsChildrenExtractFull.setFinalChecker(finalChecker);
+        parentsChildrenExtractFullRepository.save(parentsChildrenExtractFull);
+
+        ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortRepository.getByProjectNumberBookFile(
+                parentsChildrenExtractFull.getProjectNumberBookFile()
+        );
+        parentsChildrenExtractShort.setStatus(EInputStatus.FINAL_NOT_MATCHING);
+        parentsChildrenExtractShort.setFinalCheckedAt(LocalDateTime.now());
+        parentsChildrenExtractShort.setFinalChecker(finalChecker);
         parentsChildrenExtractShortRepository.save(parentsChildrenExtractShort);
     }
 

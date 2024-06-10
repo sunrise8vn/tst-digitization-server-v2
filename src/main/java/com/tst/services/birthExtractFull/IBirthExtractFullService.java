@@ -2,6 +2,7 @@ package com.tst.services.birthExtractFull;
 
 import com.tst.models.dtos.extractFull.BirthExtractFullDTO;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.User;
 import com.tst.models.entities.extractFull.BirthExtractFull;
 import com.tst.models.enums.EInputStatus;
 import com.tst.services.IGeneralService;
@@ -30,8 +31,12 @@ public interface IBirthExtractFullService extends IGeneralService<BirthExtractFu
             BirthExtractFullDTO birthExtractFullDTO
     );
 
-    void verifyCheckedMatch(BirthExtractFull birthExtractFull);
+    void verifyComparedMatch(BirthExtractFull parentsChildrenExtractFull, User compareChecker);
 
-    void verifyCheckedNotMatch(BirthExtractFull birthExtractFull);
+    void verifyComparedNotMatch(BirthExtractFull parentsChildrenExtractFull, User compareChecker);
+
+    void verifyCheckedComparedMatch(BirthExtractFull parentsChildrenExtractFull, User finalChecker);
+
+    void verifyCheckedComparedNotMatch(BirthExtractFull parentsChildrenExtractFull, User finalChecker);
 
 }
