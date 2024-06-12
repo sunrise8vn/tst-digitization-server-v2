@@ -20,6 +20,8 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
 
     Long countAllByProjectAndAccessPointIsNull(Project project);
 
+    Long countAllByProjectAndStatus(Project project, EInputStatus status);
+
     Optional<ParentsChildrenExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
 
@@ -65,6 +67,8 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
     List<ParentsChildrenExtractFull> findByProjectAndImporterIsNull(Project project);
 
     List<ParentsChildrenExtractFull> findAllByProjectAndAccessPointIsNull(Project project);
+
+    List<ParentsChildrenExtractFull> findAllByProjectAndStatus(Project project, EInputStatus status);
 
 
     @Query("SELECT pcef " +
@@ -125,13 +129,5 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
             "ORDER BY pcef.id DESC"
     )
     List<ParentsChildrenExtractFull> findAllParentsChildrenSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
-
-
-    @Query("SELECT pcef " +
-            "FROM ParentsChildrenExtractFull AS pcef " +
-            "WHERE pcef.project = :project " +
-            "AND pcef.status = :status"
-    )
-    List<ParentsChildrenExtractFull> findAllByProjectAndStatus(Project project, EInputStatus status);
 
 }

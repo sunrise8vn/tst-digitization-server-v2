@@ -20,6 +20,8 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
 
     Long countAllByProjectAndAccessPointIsNull(Project project);
 
+    Long countAllByProjectAndStatus(Project project, EInputStatus status);
+
     Optional<WedlockExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
 
@@ -66,6 +68,8 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
     List<WedlockExtractFull> findAllByProjectAndImporterIsNull(Project project);
 
     List<WedlockExtractFull> findAllByProjectAndAccessPointIsNull(Project project);
+
+    List<WedlockExtractFull> findAllByProjectAndStatus(Project project, EInputStatus status);
 
 
     @Query("SELECT wef " +
@@ -125,13 +129,5 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
             "ORDER BY wef.id DESC"
     )
     List<WedlockExtractFull> findAllWedlockSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
-
-
-    @Query("SELECT wef " +
-            "FROM WedlockExtractFull AS wef " +
-            "WHERE wef.project = :project " +
-            "AND wef.status = :status"
-    )
-    List<WedlockExtractFull> findAllByProjectAndStatus(Project project, EInputStatus status);
 
 }

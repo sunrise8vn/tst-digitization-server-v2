@@ -20,6 +20,8 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
 
     Long countAllByProjectAndAccessPointIsNull(Project project);
 
+    Long countAllByProjectAndStatus(Project project, EInputStatus status);
+
     Optional<MarryExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
 
@@ -66,6 +68,8 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
     List<MarryExtractFull> findAllByProjectAndImporterIsNull(Project project);
 
     List<MarryExtractFull> findAllByProjectAndAccessPointIsNull(Project project);
+
+    List<MarryExtractFull> findAllByProjectAndStatus(Project project, EInputStatus status);
 
 
     @Query("SELECT mef " +
@@ -125,13 +129,5 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
             "ORDER BY mef.id DESC"
     )
     List<MarryExtractFull> findAllMarrySameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
-
-
-    @Query("SELECT mef " +
-            "FROM MarryExtractFull AS mef " +
-            "WHERE mef.project = :project " +
-            "AND mef.status = :status"
-    )
-    List<MarryExtractFull> findAllByProjectAndStatus(Project project, EInputStatus status);
 
 }
