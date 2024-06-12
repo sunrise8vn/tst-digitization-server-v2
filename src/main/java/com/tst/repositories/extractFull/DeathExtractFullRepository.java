@@ -65,6 +65,9 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
 
     List<DeathExtractFull> findAllByProjectAndImporterIsNull(Project project);
 
+    List<DeathExtractFull> findAllByProjectAndAccessPointIsNull(Project project);
+
+
 
     @Query("SELECT def " +
             "FROM DeathExtractFull AS def " +

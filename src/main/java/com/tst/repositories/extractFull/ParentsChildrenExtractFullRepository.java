@@ -62,8 +62,9 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
 
     Optional<ParentsChildrenExtractFull> findByProjectNumberBookFileAndStatusAndImporterIsNotNull(ProjectNumberBookFile projectNumberBookFile, EInputStatus status);
 
-
     List<ParentsChildrenExtractFull> findByProjectAndImporterIsNull(Project project);
+
+    List<ParentsChildrenExtractFull> findAllByProjectAndAccessPointIsNull(Project project);
 
 
     @Query("SELECT pcef " +

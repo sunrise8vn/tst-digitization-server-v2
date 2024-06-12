@@ -65,6 +65,8 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
 
     List<MarryExtractFull> findAllByProjectAndImporterIsNull(Project project);
 
+    List<MarryExtractFull> findAllByProjectAndAccessPointIsNull(Project project);
+
 
     @Query("SELECT mef " +
             "FROM MarryExtractFull AS mef " +

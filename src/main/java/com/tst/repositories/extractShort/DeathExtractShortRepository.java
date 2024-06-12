@@ -45,6 +45,8 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
 
     List<DeathExtractShort> findAllByProjectAndImporterIsNull(Project project);
 
+    List<DeathExtractShort> findAllByProjectAndAccessPointIsNull(Project project);
+
     List<DeathExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
 
 

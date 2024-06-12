@@ -2,6 +2,7 @@ package com.tst.services.project;
 
 import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.compare.*;
+import com.tst.models.dtos.project.ExtractFormCountTypeDTO;
 import com.tst.models.dtos.project.PaperSizeDTO;
 import com.tst.models.entities.*;
 import com.tst.models.entities.extractFull.*;
@@ -2316,7 +2317,356 @@ public class ProjectService implements IProjectService {
         }
 
         batchService.batchCreate(accessPointHistories);
+    }
 
+    @Override
+    @Transactional
+    public void assignExtractFormEachUserAndType(
+            Project project,
+            User user,
+            List<ExtractFormCountTypeDTO> extractFormCountTypeDTOS
+    ) {
+        long totalCountExtractShort = 0L;
+        long totalCountExtractFull = 0L;
+
+        // Khởi tạo AccessPoint để lưu vào các biểu mẫu
+        AccessPoint accessPoint = new AccessPoint()
+                .setProject(project)
+                .setStatus(EAccessPointStatus.PROCESSING)
+                .setCountExtractShort(0L)
+                .setCountExtractFull(0L)
+                .setTotalCount(0L);
+        accessPointRepository.save(accessPoint);
+
+        //  Khởi tạo danh sách các đối tượng đã cập nhật để lưu vào db
+        List<ParentsChildrenExtractShort> parentsChildrenExtractShortsModified = new ArrayList<>();
+        List<ParentsChildrenExtractFull> parentsChildrenExtractFullsModified = new ArrayList<>();
+        List<BirthExtractShort> birthExtractShortsModified = new ArrayList<>();
+        List<BirthExtractFull> birthExtractFullsModified = new ArrayList<>();
+        List<MarryExtractShort> marryExtractShortsModified = new ArrayList<>();
+        List<MarryExtractFull> marryExtractFullsModified = new ArrayList<>();
+        List<WedlockExtractShort> wedlockExtractShortsModified = new ArrayList<>();
+        List<WedlockExtractFull> wedlockExtractFullsModified = new ArrayList<>();
+        List<DeathExtractShort> deathExtractShortsModified = new ArrayList<>();
+        List<DeathExtractFull> deathExtractFullsModified = new ArrayList<>();
+
+        for (ExtractFormCountTypeDTO type : extractFormCountTypeDTOS) {
+            ERegistrationType registrationType = ERegistrationType.valueOf(type.getRegistrationType());
+
+            switch (registrationType) {
+                case CMC -> {
+                    long totalCountParentsChildren = Long.parseLong(type.getTotalCount());
+                    long totalCountParentsChildrenShort = totalCountParentsChildren /2;
+                    long totalCountParentsChildrenFull = totalCountParentsChildren / 2;
+
+                    List<ParentsChildrenExtractShort> parentsChildrenExtractShorts = parentsChildrenExtractShortRepository.findAllByProjectAndAccessPointIsNull(project);
+
+                    List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findAllByProjectAndAccessPointIsNull(project);
+
+                    long countParentsChildrenRemaining = parentsChildrenExtractShorts.size() + parentsChildrenExtractFulls.size();
+
+                    if (totalCountParentsChildren > countParentsChildrenRemaining) {
+                        throw new DataInputException("Tổng số phiếu nhận cha mẹ con cần nhập chỉ còn " + countParentsChildrenRemaining + " phiếu");
+                    }
+
+                    totalCountExtractShort += totalCountParentsChildrenShort;
+                    totalCountExtractFull += totalCountParentsChildrenFull;
+
+                    Map<Long, ParentsChildrenExtractFull> parentsChildrenExtractFullMap = parentsChildrenExtractFulls
+                            .stream()
+                            .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
+                    // Phân phối ParentsChildrenExtractShort và ParentsChildrenExtractFull
+                    for (ParentsChildrenExtractShort item : parentsChildrenExtractShorts) {
+                        if (totalCountParentsChildrenShort == 0) {
+                            break;
+                        }
+
+                        totalCountParentsChildrenShort--;
+
+                        item.setAccessPoint(accessPoint);
+                        item.setImporter(user);
+                        parentsChildrenExtractShortsModified.add(item);
+                    }
+
+                    for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
+                        if (totalCountParentsChildrenFull == 0) {
+                            break;
+                        }
+
+                        totalCountParentsChildrenFull--;
+
+                        ParentsChildrenExtractFull parentsChildrenExtractFull = parentsChildrenExtractFullMap.get(
+                                item.getProjectNumberBookFile().getId()
+                        );
+
+                        parentsChildrenExtractFull.setAccessPoint(accessPoint);
+                        parentsChildrenExtractFull.setImporter(user);
+                        parentsChildrenExtractFullsModified.add(parentsChildrenExtractFull);
+                    }
+                }
+                case KS -> {
+                    long totalCountBirth = Long.parseLong(type.getTotalCount());
+                    long totalCountBirthShort = totalCountBirth /2;
+                    long totalCountBirthFull = totalCountBirth / 2;
+
+                    List<BirthExtractShort> birthExtractShorts = birthExtractShortRepository.findAllByProjectAndAccessPointIsNull(project);
+
+                    List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findAllByProjectAndAccessPointIsNull(project);
+
+                    long countBirthRemaining = birthExtractShorts.size() + birthExtractFulls.size();
+
+                    if (totalCountBirth > countBirthRemaining) {
+                        throw new DataInputException("Tổng số phiếu khai sinh cần nhập chỉ còn " + countBirthRemaining + " phiếu");
+                    }
+
+                    totalCountExtractShort += totalCountBirthShort;
+                    totalCountExtractFull += totalCountBirthFull;
+
+                    Map<Long, BirthExtractFull> birthExtractFullMap = birthExtractFulls
+                            .stream()
+                            .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
+                    // Phân phối BirthExtractShort và BirthExtractFull
+                    for (BirthExtractShort item : birthExtractShorts) {
+                        if (totalCountBirthShort == 0) {
+                            break;
+                        }
+
+                        totalCountBirthShort--;
+
+                        item.setAccessPoint(accessPoint);
+                        item.setImporter(user);
+                        birthExtractShortsModified.add(item);
+                    }
+
+                    for (BirthExtractFull item : birthExtractFulls) {
+                        if (totalCountBirthFull == 0) {
+                            break;
+                        }
+
+                        totalCountBirthFull--;
+
+                        BirthExtractFull birthExtractFull = birthExtractFullMap.get(
+                                item.getProjectNumberBookFile().getId()
+                        );
+
+                        birthExtractFull.setAccessPoint(accessPoint);
+                        birthExtractFull.setImporter(user);
+                        birthExtractFullsModified.add(birthExtractFull);
+                    }
+                }
+                case KH -> {
+                    long totalCountMarry = Long.parseLong(type.getTotalCount());
+                    long totalCountMarryShort = totalCountMarry /2;
+                    long totalCountMarryFull = totalCountMarry / 2;
+
+                    List<MarryExtractShort> marryExtractShorts = marryExtractShortRepository.findAllByProjectAndAccessPointIsNull(project);
+
+                    List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findAllByProjectAndAccessPointIsNull(project);
+
+                    long countMarryRemaining = marryExtractShorts.size() + marryExtractFulls.size();
+
+                    if (totalCountMarry > countMarryRemaining) {
+                        throw new DataInputException("Tổng số phiếu kết hôn cần nhập chỉ còn " + countMarryRemaining + " phiếu");
+                    }
+
+                    totalCountExtractShort += totalCountMarryShort;
+                    totalCountExtractFull += totalCountMarryFull;
+
+                    Map<Long, MarryExtractFull> marryExtractFullMap = marryExtractFulls
+                            .stream()
+                            .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
+                    // Phân phối MarryExtractShort và MarryExtractFull
+                    for (MarryExtractShort item : marryExtractShorts) {
+                        if (totalCountMarryShort == 0) {
+                            break;
+                        }
+
+                        totalCountMarryShort--;
+
+                        item.setAccessPoint(accessPoint);
+                        item.setImporter(user);
+                        marryExtractShortsModified.add(item);
+                    }
+
+                    for (MarryExtractFull item : marryExtractFulls) {
+                        if (totalCountMarryFull == 0) {
+                            break;
+                        }
+
+                        totalCountMarryFull--;
+
+                        MarryExtractFull marryExtractFull = marryExtractFullMap.get(
+                                item.getProjectNumberBookFile().getId()
+                        );
+
+                        marryExtractFull.setAccessPoint(accessPoint);
+                        marryExtractFull.setImporter(user);
+                        marryExtractFullsModified.add(marryExtractFull);
+                    }
+                }
+                case HN -> {
+                    long totalCountWedlock = Long.parseLong(type.getTotalCount());
+                    long totalCountWedlockShort = totalCountWedlock /2;
+                    long totalCountWedlockFull = totalCountWedlock / 2;
+
+                    List<WedlockExtractShort> wedlockExtractShorts = wedlockExtractShortRepository.findAllByProjectAndAccessPointIsNull(project);
+
+                    List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findAllByProjectAndAccessPointIsNull(project);
+
+                    long countWedlockRemaining = wedlockExtractShorts.size() + wedlockExtractFulls.size();
+
+                    if (totalCountWedlock > countWedlockRemaining) {
+                        throw new DataInputException("Tổng số phiếu tình trạng hôn nhân cần nhập chỉ còn " + countWedlockRemaining + " phiếu");
+                    }
+
+                    totalCountExtractShort += totalCountWedlockShort;
+                    totalCountExtractFull += totalCountWedlockFull;
+
+                    Map<Long, WedlockExtractFull> wedlockExtractFullMap = wedlockExtractFulls
+                            .stream()
+                            .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
+                    // Phân phối WedlockExtractShort và WedlockExtractFull
+                    for (WedlockExtractShort item : wedlockExtractShorts) {
+                        if (totalCountWedlockShort == 0) {
+                            break;
+                        }
+
+                        totalCountWedlockShort--;
+
+                        item.setAccessPoint(accessPoint);
+                        item.setImporter(user);
+                        wedlockExtractShortsModified.add(item);
+                    }
+
+                    for (WedlockExtractFull item : wedlockExtractFulls) {
+                        if (totalCountWedlockFull == 0) {
+                            break;
+                        }
+
+                        totalCountWedlockFull--;
+
+                        WedlockExtractFull wedlockExtractFull = wedlockExtractFullMap.get(
+                                item.getProjectNumberBookFile().getId()
+                        );
+
+                        wedlockExtractFull.setAccessPoint(accessPoint);
+                        wedlockExtractFull.setImporter(user);
+                        wedlockExtractFullsModified.add(wedlockExtractFull);
+                    }
+                }
+                case KT -> {
+                    long totalCountDeath = Long.parseLong(type.getTotalCount());
+                    long totalCountDeathShort = totalCountDeath /2;
+                    long totalCountDeathFull = totalCountDeath / 2;
+
+                    List<DeathExtractShort> deathExtractShorts = deathExtractShortRepository.findAllByProjectAndAccessPointIsNull(project);
+
+                    List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findAllByProjectAndAccessPointIsNull(project);
+
+                    long countDeathRemaining = deathExtractShorts.size() + deathExtractFulls.size();
+
+                    if (totalCountDeath > countDeathRemaining) {
+                        throw new DataInputException("Tổng số phiếu khai tử cần nhập chỉ còn " + countDeathRemaining + " phiếu");
+                    }
+
+                    totalCountExtractShort += totalCountDeathShort;
+                    totalCountExtractFull += totalCountDeathFull;
+
+                    Map<Long, DeathExtractFull> deathExtractFullMap = deathExtractFulls
+                            .stream()
+                            .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
+                    // Phân phối DeathExtractShort và DeathExtractFull
+                    for (DeathExtractShort item : deathExtractShorts) {
+                        if (totalCountDeathShort == 0) {
+                            break;
+                        }
+
+                        totalCountDeathShort--;
+
+                        item.setAccessPoint(accessPoint);
+                        item.setImporter(user);
+                        deathExtractShortsModified.add(item);
+                    }
+
+                    for (DeathExtractFull item : deathExtractFulls) {
+                        if (totalCountDeathFull == 0) {
+                            break;
+                        }
+
+                        totalCountDeathFull--;
+
+                        DeathExtractFull deathExtractFull = deathExtractFullMap.get(
+                                item.getProjectNumberBookFile().getId()
+                        );
+
+                        deathExtractFull.setAccessPoint(accessPoint);
+                        deathExtractFull.setImporter(user);
+                        deathExtractFullsModified.add(deathExtractFull);
+                    }
+                }
+            }
+        }
+
+        // Lưu tất cả các đối tượng cùng một lúc sau khi xử lý xong
+        if (!parentsChildrenExtractShortsModified.isEmpty()) {
+            batchService.batchUpdate(parentsChildrenExtractShortsModified);
+        }
+
+        if (!parentsChildrenExtractFullsModified.isEmpty()) {
+            batchService.batchUpdate(parentsChildrenExtractFullsModified);
+        }
+
+        if (!birthExtractShortsModified.isEmpty()) {
+            batchService.batchUpdate(birthExtractShortsModified);
+        }
+
+        if (!birthExtractFullsModified.isEmpty()) {
+            batchService.batchUpdate(birthExtractFullsModified);
+        }
+
+        if (!marryExtractShortsModified.isEmpty()) {
+            batchService.batchUpdate(marryExtractShortsModified);
+        }
+
+        if (!marryExtractFullsModified.isEmpty()) {
+            batchService.batchUpdate(marryExtractFullsModified);
+        }
+
+        if (!wedlockExtractShortsModified.isEmpty()) {
+            batchService.batchUpdate(wedlockExtractShortsModified);
+        }
+
+        if (!wedlockExtractFullsModified.isEmpty()) {
+            batchService.batchUpdate(wedlockExtractFullsModified);
+        }
+
+        if (!deathExtractShortsModified.isEmpty()) {
+            batchService.batchUpdate(deathExtractShortsModified);
+        }
+
+        if (!deathExtractFullsModified.isEmpty()) {
+            batchService.batchUpdate(deathExtractFullsModified);
+        }
+
+        // Cập nhật số lượng các biểu mẫu được phân phối cho AccessPoint
+        accessPoint.setCountExtractShort(totalCountExtractShort);
+        accessPoint.setCountExtractFull(totalCountExtractFull);
+        accessPoint.setTotalCount(totalCountExtractShort + totalCountExtractFull);
+        accessPointRepository.save(accessPoint);
+
+        AccessPointHistory accessPointHistory = new AccessPointHistory()
+                .setAccessPoint(accessPoint)
+                .setProject(project)
+                .setCountExtractShort(totalCountExtractShort)
+                .setCountExtractFull(totalCountExtractFull)
+                .setAssignees(user)
+                .setTotalCount(totalCountExtractShort + totalCountExtractFull);
+        accessPointHistoryRepository.save(accessPointHistory);
     }
 
     @Override

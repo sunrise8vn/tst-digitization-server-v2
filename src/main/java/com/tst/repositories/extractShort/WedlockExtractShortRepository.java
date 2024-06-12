@@ -45,6 +45,8 @@ public interface WedlockExtractShortRepository extends JpaRepository<WedlockExtr
 
     List<WedlockExtractShort> findAllByProjectAndImporterIsNull(Project project);
 
+    List<WedlockExtractShort> findAllByProjectAndAccessPointIsNull(Project project);
+
     List<WedlockExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
 
 
