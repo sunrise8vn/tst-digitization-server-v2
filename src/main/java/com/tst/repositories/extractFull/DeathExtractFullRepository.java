@@ -20,6 +20,8 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
 
     Long countAllByProjectAndAccessPointIsNull(Project project);
 
+    Long countAllByProjectAndStatus(Project project, EInputStatus status);
+
     Optional<DeathExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
 
@@ -67,6 +69,7 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
 
     List<DeathExtractFull> findAllByProjectAndAccessPointIsNull(Project project);
 
+    List<DeathExtractFull> findAllByProjectAndStatus(Project project, EInputStatus status);
 
 
     @Query("SELECT def " +
@@ -126,13 +129,5 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
             "ORDER BY def.id DESC"
     )
     List<DeathExtractFull> findAllDeathSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
-
-
-    @Query("SELECT def " +
-            "FROM DeathExtractFull AS def " +
-            "WHERE def.project = :project " +
-            "AND def.status = :status"
-    )
-    List<DeathExtractFull> findAllByProjectAndStatus(Project project, EInputStatus status);
 
 }

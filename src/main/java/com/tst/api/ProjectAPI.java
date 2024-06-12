@@ -31,6 +31,7 @@ import com.tst.services.projectWard.IProjectWardService;
 import com.tst.services.user.IUserService;
 import com.tst.utils.AppUtils;
 import jakarta.validation.ValidationException;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -408,6 +409,35 @@ public class ProjectAPI {
                 .build());
     }
 
+    @GetMapping("/get-remaining-extract-form-final-matching/{projectId}/{registrationType}")
+    public ResponseEntity<ResponseObject> getRemainingExtractFormFinalMatching(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @PathVariable @NotEmpty(message = "Loại tài liệu là bắt buộc") String registrationType
+    ) {
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        boolean isValidType = ERegistrationType.checkValue(registrationType.toUpperCase());
+
+        if (!isValidType) {
+            throw new DataInputException("Loại tài liệu không tồn tại");
+        }
+
+        ERegistrationType eRegistrationType = ERegistrationType.valueOf(registrationType.toUpperCase());
+
+        long remaining = projectService.getRemainingExtractFormFinalMatching(project, eRegistrationType);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy số lượng biểu mẫu còn lại để kết xuất dữ liệu thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(remaining)
+                .build());
+    }
+
     @PostMapping("/verify-project-by-user")
     public ResponseEntity<ResponseObject> verifyProjectByUser(
             @Validated @RequestBody ProjectDTO projectDTO,
@@ -717,6 +747,49 @@ public class ProjectAPI {
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Thu hồi các biểu mẫu chưa nhập thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .build());
+    }
+
+    // Kết xuất dữ liệu sang các bảng chính để export excel
+    @PostMapping("/extract-data/{projectId}")
+    public ResponseEntity<ResponseObject> extractData(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @Validated @RequestBody ExtractDataDTO extractDataDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi kết xuất dữ liệu")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        if (Long.parseLong(extractDataDTO.getCountExtract()) > 10000) {
+            throw new DataInputException("Số lượng kết xuất tối đa mỗi lần là 10.000 biểu mẫu");
+        }
+
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Dự án không tồn tại");
+        });
+
+        boolean isValidType = ERegistrationType.checkValue(extractDataDTO.getRegistrationType().toUpperCase());
+
+        if (!isValidType) {
+            throw new DataInputException("Loại tài liệu không tồn tại");
+        }
+
+        ERegistrationType eRegistrationType = ERegistrationType.valueOf(extractDataDTO.getRegistrationType().toUpperCase());
+
+        projectService.extractData(project, eRegistrationType, Long.parseLong(extractDataDTO.getCountExtract()));
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Kết xuất dữ liệu thành công")
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .build());

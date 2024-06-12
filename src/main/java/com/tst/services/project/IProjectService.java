@@ -7,6 +7,7 @@ import com.tst.models.entities.locationRegion.LocationProvince;
 import com.tst.models.entities.locationRegion.LocationWard;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.EPaperSize;
+import com.tst.models.enums.ERegistrationType;
 import com.tst.models.responses.extractFull.ExtractFullResponse;
 import com.tst.models.responses.extractShort.ExtractShortResponse;
 import com.tst.models.responses.locationRegion.LocationResponse;
@@ -100,6 +101,8 @@ public interface IProjectService extends IGeneralService<Project, Long> {
 
     Long getRemainingTotal(Project project);
 
+    Long getRemainingExtractFormFinalMatching(Project project, ERegistrationType registrationType);
+
     List<ReportImporterImportedResponse> findAllImportedForImporter(Long projectId, Long accessPointId, String userId);
 
     List<ReportImporterComparedResponse> findAllComparedForImporter(Long projectId, Long accessPointId, String userId);
@@ -136,5 +139,7 @@ public interface IProjectService extends IGeneralService<Project, Long> {
     void assignExtractFormEachUserAndType(Project project, User user, List<ExtractFormCountTypeDTO> extractFormCountTypeDTOS);
 
     void  autoCompareExtractShortFull(AccessPoint accessPoint);
+
+    void extractData(Project project, ERegistrationType registrationType, Long countExtract);
 
 }

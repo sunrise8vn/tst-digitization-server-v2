@@ -20,6 +20,8 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
 
     Long countAllByProjectAndAccessPointIsNull(Project project);
 
+    Long countAllByProjectAndStatus(Project project, EInputStatus status);
+
     Optional<BirthExtractFull> findByIdAndStatus(Long id, EInputStatus status);
 
 
@@ -66,6 +68,8 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
     List<BirthExtractFull> findAllByProjectAndImporterIsNull(Project project);
 
     List<BirthExtractFull> findAllByProjectAndAccessPointIsNull(Project project);
+
+    List<BirthExtractFull> findAllByProjectAndStatus(Project project, EInputStatus status);
 
 
     @Query("SELECT bef " +
@@ -125,13 +129,5 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
             "ORDER BY bef.id DESC"
     )
     List<BirthExtractFull> findAllBirthSameByAccessPointAndStatusNewOrLater(AccessPoint accessPoint);
-
-
-    @Query("SELECT bef " +
-            "FROM BirthExtractFull AS bef " +
-            "WHERE bef.project = :project " +
-            "AND bef.status = :status"
-    )
-    List<BirthExtractFull> findAllByProjectAndStatus(Project project, EInputStatus status);
 
 }

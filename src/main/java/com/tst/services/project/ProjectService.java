@@ -25,6 +25,7 @@ import com.tst.repositories.extractFull.*;
 import com.tst.repositories.extractShort.*;
 import com.tst.services.BatchService;
 import com.tst.services.projectNumberBookCover.IProjectNumberBookCoverService;
+import com.tst.services.user.IUserService;
 import com.tst.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -34,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -71,6 +73,7 @@ public class ProjectService implements IProjectService {
     private final ModelMapper modelMapper;
     private final AppUtils appUtils;
     private final BatchService batchService;
+    private final IUserService userService;
 
 
     @Override
@@ -108,7 +111,6 @@ public class ProjectService implements IProjectService {
                 countAllDeathFullFormImported;
 
         Long totalExtractFormAssigned = accessPoint.getTotalCount();
-
 
         return new TotalCountExtractFormResponse()
                 .setTotalExtractFormAssigned(totalExtractFormAssigned)
@@ -1060,6 +1062,30 @@ public class ProjectService implements IProjectService {
         totalCountExtractFull += deathExtractFulls.size();
 
         return totalCountExtractShort + totalCountExtractFull;
+    }
+
+    @Override
+    public Long getRemainingExtractFormFinalMatching(Project project, ERegistrationType registrationType) {
+        long remainingCount = 0L;
+
+        switch (registrationType) {
+            case CMC -> {
+                remainingCount = parentsChildrenExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+            }
+            case KS -> {
+                remainingCount = birthExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+            }
+            case KH -> {
+                remainingCount = marryExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+            }
+            case HN -> {
+                remainingCount = wedlockExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+            }
+            case KT -> {
+                remainingCount = deathExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+            }
+        }
+        return remainingCount;
     }
 
     @Override
@@ -3006,6 +3032,216 @@ public class ProjectService implements IProjectService {
         }
 
         accessPointRepository.save(accessPoint);
+    }
+
+    @Override
+    @Transactional
+    public void extractData(Project project, ERegistrationType registrationType, Long countExtract) {
+        long remainingCount;
+
+        User releaser = userService.getAuthenticatedUser();
+
+        //  Khởi tạo danh sách các đối tượng đã chỉnh sửa để lưu vào db
+        List<ParentsChildrenExtractFull> parentsChildrenExtractFullsModified = new ArrayList<>();
+        List<BirthExtractFull> birthExtractFullsModified = new ArrayList<>();
+        List<MarryExtractFull> marryExtractFullsModified = new ArrayList<>();
+        List<WedlockExtractFull> wedlockExtractFullsModified = new ArrayList<>();
+        List<DeathExtractFull> deathExtractFullsModified = new ArrayList<>();
+
+        //  Khởi tạo danh sách các đối tượng kết xuất để lưu vào db
+        List<ParentsChildren> parentsChildrenExtractData = new ArrayList<>();
+        List<Birth> birthsExtractData = new ArrayList<>();
+        List<Marry> marriesExtractData = new ArrayList<>();
+        List<Wedlock> wedlocksExtractData = new ArrayList<>();
+        List<Death> deathsExtractData = new ArrayList<>();
+
+        switch (registrationType) {
+            case CMC -> {
+                remainingCount = parentsChildrenExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                if (countExtract > remainingCount) {
+                    throw new DataInputException("Số lượng biểu mẫu nhận cha, mẹ con còn lại để kết xuất chỉ còn " + remainingCount);
+                }
+
+                List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
+                    if (countExtract == 0) {
+                        break;
+                    }
+                    countExtract--;
+
+                    item.setStatus(EInputStatus.RELEASED);
+                    item.setReleaser(releaser);
+                    item.setReleasedAt(LocalDateTime.now());
+                    parentsChildrenExtractFullsModified.add(item);
+                }
+
+                for (ParentsChildrenExtractFull item : parentsChildrenExtractFullsModified) {
+                    ParentsChildren parentsChildren = modelMapper.map(
+                            item,
+                            ParentsChildren.class
+                    );
+                    parentsChildrenExtractData.add(parentsChildren);
+                }
+
+                if (!parentsChildrenExtractFullsModified.isEmpty()) {
+                    batchService.batchUpdate(parentsChildrenExtractFullsModified);
+                }
+
+                if (!parentsChildrenExtractData.isEmpty()) {
+                    batchService.batchUpdate(parentsChildrenExtractData);
+                }
+            }
+            case KS -> {
+                remainingCount = birthExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                if (countExtract > remainingCount) {
+                    throw new DataInputException("Số lượng biểu mẫu khai sinh còn lại để kết xuất chỉ còn " + remainingCount);
+                }
+
+                List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                for (BirthExtractFull item : birthExtractFulls) {
+                    if (countExtract == 0) {
+                        break;
+                    }
+                    countExtract--;
+
+                    item.setStatus(EInputStatus.RELEASED);
+                    item.setReleaser(releaser);
+                    item.setReleasedAt(LocalDateTime.now());
+                    birthExtractFullsModified.add(item);
+                }
+
+                for (BirthExtractFull item : birthExtractFullsModified) {
+                    Birth birth = modelMapper.map(
+                            item,
+                            Birth.class
+                    );
+                    birthsExtractData.add(birth);
+                }
+
+                if (!birthExtractFullsModified.isEmpty()) {
+                    batchService.batchUpdate(birthExtractFullsModified);
+                }
+
+                if (!birthsExtractData.isEmpty()) {
+                    batchService.batchUpdate(birthsExtractData);
+                }
+            }
+            case KH -> {
+                remainingCount = marryExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                if (countExtract > remainingCount) {
+                    throw new DataInputException("Số lượng biểu mẫu kết hôn còn lại để kết xuất chỉ còn " + remainingCount);
+                }
+
+                List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                for (MarryExtractFull item : marryExtractFulls) {
+                    if (countExtract == 0) {
+                        break;
+                    }
+                    countExtract--;
+
+                    item.setStatus(EInputStatus.RELEASED);
+                    item.setReleaser(releaser);
+                    item.setReleasedAt(LocalDateTime.now());
+                    marryExtractFullsModified.add(item);
+                }
+
+                for (MarryExtractFull item : marryExtractFullsModified) {
+                    Marry marry = modelMapper.map(
+                            item,
+                            Marry.class
+                    );
+                    marriesExtractData.add(marry);
+                }
+
+                if (!marryExtractFullsModified.isEmpty()) {
+                    batchService.batchUpdate(marryExtractFullsModified);
+                }
+
+                if (!marriesExtractData.isEmpty()) {
+                    batchService.batchUpdate(marriesExtractData);
+                }
+            }
+            case HN -> {
+                remainingCount = wedlockExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                if (countExtract > remainingCount) {
+                    throw new DataInputException("Số lượng biểu mẫu tình trạng hôn nhân còn lại để kết xuất chỉ còn " + remainingCount);
+                }
+
+                List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                for (WedlockExtractFull item : wedlockExtractFulls) {
+                    if (countExtract == 0) {
+                        break;
+                    }
+                    countExtract--;
+
+                    item.setStatus(EInputStatus.RELEASED);
+                    item.setReleaser(releaser);
+                    item.setReleasedAt(LocalDateTime.now());
+                    wedlockExtractFullsModified.add(item);
+                }
+
+                for (WedlockExtractFull item : wedlockExtractFullsModified) {
+                    Wedlock wedlock = modelMapper.map(
+                            item,
+                            Wedlock.class
+                    );
+                    wedlocksExtractData.add(wedlock);
+                }
+
+                if (!wedlockExtractFullsModified.isEmpty()) {
+                    batchService.batchUpdate(wedlockExtractFullsModified);
+                }
+
+                if (!wedlocksExtractData.isEmpty()) {
+                    batchService.batchUpdate(wedlocksExtractData);
+                }
+            }
+            case KT -> {
+                remainingCount = deathExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                if (countExtract > remainingCount) {
+                    throw new DataInputException("Số lượng biểu mẫu khai tử còn lại để kết xuất chỉ còn " + remainingCount);
+                }
+
+                List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                for (DeathExtractFull item : deathExtractFulls) {
+                    if (countExtract == 0) {
+                        break;
+                    }
+                    countExtract--;
+
+                    item.setStatus(EInputStatus.RELEASED);
+                    item.setReleaser(releaser);
+                    item.setReleasedAt(LocalDateTime.now());
+                    deathExtractFullsModified.add(item);
+                }
+
+                for (DeathExtractFull item : deathExtractFullsModified) {
+                    Death death = modelMapper.map(
+                            item,
+                            Death.class
+                    );
+                    deathsExtractData.add(death);
+                }
+
+                if (!deathExtractFullsModified.isEmpty()) {
+                    batchService.batchUpdate(deathExtractFullsModified);
+                }
+
+                if (!deathsExtractData.isEmpty()) {
+                    batchService.batchUpdate(deathsExtractData);
+                }
+            }
+        }
     }
 
     @Override
