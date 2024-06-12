@@ -65,6 +65,8 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
 
     List<BirthExtractFull> findAllByProjectAndImporterIsNull(Project project);
 
+    List<BirthExtractFull> findAllByProjectAndAccessPointIsNull(Project project);
+
 
     @Query("SELECT bef " +
             "FROM BirthExtractFull AS bef " +

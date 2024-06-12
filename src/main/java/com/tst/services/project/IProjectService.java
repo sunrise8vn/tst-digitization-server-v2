@@ -1,5 +1,6 @@
 package com.tst.services.project;
 
+import com.tst.models.dtos.project.ExtractFormCountTypeDTO;
 import com.tst.models.entities.*;
 import com.tst.models.entities.locationRegion.LocationDistrict;
 import com.tst.models.entities.locationRegion.LocationProvince;
@@ -131,6 +132,8 @@ public interface IProjectService extends IGeneralService<Project, Long> {
     );
 
     void assignExtractFormToUser(Project project, Long totalCount, List<User> users);
+
+    void assignExtractFormEachUserAndType(Project project, User user, List<ExtractFormCountTypeDTO> extractFormCountTypeDTOS);
 
     void  autoCompareExtractShortFull(AccessPoint accessPoint);
 

@@ -9,6 +9,8 @@ import com.tst.models.entities.locationRegion.LocationDistrict;
 import com.tst.models.entities.locationRegion.LocationProvince;
 import com.tst.models.entities.locationRegion.LocationWard;
 import com.tst.models.enums.EInputStatus;
+import com.tst.models.enums.ERegistrationType;
+import com.tst.models.enums.ETableName;
 import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.locationRegion.LocationResponse;
 import com.tst.models.responses.project.*;
@@ -28,6 +30,7 @@ import com.tst.services.projectUser.IProjectUserService;
 import com.tst.services.projectWard.IProjectWardService;
 import com.tst.services.user.IUserService;
 import com.tst.utils.AppUtils;
+import jakarta.validation.ValidationException;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -600,6 +603,69 @@ public class ProjectAPI {
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Gán phiếu nhập cho người dùng thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .build());
+    }
+
+    // Phân phối biểu mẫu cho từng người dùng theo từng loại biểu mẫu
+    @PostMapping("/assign-extract-form-each-user-and-types/{projectId}")
+    public ResponseEntity<ResponseObject> assignExtractFormEachUserAndType(
+            @PathVariable @Pattern(regexp = "^[1-9]\\d*$", message = "ID Dự án phải là một số") String projectId,
+            @Validated @RequestBody AssignExtractFormEachUserAndTypeDTO extractFormEachUserAndTypeDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi gán phiếu nhập cho người dùng")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        List<ExtractFormCountTypeDTO> extractFormTypes = extractFormEachUserAndTypeDTO.getExtractFormTypes();
+
+        if (extractFormTypes == null || extractFormTypes.isEmpty()) {
+            throw new DataInputException("Danh sách phiếu không được để trống");
+        }
+
+        for (ExtractFormCountTypeDTO type : extractFormTypes) {
+            if (!appUtils.isValidEvenNumber(type.getTotalCount())) {
+                throw new DataInputException("Số lượng phiếu của mỗi loại phải là số chẵn lớn hơn 0");
+            }
+
+            boolean isValidType = ERegistrationType.checkValue(type.getRegistrationType());
+
+            if (!isValidType) {
+                throw new DataInputException("Danh sách loại sổ không hợp lệ");
+            }
+        }
+
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("ID dự án không tồn tại");
+        });
+
+        User user = userService.findByUsername(
+                extractFormEachUserAndTypeDTO.getUsername()
+        ).orElseThrow(() -> {
+            throw new DataInputException("Tài khoản người dùng không tồn tại");
+        });
+
+        projectUserService.findByProjectAndUser(project, user).orElseThrow(() -> {
+            throw new DataInputException("Người dùng không thuộc dự án này");
+        });
+
+        projectService.assignExtractFormEachUserAndType(
+                project,
+                user,
+                extractFormEachUserAndTypeDTO.getExtractFormTypes()
+        );
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Gán phiếu nhập cho từng người dùng theo từng loại biểu mẫu thành công")
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .build());

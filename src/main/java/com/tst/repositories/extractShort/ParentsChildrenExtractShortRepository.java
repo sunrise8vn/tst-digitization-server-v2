@@ -47,6 +47,8 @@ public interface ParentsChildrenExtractShortRepository extends JpaRepository<Par
 
     List<ParentsChildrenExtractShort> findAllByProjectAndImporterIsNull(Project project);
 
+    List<ParentsChildrenExtractShort> findAllByProjectAndAccessPointIsNull(Project project);
+
 
     @Query("SELECT pces " +
             "FROM ParentsChildrenExtractShort AS pces " +

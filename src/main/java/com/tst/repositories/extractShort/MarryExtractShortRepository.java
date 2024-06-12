@@ -45,6 +45,9 @@ public interface MarryExtractShortRepository extends JpaRepository<MarryExtractS
 
     List<MarryExtractShort> findAllByProjectAndImporterIsNull(Project project);
 
+    List<MarryExtractShort> findAllByProjectAndAccessPointIsNull(Project project);
+
+
     List<MarryExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
 
 

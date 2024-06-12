@@ -65,6 +65,8 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
 
     List<WedlockExtractFull> findAllByProjectAndImporterIsNull(Project project);
 
+    List<WedlockExtractFull> findAllByProjectAndAccessPointIsNull(Project project);
+
 
     @Query("SELECT wef " +
             "FROM WedlockExtractFull AS wef " +

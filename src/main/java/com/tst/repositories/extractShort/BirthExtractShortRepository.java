@@ -45,6 +45,8 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
 
     List<BirthExtractShort> findAllByProjectAndImporterIsNull(Project project);
 
+    List<BirthExtractShort> findAllByProjectAndAccessPointIsNull(Project project);
+
     List<BirthExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
 
 

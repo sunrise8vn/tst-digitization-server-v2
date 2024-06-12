@@ -107,6 +107,24 @@ public class AppUtils {
         return pattern.matcher(input).matches();
     }
 
+    public boolean isValidNumberNotZero(String input) {
+        String regex = "^[1-9]\\d*$";
+
+        Pattern pattern = Pattern.compile(regex);
+
+        return pattern.matcher(input).matches();
+    }
+
+    public boolean isValidEvenNumber(String input) {
+        String regex = "^(?!0+$)[0-9]*[02468]$";
+
+        Pattern pattern = Pattern.compile(regex);
+
+        return pattern.matcher(input).matches();
+    }
+
+
+
     public boolean compareFields(Object obj1, Object obj2) {
         Field[] fields1 = obj1.getClass().getDeclaredFields();
         Field[] fields2 = obj2.getClass().getDeclaredFields();
