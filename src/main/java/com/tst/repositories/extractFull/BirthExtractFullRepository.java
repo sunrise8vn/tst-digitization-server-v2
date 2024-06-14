@@ -78,7 +78,7 @@ public interface BirthExtractFullRepository extends JpaRepository<BirthExtractFu
             "ON bef.projectNumberBookFile = pnbf " +
             "WHERE bef.project = :project " +
             "AND bef.importer = :importer " +
-            "AND bef.status <> 'ACCEPTED'"
+            "AND bef.status <> 'RELEASED'"
     )
     List<BirthExtractFull> findAllByProjectAndImporter(Project project, User importer);
 

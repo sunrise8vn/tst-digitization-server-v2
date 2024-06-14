@@ -14,8 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
     name = "project_registration_date",
     uniqueConstraints = {
         @UniqueConstraint(
-                name = "unique_code_project_paper_size_id",
-                columnNames = {"code", "project_paper_size_id"}
+            name = "unique_code_project_paper_size_id",
+            columnNames = {"code", "project_paper_size_id"}
         )
     }
 )

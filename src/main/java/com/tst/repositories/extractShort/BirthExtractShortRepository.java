@@ -49,6 +49,8 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
 
     List<BirthExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
 
+    List<BirthExtractShort> findAllByProjectAndStatus(Project project, EInputStatus status);
+
 
     @Query("SELECT bes " +
             "FROM BirthExtractShort AS bes " +
@@ -56,7 +58,7 @@ public interface BirthExtractShortRepository extends JpaRepository<BirthExtractS
             "ON bes.projectNumberBookFile = pnbf " +
             "WHERE bes.project = :project " +
             "AND bes.importer = :importer " +
-            "AND bes.status <> 'ACCEPTED'"
+            "AND bes.status <> 'RELEASED'"
     )
     List<BirthExtractShort> findAllByProjectAndImporter(Project project, User importer);
 

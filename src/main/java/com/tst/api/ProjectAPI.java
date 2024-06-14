@@ -10,7 +10,6 @@ import com.tst.models.entities.locationRegion.LocationProvince;
 import com.tst.models.entities.locationRegion.LocationWard;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
-import com.tst.models.enums.ETableName;
 import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.locationRegion.LocationResponse;
 import com.tst.models.responses.project.*;
@@ -30,7 +29,6 @@ import com.tst.services.projectUser.IProjectUserService;
 import com.tst.services.projectWard.IProjectWardService;
 import com.tst.services.user.IUserService;
 import com.tst.utils.AppUtils;
-import jakarta.validation.ValidationException;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -438,6 +436,39 @@ public class ProjectAPI {
                 .build());
     }
 
+    @GetMapping("/get-count-extract-form-by-ward-and-number-book/{wardId}/{registrationType}/{numberBook}/{numberBookYear}")
+    public ResponseEntity<ResponseObject> getCountExtractFormByWardAndNumberBook(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String wardId,
+            @PathVariable @NotEmpty(message = "Loại tài liệu là bắt buộc") String registrationType,
+            @PathVariable @NotEmpty(message = "Quyển số là bắt buộc") String numberBook,
+            @PathVariable @NotEmpty(message = "Năm mở sổ là bắt buộc") String numberBookYear
+    ) {
+        boolean isValidType = ERegistrationType.checkValue(registrationType.toUpperCase());
+
+        if (!isValidType) {
+            throw new DataInputException("Loại tài liệu không tồn tại");
+        }
+
+        ProjectWard projectWard = projectWardService.findById(
+                Long.parseLong(wardId)
+        ).orElseThrow(() -> {
+            throw new DataInputException("Phường / Xã / Thị trấn không tồn tại");
+        });
+
+        numberBook = numberBook + "/" + numberBookYear;
+
+        ERegistrationType eRegistrationType = ERegistrationType.valueOf(registrationType.toUpperCase());
+
+        long totalCount = projectService.getCountAllByProjectWardAndNumberBook(projectWard, eRegistrationType, numberBook);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy số lượng biểu mẫu hiện có để xuất excel thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(totalCount)
+                .build());
+    }
+
     @PostMapping("/verify-project-by-user")
     public ResponseEntity<ResponseObject> verifyProjectByUser(
             @Validated @RequestBody ProjectDTO projectDTO,
@@ -727,7 +758,6 @@ public class ProjectAPI {
             @Validated @RequestBody AccessPointRevokeDTO accessPointRevokeDTO,
             BindingResult result
     ) {
-
         if (result.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .message("Lỗi thu hồi các biểu mẫu chưa nhập")

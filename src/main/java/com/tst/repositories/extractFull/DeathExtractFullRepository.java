@@ -78,7 +78,7 @@ public interface DeathExtractFullRepository extends JpaRepository<DeathExtractFu
             "ON def.projectNumberBookFile = pnbf " +
             "WHERE def.project = :project " +
             "AND def.importer = :importer " +
-            "AND def.status <> 'ACCEPTED'"
+            "AND def.status <> 'RELEASED'"
     )
     List<DeathExtractFull> findAllByProjectAndImporter(Project project, User importer);
 

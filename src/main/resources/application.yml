@@ -1,6 +1,8 @@
 server:
   port: 9347
   root-folder: storage
+  excel-folder: excel
+  zip-folder: zip
   compression:
     enabled: true
     mime-types: application/json,application/pdf,application/zip
