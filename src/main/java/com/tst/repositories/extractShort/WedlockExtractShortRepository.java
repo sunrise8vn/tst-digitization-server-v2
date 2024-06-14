@@ -49,6 +49,8 @@ public interface WedlockExtractShortRepository extends JpaRepository<WedlockExtr
 
     List<WedlockExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
 
+    List<WedlockExtractShort> findAllByProjectAndStatus(Project project, EInputStatus status);
+
 
     @Query("SELECT wes " +
             "FROM WedlockExtractShort AS wes " +
@@ -56,7 +58,7 @@ public interface WedlockExtractShortRepository extends JpaRepository<WedlockExtr
             "ON wes.projectNumberBookFile = pnbf " +
             "WHERE wes.project = :project " +
             "AND wes.importer = :importer " +
-            "AND wes.status <> 'ACCEPTED'"
+            "AND wes.status <> 'RELEASED'"
     )
     List<WedlockExtractShort> findAllByProjectAndImporter(Project project, User importer);
 

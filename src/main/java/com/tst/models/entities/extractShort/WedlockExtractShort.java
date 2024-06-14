@@ -34,6 +34,9 @@ public class WedlockExtractShort {
     @Column(name = "number", length = 20)
     private String number;
 
+    @Column(name = "number_book", length = 15)
+    private String numberBook;
+
     @Column(name = "number_page", length = 10)
     private String numberPage;
 

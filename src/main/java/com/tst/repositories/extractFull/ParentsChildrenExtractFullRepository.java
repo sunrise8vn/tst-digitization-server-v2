@@ -77,7 +77,7 @@ public interface ParentsChildrenExtractFullRepository extends JpaRepository<Pare
             "ON pcef.projectNumberBookFile = pnbf " +
             "WHERE pcef.project = :project " +
             "AND pcef.importer = :importer " +
-            "AND pcef.status <> 'ACCEPTED'"
+            "AND pcef.status <> 'RELEASED'"
     )
     List<ParentsChildrenExtractFull> findAllByProjectAndImporter(Project project, User importer);
 

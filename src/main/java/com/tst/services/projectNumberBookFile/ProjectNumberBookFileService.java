@@ -291,94 +291,106 @@ public class ProjectNumberBookFileService implements IProjectNumberBookFileServi
                 .getProjectProvince()
                 .getProject();
 
-        if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.CMC)) {
-            ParentsChildrenExtractShort parentsChildrenExtractShort = new ParentsChildrenExtractShort()
-                    .setProject(project)
-                    .setProjectNumberBookFile(projectNumberBookFile)
-                    .setNumber(projectNumberBookFile.getNumber())
-                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
-                    .setStatus(EInputStatus.NEW);
-            parentsChildrenExtractShortRepository.save(parentsChildrenExtractShort);
+        String numberBook = projectNumberBookFile.getProjectNumberBook().getCode() +
+                "/" +
+                projectNumberBookFile.getProjectNumberBook().getProjectRegistrationDate().getCode();
 
-            ParentsChildrenExtractFull parentsChildrenExtractFull = new ParentsChildrenExtractFull()
-                    .setProject(project)
-                    .setProjectNumberBookFile(projectNumberBookFile)
-                    .setNumber(projectNumberBookFile.getNumber())
-                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
-                    .setStatus(EInputStatus.NEW);
-            parentsChildrenExtractFullRepository.save(parentsChildrenExtractFull);
-        }
+        switch (projectNumberBookFile.getRegistrationType()){
+            case CMC -> {
+                ParentsChildrenExtractShort parentsChildrenExtractShort = new ParentsChildrenExtractShort()
+                        .setProject(project)
+                        .setProjectNumberBookFile(projectNumberBookFile)
+                        .setNumber(projectNumberBookFile.getNumber())
+                        .setNumberBook(numberBook)
+                        .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
+                        .setStatus(EInputStatus.NEW);
+                parentsChildrenExtractShortRepository.save(parentsChildrenExtractShort);
 
-        if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.KS)) {
-            BirthExtractShort birthExtractShort = new BirthExtractShort()
-                    .setProject(project)
-                    .setProjectNumberBookFile(projectNumberBookFile)
-                    .setNumber(projectNumberBookFile.getNumber())
-                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
-                    .setStatus(EInputStatus.NEW);
-            birthExtractShortRepository.save(birthExtractShort);
+                ParentsChildrenExtractFull parentsChildrenExtractFull = new ParentsChildrenExtractFull()
+                        .setProject(project)
+                        .setProjectNumberBookFile(projectNumberBookFile)
+                        .setNumber(projectNumberBookFile.getNumber())
+                        .setNumberBook(numberBook)
+                        .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
+                        .setStatus(EInputStatus.NEW);
+                parentsChildrenExtractFullRepository.save(parentsChildrenExtractFull);
+            }
+            case KS -> {
+                BirthExtractShort birthExtractShort = new BirthExtractShort()
+                        .setProject(project)
+                        .setProjectNumberBookFile(projectNumberBookFile)
+                        .setNumber(projectNumberBookFile.getNumber())
+                        .setNumberBook(numberBook)
+                        .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
+                        .setStatus(EInputStatus.NEW);
+                birthExtractShortRepository.save(birthExtractShort);
 
-            BirthExtractFull birthExtractFull = new BirthExtractFull()
-                    .setProject(project)
-                    .setProjectNumberBookFile(projectNumberBookFile)
-                    .setNumber(projectNumberBookFile.getNumber())
-                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
-                    .setStatus(EInputStatus.NEW);
-            birthExtractFullRepository.save(birthExtractFull);
-        }
+                BirthExtractFull birthExtractFull = new BirthExtractFull()
+                        .setProject(project)
+                        .setProjectNumberBookFile(projectNumberBookFile)
+                        .setNumber(projectNumberBookFile.getNumber())
+                        .setNumberBook(numberBook)
+                        .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
+                        .setStatus(EInputStatus.NEW);
+                birthExtractFullRepository.save(birthExtractFull);
+            }
+            case KH -> {
+                MarryExtractShort marryExtractShort = new MarryExtractShort()
+                        .setProject(project)
+                        .setProjectNumberBookFile(projectNumberBookFile)
+                        .setNumber(projectNumberBookFile.getNumber())
+                        .setNumberBook(numberBook)
+                        .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
+                        .setStatus(EInputStatus.NEW);
+                marryExtractShortRepository.save(marryExtractShort);
 
-        if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.KH)) {
-            MarryExtractShort marryExtractShort = new MarryExtractShort()
-                    .setProject(project)
-                    .setProjectNumberBookFile(projectNumberBookFile)
-                    .setNumber(projectNumberBookFile.getNumber())
-                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
-                    .setStatus(EInputStatus.NEW);
-            marryExtractShortRepository.save(marryExtractShort);
+                MarryExtractFull marryExtractFull = new MarryExtractFull()
+                        .setProject(project)
+                        .setProjectNumberBookFile(projectNumberBookFile)
+                        .setNumber(projectNumberBookFile.getNumber())
+                        .setNumberBook(numberBook)
+                        .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
+                        .setStatus(EInputStatus.NEW);
+                marryExtractFullRepository.save(marryExtractFull);
+            }
+            case HN -> {
+                WedlockExtractShort wedlockExtractShort = new WedlockExtractShort()
+                        .setProject(project)
+                        .setProjectNumberBookFile(projectNumberBookFile)
+                        .setNumber(projectNumberBookFile.getNumber())
+                        .setNumberBook(numberBook)
+                        .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
+                        .setStatus(EInputStatus.NEW);
+                wedlockExtractShortRepository.save(wedlockExtractShort);
 
-            MarryExtractFull marryExtractFull = new MarryExtractFull()
-                    .setProject(project)
-                    .setProjectNumberBookFile(projectNumberBookFile)
-                    .setNumber(projectNumberBookFile.getNumber())
-                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
-                    .setStatus(EInputStatus.NEW);
-            marryExtractFullRepository.save(marryExtractFull);
-        }
+                WedlockExtractFull wedlockExtractFull = new WedlockExtractFull()
+                        .setProject(project)
+                        .setProjectNumberBookFile(projectNumberBookFile)
+                        .setNumber(projectNumberBookFile.getNumber())
+                        .setNumberBook(numberBook)
+                        .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
+                        .setStatus(EInputStatus.NEW);
+                wedlockExtractFullRepository.save(wedlockExtractFull);
+            }
+            case KT -> {
+                DeathExtractShort deathExtractShort = new DeathExtractShort()
+                        .setProject(project)
+                        .setProjectNumberBookFile(projectNumberBookFile)
+                        .setNumber(projectNumberBookFile.getNumber())
+                        .setNumberBook(numberBook)
+                        .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
+                        .setStatus(EInputStatus.NEW);
+                deathExtractShortRepository.save(deathExtractShort);
 
-        if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.HN)) {
-            WedlockExtractShort wedlockExtractShort = new WedlockExtractShort()
-                    .setProject(project)
-                    .setProjectNumberBookFile(projectNumberBookFile)
-                    .setNumber(projectNumberBookFile.getNumber())
-                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
-                    .setStatus(EInputStatus.NEW);
-            wedlockExtractShortRepository.save(wedlockExtractShort);
-
-            WedlockExtractFull wedlockExtractFull = new WedlockExtractFull()
-                    .setProject(project)
-                    .setProjectNumberBookFile(projectNumberBookFile)
-                    .setNumber(projectNumberBookFile.getNumber())
-                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
-                    .setStatus(EInputStatus.NEW);
-            wedlockExtractFullRepository.save(wedlockExtractFull);
-        }
-
-        if (projectNumberBookFile.getRegistrationType().equals(ERegistrationType.KT)) {
-            DeathExtractShort deathExtractShort = new DeathExtractShort()
-                    .setProject(project)
-                    .setProjectNumberBookFile(projectNumberBookFile)
-                    .setNumber(projectNumberBookFile.getNumber())
-                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
-                    .setStatus(EInputStatus.NEW);
-            deathExtractShortRepository.save(deathExtractShort);
-
-            DeathExtractFull deathExtractFull = new DeathExtractFull()
-                    .setProject(project)
-                    .setProjectNumberBookFile(projectNumberBookFile)
-                    .setNumber(projectNumberBookFile.getNumber())
-                    .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
-                    .setStatus(EInputStatus.NEW);
-            deathExtractFullRepository.save(deathExtractFull);
+                DeathExtractFull deathExtractFull = new DeathExtractFull()
+                        .setProject(project)
+                        .setProjectNumberBookFile(projectNumberBookFile)
+                        .setNumber(projectNumberBookFile.getNumber())
+                        .setNumberBook(numberBook)
+                        .setRegistrationDate(projectNumberBookFile.getRegistrationDate())
+                        .setStatus(EInputStatus.NEW);
+                deathExtractFullRepository.save(deathExtractFull);
+            }
         }
 
         ProjectNumberBook projectNumberBook = projectNumberBookFile.getProjectNumberBook();

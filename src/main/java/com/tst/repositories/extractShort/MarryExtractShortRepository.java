@@ -47,8 +47,9 @@ public interface MarryExtractShortRepository extends JpaRepository<MarryExtractS
 
     List<MarryExtractShort> findAllByProjectAndAccessPointIsNull(Project project);
 
-
     List<MarryExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
+
+    List<MarryExtractShort> findAllByProjectAndStatus(Project project, EInputStatus status);
 
 
     @Query("SELECT mes " +
@@ -57,7 +58,7 @@ public interface MarryExtractShortRepository extends JpaRepository<MarryExtractS
             "ON mes.projectNumberBookFile = pnbf " +
             "WHERE mes.project = :project " +
             "AND mes.importer = :importer " +
-            "AND mes.status <> 'ACCEPTED'"
+            "AND mes.status <> 'RELEASED'"
     )
     List<MarryExtractShort> findAllByProjectAndImporter(Project project, User importer);
 

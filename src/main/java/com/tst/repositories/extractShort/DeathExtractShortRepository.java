@@ -49,6 +49,8 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
 
     List<DeathExtractShort> findAllByAccessPointAndStatusAndImporterIsNotNull(AccessPoint accessPoint, EInputStatus status);
 
+    List<DeathExtractShort> findAllByProjectAndStatus(Project project, EInputStatus status);
+
 
     @Query("SELECT des " +
             "FROM DeathExtractShort AS des " +
@@ -56,7 +58,7 @@ public interface DeathExtractShortRepository extends JpaRepository<DeathExtractS
             "ON des.projectNumberBookFile = pnbf " +
             "WHERE des.project = :project " +
             "AND des.importer = :importer " +
-            "AND des.status <> 'ACCEPTED'"
+            "AND des.status <> 'RELEASED'"
     )
     List<DeathExtractShort> findAllByProjectAndImporter(Project project, User importer);
 

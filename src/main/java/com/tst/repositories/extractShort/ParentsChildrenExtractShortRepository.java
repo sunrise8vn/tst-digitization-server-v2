@@ -49,6 +49,8 @@ public interface ParentsChildrenExtractShortRepository extends JpaRepository<Par
 
     List<ParentsChildrenExtractShort> findAllByProjectAndAccessPointIsNull(Project project);
 
+    List<ParentsChildrenExtractShort> findAllByProjectAndStatus(Project project, EInputStatus status);
+
 
     @Query("SELECT pces " +
             "FROM ParentsChildrenExtractShort AS pces " +
@@ -56,7 +58,7 @@ public interface ParentsChildrenExtractShortRepository extends JpaRepository<Par
             "ON pces.projectNumberBookFile = pnbf " +
             "WHERE pces.project = :project " +
             "AND pces.importer = :importer " +
-            "AND pces.status <> 'ACCEPTED'"
+            "AND pces.status <> 'RELEASED'"
     )
     List<ParentsChildrenExtractShort> findAllByProjectAndImporter(Project project, User importer);
 

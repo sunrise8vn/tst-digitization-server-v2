@@ -103,6 +103,10 @@ public interface IProjectService extends IGeneralService<Project, Long> {
 
     Long getRemainingExtractFormFinalMatching(Project project, ERegistrationType registrationType);
 
+    Long getCountExtractForm(Project project, ERegistrationType registrationType);
+
+    Long getCountAllByProjectWardAndNumberBook(ProjectWard projectWard, ERegistrationType registrationType, String numberBook);
+
     List<ReportImporterImportedResponse> findAllImportedForImporter(Long projectId, Long accessPointId, String userId);
 
     List<ReportImporterComparedResponse> findAllComparedForImporter(Long projectId, Long accessPointId, String userId);

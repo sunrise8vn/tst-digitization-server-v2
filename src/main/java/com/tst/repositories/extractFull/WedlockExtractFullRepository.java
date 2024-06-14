@@ -78,7 +78,7 @@ public interface WedlockExtractFullRepository extends JpaRepository<WedlockExtra
             "ON wef.projectNumberBookFile = pnbf " +
             "WHERE wef.project = :project " +
             "AND wef.importer = :importer " +
-            "AND wef.status <> 'ACCEPTED'"
+            "AND wef.status <> 'RELEASED'"
     )
     List<WedlockExtractFull> findAllByProjectAndImporter(Project project, User importer);
 

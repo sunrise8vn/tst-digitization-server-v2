@@ -57,6 +57,12 @@ public class ProjectService implements IProjectService {
     private final ProjectNumberBookRepository projectNumberBookRepository;
     private final ProjectNumberBookCoverRepository projectNumberBookCoverRepository;
 
+    private final ParentsChildrenRepository parentsChildrenRepository;
+    private final BirthRepository birthRepository;
+    private final MarryRepository marryRepository;
+    private final WedlockRepository wedlockRepository;
+    private final DeathRepository deathRepository;
+
     private final ParentsChildrenExtractShortRepository parentsChildrenExtractShortRepository;
     private final ParentsChildrenExtractFullRepository parentsChildrenExtractFullRepository;
     private final BirthExtractShortRepository birthExtractShortRepository;
@@ -1086,6 +1092,54 @@ public class ProjectService implements IProjectService {
             }
         }
         return remainingCount;
+    }
+
+    @Override
+    public Long getCountExtractForm(Project project, ERegistrationType registrationType) {
+        long totalCount = 0L;
+
+        switch (registrationType) {
+            case CMC -> {
+                totalCount = parentsChildrenExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+            }
+            case KS -> {
+                totalCount = birthExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+            }
+            case KH -> {
+                totalCount = marryExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+            }
+            case HN -> {
+                totalCount = wedlockExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+            }
+            case KT -> {
+                totalCount = deathExtractFullRepository.countAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+            }
+        }
+        return totalCount;
+    }
+
+    @Override
+    public Long getCountAllByProjectWardAndNumberBook(ProjectWard projectWard, ERegistrationType registrationType, String numberBook) {
+        long totalCount = 0L;
+
+        switch (registrationType) {
+            case CMC -> {
+                totalCount = parentsChildrenRepository.countAllByProjectWardAndNumberBook(projectWard, numberBook);
+            }
+            case KS -> {
+                totalCount = birthRepository.countAllByProjectWardAndNumberBook(projectWard, numberBook);
+            }
+            case KH -> {
+                totalCount = marryRepository.countAllByProjectWardAndNumberBook(projectWard, numberBook);
+            }
+            case HN -> {
+                totalCount = wedlockRepository.countAllByProjectWardAndNumberBook(projectWard, numberBook);
+            }
+            case KT -> {
+                totalCount = deathRepository.countAllByProjectWardAndNumberBook(projectWard, numberBook);
+            }
+        }
+        return totalCount;
     }
 
     @Override
@@ -3048,11 +3102,17 @@ public class ProjectService implements IProjectService {
         List<WedlockExtractFull> wedlockExtractFullsModified = new ArrayList<>();
         List<DeathExtractFull> deathExtractFullsModified = new ArrayList<>();
 
+        List<ParentsChildrenExtractShort> parentsChildrenExtractShortsModified = new ArrayList<>();
+        List<BirthExtractShort> birthExtractShortsModified = new ArrayList<>();
+        List<MarryExtractShort> marryExtractShortsModified = new ArrayList<>();
+        List<WedlockExtractShort> wedlockExtractShortsModified = new ArrayList<>();
+        List<DeathExtractShort> deathExtractShortsModified = new ArrayList<>();
+
         //  Khởi tạo danh sách các đối tượng kết xuất để lưu vào db
         List<ParentsChildren> parentsChildrenExtractData = new ArrayList<>();
         List<Birth> birthsExtractData = new ArrayList<>();
         List<Marry> marriesExtractData = new ArrayList<>();
-        List<Wedlock> wedlocksExtractData = new ArrayList<>();
+        List<Wedlock> wedLocksExtractData = new ArrayList<>();
         List<Death> deathsExtractData = new ArrayList<>();
 
         switch (registrationType) {
@@ -3065,6 +3125,12 @@ public class ProjectService implements IProjectService {
 
                 List<ParentsChildrenExtractFull> parentsChildrenExtractFulls = parentsChildrenExtractFullRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
 
+                List<ParentsChildrenExtractShort> parentsChildrenExtractShorts = parentsChildrenExtractShortRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                Map<Long, ParentsChildrenExtractShort> parentsChildrenExtractShortMap = parentsChildrenExtractShorts
+                        .stream()
+                        .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
                 for (ParentsChildrenExtractFull item : parentsChildrenExtractFulls) {
                     if (countExtract == 0) {
                         break;
@@ -3074,7 +3140,17 @@ public class ProjectService implements IProjectService {
                     item.setStatus(EInputStatus.RELEASED);
                     item.setReleaser(releaser);
                     item.setReleasedAt(LocalDateTime.now());
+
                     parentsChildrenExtractFullsModified.add(item);
+
+                    ParentsChildrenExtractShort parentsChildrenExtractShort = parentsChildrenExtractShortMap.get(
+                            item.getProjectNumberBookFile().getId()
+                    );
+                    parentsChildrenExtractShort.setStatus(EInputStatus.RELEASED);
+                    parentsChildrenExtractShort.setReleaser(releaser);
+                    parentsChildrenExtractShort.setReleasedAt(LocalDateTime.now());
+
+                    parentsChildrenExtractShortsModified.add(parentsChildrenExtractShort);
                 }
 
                 for (ParentsChildrenExtractFull item : parentsChildrenExtractFullsModified) {
@@ -3082,11 +3158,19 @@ public class ProjectService implements IProjectService {
                             item,
                             ParentsChildren.class
                     );
+                    ProjectWard projectWard = item.getProjectNumberBookFile().getProjectNumberBook().getProjectRegistrationDate().getProjectPaperSize().getProjectRegistrationType().getProjectWard();
+                    parentsChildren.setProjectWard(projectWard);
+                    parentsChildren.setProjectDistrict(projectWard.getProjectDistrict());
+                    parentsChildren.setProjectProvince(projectWard.getProjectDistrict().getProjectProvince());
                     parentsChildrenExtractData.add(parentsChildren);
                 }
 
                 if (!parentsChildrenExtractFullsModified.isEmpty()) {
                     batchService.batchUpdate(parentsChildrenExtractFullsModified);
+                }
+
+                if (!parentsChildrenExtractShortsModified.isEmpty()) {
+                    batchService.batchUpdate(parentsChildrenExtractShortsModified);
                 }
 
                 if (!parentsChildrenExtractData.isEmpty()) {
@@ -3102,6 +3186,12 @@ public class ProjectService implements IProjectService {
 
                 List<BirthExtractFull> birthExtractFulls = birthExtractFullRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
 
+                List<BirthExtractShort> birthExtractShorts = birthExtractShortRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                Map<Long, BirthExtractShort> birthExtractShortMap = birthExtractShorts
+                        .stream()
+                        .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
                 for (BirthExtractFull item : birthExtractFulls) {
                     if (countExtract == 0) {
                         break;
@@ -3111,7 +3201,17 @@ public class ProjectService implements IProjectService {
                     item.setStatus(EInputStatus.RELEASED);
                     item.setReleaser(releaser);
                     item.setReleasedAt(LocalDateTime.now());
+
                     birthExtractFullsModified.add(item);
+
+                    BirthExtractShort birthExtractShort = birthExtractShortMap.get(
+                            item.getProjectNumberBookFile().getId()
+                    );
+                    birthExtractShort.setStatus(EInputStatus.RELEASED);
+                    birthExtractShort.setReleaser(releaser);
+                    birthExtractShort.setReleasedAt(LocalDateTime.now());
+
+                    birthExtractShortsModified.add(birthExtractShort);
                 }
 
                 for (BirthExtractFull item : birthExtractFullsModified) {
@@ -3124,6 +3224,10 @@ public class ProjectService implements IProjectService {
 
                 if (!birthExtractFullsModified.isEmpty()) {
                     batchService.batchUpdate(birthExtractFullsModified);
+                }
+
+                if (!birthExtractShortsModified.isEmpty()) {
+                    batchService.batchUpdate(birthExtractShortsModified);
                 }
 
                 if (!birthsExtractData.isEmpty()) {
@@ -3139,6 +3243,12 @@ public class ProjectService implements IProjectService {
 
                 List<MarryExtractFull> marryExtractFulls = marryExtractFullRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
 
+                List<MarryExtractShort> marryExtractShorts = marryExtractShortRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                Map<Long, MarryExtractShort> marryExtractShortMap = marryExtractShorts
+                        .stream()
+                        .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
                 for (MarryExtractFull item : marryExtractFulls) {
                     if (countExtract == 0) {
                         break;
@@ -3148,7 +3258,17 @@ public class ProjectService implements IProjectService {
                     item.setStatus(EInputStatus.RELEASED);
                     item.setReleaser(releaser);
                     item.setReleasedAt(LocalDateTime.now());
+
                     marryExtractFullsModified.add(item);
+
+                    MarryExtractShort marryExtractShort = marryExtractShortMap.get(
+                            item.getProjectNumberBookFile().getId()
+                    );
+                    marryExtractShort.setStatus(EInputStatus.RELEASED);
+                    marryExtractShort.setReleaser(releaser);
+                    marryExtractShort.setReleasedAt(LocalDateTime.now());
+
+                    marryExtractShortsModified.add(marryExtractShort);
                 }
 
                 for (MarryExtractFull item : marryExtractFullsModified) {
@@ -3161,6 +3281,10 @@ public class ProjectService implements IProjectService {
 
                 if (!marryExtractFullsModified.isEmpty()) {
                     batchService.batchUpdate(marryExtractFullsModified);
+                }
+
+                if (!marryExtractShortsModified.isEmpty()) {
+                    batchService.batchUpdate(marryExtractShortsModified);
                 }
 
                 if (!marriesExtractData.isEmpty()) {
@@ -3176,6 +3300,12 @@ public class ProjectService implements IProjectService {
 
                 List<WedlockExtractFull> wedlockExtractFulls = wedlockExtractFullRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
 
+                List<WedlockExtractShort> wedlockExtractShorts = wedlockExtractShortRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                Map<Long, WedlockExtractShort> wedlockExtractShortMap = wedlockExtractShorts
+                        .stream()
+                        .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
                 for (WedlockExtractFull item : wedlockExtractFulls) {
                     if (countExtract == 0) {
                         break;
@@ -3185,7 +3315,17 @@ public class ProjectService implements IProjectService {
                     item.setStatus(EInputStatus.RELEASED);
                     item.setReleaser(releaser);
                     item.setReleasedAt(LocalDateTime.now());
+
                     wedlockExtractFullsModified.add(item);
+
+                    WedlockExtractShort wedlockExtractShort = wedlockExtractShortMap.get(
+                            item.getProjectNumberBookFile().getId()
+                    );
+                    wedlockExtractShort.setStatus(EInputStatus.RELEASED);
+                    wedlockExtractShort.setReleaser(releaser);
+                    wedlockExtractShort.setReleasedAt(LocalDateTime.now());
+
+                    wedlockExtractShortsModified.add(wedlockExtractShort);
                 }
 
                 for (WedlockExtractFull item : wedlockExtractFullsModified) {
@@ -3193,15 +3333,19 @@ public class ProjectService implements IProjectService {
                             item,
                             Wedlock.class
                     );
-                    wedlocksExtractData.add(wedlock);
+                    wedLocksExtractData.add(wedlock);
                 }
 
                 if (!wedlockExtractFullsModified.isEmpty()) {
                     batchService.batchUpdate(wedlockExtractFullsModified);
                 }
 
-                if (!wedlocksExtractData.isEmpty()) {
-                    batchService.batchUpdate(wedlocksExtractData);
+                if (!wedlockExtractShortsModified.isEmpty()) {
+                    batchService.batchUpdate(wedlockExtractShortsModified);
+                }
+
+                if (!wedLocksExtractData.isEmpty()) {
+                    batchService.batchUpdate(wedLocksExtractData);
                 }
             }
             case KT -> {
@@ -3213,6 +3357,12 @@ public class ProjectService implements IProjectService {
 
                 List<DeathExtractFull> deathExtractFulls = deathExtractFullRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
 
+                List<DeathExtractShort> deathExtractShorts = deathExtractShortRepository.findAllByProjectAndStatus(project, EInputStatus.FINAL_MATCHING);
+
+                Map<Long, DeathExtractShort> deathExtractShortMap = deathExtractShorts
+                        .stream()
+                        .collect(Collectors.toMap(item -> item.getProjectNumberBookFile().getId(), Function.identity()));
+
                 for (DeathExtractFull item : deathExtractFulls) {
                     if (countExtract == 0) {
                         break;
@@ -3222,7 +3372,17 @@ public class ProjectService implements IProjectService {
                     item.setStatus(EInputStatus.RELEASED);
                     item.setReleaser(releaser);
                     item.setReleasedAt(LocalDateTime.now());
+
                     deathExtractFullsModified.add(item);
+
+                    DeathExtractShort deathExtractShort = deathExtractShortMap.get(
+                            item.getProjectNumberBookFile().getId()
+                    );
+                    deathExtractShort.setStatus(EInputStatus.RELEASED);
+                    deathExtractShort.setReleaser(releaser);
+                    deathExtractShort.setReleasedAt(LocalDateTime.now());
+
+                    deathExtractShortsModified.add(deathExtractShort);
                 }
 
                 for (DeathExtractFull item : deathExtractFullsModified) {
@@ -3235,6 +3395,10 @@ public class ProjectService implements IProjectService {
 
                 if (!deathExtractFullsModified.isEmpty()) {
                     batchService.batchUpdate(deathExtractFullsModified);
+                }
+
+                if (!deathExtractShortsModified.isEmpty()) {
+                    batchService.batchUpdate(deathExtractShortsModified);
                 }
 
                 if (!deathsExtractData.isEmpty()) {

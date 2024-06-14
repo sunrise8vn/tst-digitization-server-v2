@@ -16,6 +16,9 @@ import lombok.Setter;
     name = "births",
     uniqueConstraints = {
         @UniqueConstraint(name = "unique_project_number_book_file_id", columnNames = {"project_number_book_file_id"})
+    },
+    indexes = {
+        @Index(name = "index_project_ward_numberBook", columnList = "project_ward_id,number_book")
     }
 )
 public class Birth {
@@ -206,6 +209,18 @@ public class Birth {
     @ManyToOne
     @JoinColumn(name = "project_number_book_file_id", nullable = false)
     private ProjectNumberBookFile projectNumberBookFile;
+
+    @ManyToOne
+    @JoinColumn(name = "project_ward_id", nullable = false)
+    private ProjectWard projectWard;
+
+    @ManyToOne
+    @JoinColumn(name = "project_district_id", nullable = false)
+    private ProjectDistrict projectDistrict;
+
+    @ManyToOne
+    @JoinColumn(name = "project_province_id", nullable = false)
+    private ProjectProvince projectProvince;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)

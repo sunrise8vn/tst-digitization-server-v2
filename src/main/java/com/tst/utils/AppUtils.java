@@ -63,6 +63,16 @@ public class AppUtils {
         }
     }
 
+    public String getFirstCharactersOfEachWord(String input) {
+        StringBuilder output = new StringBuilder();
+
+        for (String word : input.split(" ")) {
+            output.append(word.charAt(0));
+        }
+
+        return output.toString().toLowerCase();
+    }
+
     public String removePdfTypeChar(String str) {
         str = str.toLowerCase();
         str = str.replace(".pdf", "");

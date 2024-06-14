@@ -78,7 +78,7 @@ public interface MarryExtractFullRepository extends JpaRepository<MarryExtractFu
             "ON mef.projectNumberBookFile = pnbf " +
             "WHERE mef.project = :project " +
             "AND mef.importer = :importer " +
-            "AND mef.status <> 'ACCEPTED'"
+            "AND mef.status <> 'RELEASED'"
     )
     List<MarryExtractFull> findAllByProjectAndImporter(Project project, User importer);
 
