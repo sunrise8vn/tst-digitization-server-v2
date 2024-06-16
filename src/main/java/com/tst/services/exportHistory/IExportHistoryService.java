@@ -37,4 +37,22 @@ public interface IExportHistoryService extends IGeneralService<ExportHistory, Lo
             String numberBook,
             User user
     );
+
+    void asyncExportZipPdf(
+            ProjectWard projectWard,
+            ERegistrationType registrationType,
+            EPaperSize paperSize,
+            String numberBookYear,
+            String numberBook,
+            User user
+    );
+
+    void asyncExportExcelAndZipPdf(
+            ProjectWard projectWard,
+            ERegistrationType registrationType,
+            EPaperSize paperSize,
+            String numberBookYear,
+            String numberBook,
+            User user
+    );
 }

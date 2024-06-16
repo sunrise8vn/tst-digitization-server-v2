@@ -2,6 +2,7 @@ package com.tst.services.exporter;
 
 import com.tst.models.entities.*;
 import com.tst.models.enums.EExportStatus;
+import com.tst.models.enums.EExportType;
 import com.tst.models.enums.ERegistrationType;
 import com.tst.repositories.ExportHistoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,8 @@ public class ExcelExportService implements IExcelExportService {
             ERegistrationType registrationType,
             String fileName,
             String sheetName,
-            ExportHistory exportHistory
+            ExportHistory exportHistory,
+            EExportType exportType
     ) {
         try {
             Workbook workbook = new XSSFWorkbook();
@@ -137,11 +139,14 @@ public class ExcelExportService implements IExcelExportService {
             // Lấy kích thước của tệp KB
             long fileSize = file.length() / 1024;
 
+            if (exportType.equals(EExportType.EXCEL)) {
+                exportHistory.setStatus(EExportStatus.SUCCESS);
+            }
+
             exportHistory.setExcelSize(fileSize);
-            exportHistory.setStatus(EExportStatus.SUCCESS);
             exportHistoryRepository.save(exportHistory);
 
-            System.out.println("File exported successfully: " + file.getAbsolutePath());
+            logger.info("Đã xuất tệp excel thành công: " + file.getAbsolutePath());
         } catch (IOException e) {
             exportHistory.setStatus(EExportStatus.FAILED);
             exportHistoryRepository.save(exportHistory);

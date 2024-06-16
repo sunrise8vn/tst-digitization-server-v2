@@ -109,7 +109,7 @@ public class ExportDataAPI {
     }
 
     @PostMapping("/excel/{wardId}/{registrationType}/{paperSize}/{numberBook}/{numberBookYear}")
-    public CompletableFuture<ResponseEntity<ResponseObject>> getAllRegistrationPointByProject(
+    public CompletableFuture<ResponseEntity<ResponseObject>> exportExcel(
             @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String wardId,
             @PathVariable @NotEmpty(message = "Loại sổ là bắt buộc") String registrationType,
             @PathVariable @NotEmpty(message = "Kích thước sổ là bắt buộc") String paperSize,
@@ -167,4 +167,125 @@ public class ExportDataAPI {
                 .statusText(HttpStatus.OK)
                 .build()));
     }
+
+    @PostMapping("/zip-pdf/{wardId}/{registrationType}/{paperSize}/{numberBook}/{numberBookYear}")
+    public CompletableFuture<ResponseEntity<ResponseObject>> exportZipPdf(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String wardId,
+            @PathVariable @NotEmpty(message = "Loại sổ là bắt buộc") String registrationType,
+            @PathVariable @NotEmpty(message = "Kích thước sổ là bắt buộc") String paperSize,
+            @PathVariable @NotEmpty(message = "Quyển số là bắt buộc") String numberBook,
+            @PathVariable @NotEmpty(message = "Năm mở sổ là bắt buộc") String numberBookYear
+    ) {
+        boolean isValidRegistrationType = ERegistrationType.checkValue(registrationType.toUpperCase());
+
+        if (!isValidRegistrationType) {
+            throw new DataInputException("Loại sổ không tồn tại");
+        }
+
+        boolean isValidPaperSize = EPaperSize.checkValue(paperSize.toUpperCase());
+
+        if (!isValidPaperSize) {
+            throw new DataInputException("Kích thước sổ không tồn tại");
+        }
+
+        ProjectWard projectWard = projectWardService.findById(
+                Long.parseLong(wardId)
+        ).orElseThrow(() -> new DataInputException("Phường / Xã / Thị trấn không tồn tại"));
+
+        ERegistrationType eRegistrationType = ERegistrationType.valueOf(registrationType.toUpperCase());
+
+        EPaperSize ePaperSize = EPaperSize.valueOf(paperSize.toUpperCase());
+
+        User user = userService.getAuthenticatedUser();
+
+        Optional<ExportHistory> exportHistoryOptional = exportHistoryService.findByAll(
+                projectWard.getProject().getId(),
+                projectWard.getId(),
+                registrationType,
+                paperSize,
+                numberBookYear,
+                numberBook,
+                EExportStatus.PROCESSING
+        );
+
+        if (exportHistoryOptional.isPresent()) {
+            throw new DataInputException("Tệp dữ liệu trích xuất excel này đang được xử lý");
+        }
+
+        exportHistoryService.asyncExportZipPdf(
+                projectWard,
+                eRegistrationType,
+                ePaperSize,
+                numberBookYear,
+                numberBook,
+                user
+        );
+
+        return CompletableFuture.completedFuture(ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Trích xuất tệp zip pdf thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .build()));
+    }
+
+    @PostMapping("/excel-and-zip-pdf/{wardId}/{registrationType}/{paperSize}/{numberBook}/{numberBookYear}")
+    public CompletableFuture<ResponseEntity<ResponseObject>> exportExcelAndZipPdf(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String wardId,
+            @PathVariable @NotEmpty(message = "Loại sổ là bắt buộc") String registrationType,
+            @PathVariable @NotEmpty(message = "Kích thước sổ là bắt buộc") String paperSize,
+            @PathVariable @NotEmpty(message = "Quyển số là bắt buộc") String numberBook,
+            @PathVariable @NotEmpty(message = "Năm mở sổ là bắt buộc") String numberBookYear
+    ) {
+        boolean isValidRegistrationType = ERegistrationType.checkValue(registrationType.toUpperCase());
+
+        if (!isValidRegistrationType) {
+            throw new DataInputException("Loại sổ không tồn tại");
+        }
+
+        boolean isValidPaperSize = EPaperSize.checkValue(paperSize.toUpperCase());
+
+        if (!isValidPaperSize) {
+            throw new DataInputException("Kích thước sổ không tồn tại");
+        }
+
+        ProjectWard projectWard = projectWardService.findById(
+                Long.parseLong(wardId)
+        ).orElseThrow(() -> new DataInputException("Phường / Xã / Thị trấn không tồn tại"));
+
+        ERegistrationType eRegistrationType = ERegistrationType.valueOf(registrationType.toUpperCase());
+
+        EPaperSize ePaperSize = EPaperSize.valueOf(paperSize.toUpperCase());
+
+        User user = userService.getAuthenticatedUser();
+
+        Optional<ExportHistory> exportHistoryOptional = exportHistoryService.findByAll(
+                projectWard.getProject().getId(),
+                projectWard.getId(),
+                registrationType,
+                paperSize,
+                numberBookYear,
+                numberBook,
+                EExportStatus.PROCESSING
+        );
+
+        if (exportHistoryOptional.isPresent()) {
+            throw new DataInputException("Tệp dữ liệu trích xuất excel và zip pdf này đang được xử lý");
+        }
+
+        exportHistoryService.asyncExportExcelAndZipPdf(
+                projectWard,
+                eRegistrationType,
+                ePaperSize,
+                numberBookYear,
+                numberBook,
+                user
+        );
+
+        return CompletableFuture.completedFuture(ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Trích xuất tệp excel và zip pdf thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .build()));
+    }
+
 }
