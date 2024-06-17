@@ -74,9 +74,9 @@ public class LocationRegionAPI {
     public ResponseEntity<ResponseObject> getAllDistrictsByProvinceId(
         @PathVariable @Pattern(regexp = "\\d+", message = "ID tỉnh/thành phố phải là một số") String provinceId
     ) {
-        locationProvinceService.findById(Long.parseLong(provinceId)).orElseThrow(() -> {
-            throw new DataInputException("ID tỉnh/thành phố không tồn tại");
-        });
+        locationProvinceService.findById(
+                Long.parseLong(provinceId)
+        ).orElseThrow(() -> new DataInputException("ID tỉnh/thành phố không tồn tại"));
 
         List<LocationDistrictResponse> locationDistrictResponses = locationDistrictService.findAllLocationDistrictResponse(Long.parseLong(provinceId));
 
@@ -92,9 +92,9 @@ public class LocationRegionAPI {
     public ResponseEntity<ResponseObject> getAllWardsByDistrictId(
         @PathVariable @Pattern(regexp = "\\d+", message = "ID thành phố/quận/huyện phải là một số") String districtId
     ) {
-        locationDistrictService.findById(Long.parseLong(districtId)).orElseThrow(() -> {
-            throw new DataInputException("ID thành phố/quận/huyện không tồn tại");
-        });
+        locationDistrictService.findById(
+                Long.parseLong(districtId)
+        ).orElseThrow(() -> new DataInputException("ID thành phố/quận/huyện không tồn tại"));
 
         List<LocationWardResponse> locationWardResponses = locationWardService.findAllLocationWardResponse(Long.parseLong(districtId));
 

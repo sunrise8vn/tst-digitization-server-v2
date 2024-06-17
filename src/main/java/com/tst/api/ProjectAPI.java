@@ -95,9 +95,7 @@ public class ProjectAPI {
 
         Project project = projectService.findById(
                 Long.parseLong(projectDTO.getId())
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 
@@ -117,9 +115,7 @@ public class ProjectAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 
@@ -140,15 +136,11 @@ public class ProjectAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         ProjectProvince projectProvince = projectProvinceService.findById(
                 Long.parseLong(provinceId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Tỉnh / thành phố không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Tỉnh / thành phố không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 
@@ -173,15 +165,11 @@ public class ProjectAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         ProjectDistrict projectDistrict = projectDistrictService.findById(
                 Long.parseLong(districtId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Quận / huyện / thành phố không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Quận / huyện / thành phố không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 
@@ -205,9 +193,7 @@ public class ProjectAPI {
     ) {
         ProjectWard projectWard = projectWardService.findById(
                 Long.parseLong(wardId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Phường / Xã / Thị trấn không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Phường / Xã / Thị trấn không tồn tại"));
 
         List<ProjectRegistrationTypeResponse> registrationTypeResponses = projectRegistrationTypeService.findAllByProjectWard(
                 projectWard
@@ -227,9 +213,7 @@ public class ProjectAPI {
     ) {
         ProjectRegistrationType projectRegistrationType = projectRegistrationTypeService.findById(
                 Long.parseLong(registrationTypeId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Loại sổ không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Loại sổ không tồn tại"));
 
         List<ProjectPaperSizeResponse> paperSizeResponses = projectPaperSizeService.findAllByProjectRegistrationType(
                 projectRegistrationType
@@ -249,9 +233,7 @@ public class ProjectAPI {
     ) {
         ProjectPaperSize projectPaperSize = projectPaperSizeService.findById(
                 Long.parseLong(paperSizeId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Kích thước sổ không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Kích thước sổ không tồn tại"));
 
         List<ProjectRegistrationDateResponse> registrationDateResponses = projectRegistrationDateService.findAllByProjectPaperSize(
                 projectPaperSize
@@ -271,9 +253,7 @@ public class ProjectAPI {
     ) {
         ProjectRegistrationDate projectRegistrationDate = projectRegistrationDateService.findById(
                 Long.parseLong(registrationDateId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Năm đăng ký sổ không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Năm đăng ký sổ không tồn tại"));
 
         List<ProjectNumberBookResponse> numberBookResponses = projectNumberBookService.findAllByProjectRegistrationDate(
                 projectRegistrationDate
@@ -294,15 +274,11 @@ public class ProjectAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         AccessPoint accessPoint = accessPointService.findById(
                 Long.parseLong(accessPointId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Đợt phân phối không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Đợt phân phối không tồn tại"));
 
         TotalCountExtractFormResponse totalCountExtractFormResponse = projectService.getTotalCountExtractForm(project, accessPoint);
 
@@ -321,15 +297,11 @@ public class ProjectAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         AccessPoint accessPoint = accessPointService.findById(
                 Long.parseLong(accessPointId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Đợt phân phối không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Đợt phân phối không tồn tại"));
 
         TotalCountExtractFormNewResponse totalCountExtractFormNewResponse = projectService.getTotalCountExtractFormNew(project, accessPoint);
 
@@ -347,9 +319,7 @@ public class ProjectAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         List<ExtractFormMatchComparedResponse> extractFormMatchComparedResponses = projectService.findAllExtractFormMatchCompared(
                 project,
@@ -370,9 +340,7 @@ public class ProjectAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         List<ExtractFormCheckedMatchingResponse> extractFormCheckedMatchingResponses = projectService.findAllExtractFormCheckedMatching(
                 project,
@@ -393,9 +361,7 @@ public class ProjectAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         CountExtractFormNotAssignResponse countExtractFormNotAssignResponse = projectService.getCountExtractFormNotAssign(project);
 
@@ -414,9 +380,7 @@ public class ProjectAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         boolean isValidType = ERegistrationType.checkValue(registrationType.toUpperCase());
 
@@ -451,9 +415,7 @@ public class ProjectAPI {
 
         ProjectWard projectWard = projectWardService.findById(
                 Long.parseLong(wardId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Phường / Xã / Thị trấn không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Phường / Xã / Thị trấn không tồn tại"));
 
         numberBook = numberBook + "/" + numberBookYear;
 
@@ -485,9 +447,7 @@ public class ProjectAPI {
 
         Project project = projectService.findById(
                 Long.parseLong(projectDTO.getId())
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 
@@ -521,9 +481,7 @@ public class ProjectAPI {
 
         Project project = projectService.findById(
                 Long.parseLong(projectDTO.getId())
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 
@@ -565,27 +523,19 @@ public class ProjectAPI {
 
         Project project = projectService.findById(
                 Long.parseLong(registrationPointDTO.getProject_id())
-        ).orElseThrow(() -> {
-           throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         LocationProvince locationProvince = locationProvinceService.findById(
                 Long.parseLong(registrationPointDTO.getProvince_id())
-        ).orElseThrow(() -> {
-            throw new DataInputException("Tỉnh/thành phố không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Tỉnh/thành phố không tồn tại"));
 
         LocationDistrict locationDistrict = locationDistrictService.findById(
                 Long.parseLong(registrationPointDTO.getDistrict_id())
-        ).orElseThrow(() -> {
-            throw new DataInputException("Thành phố/quận/huyện không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Thành phố/quận/huyện không tồn tại"));
 
         LocationWard locationWard = locationWardService.findById(
                 Long.parseLong(registrationPointDTO.getWard_id())
-        ).orElseThrow(() -> {
-            throw new DataInputException("Phường/xã không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Phường/xã không tồn tại"));
 
         projectService.createRegistrationPoint(
                 project,
@@ -622,15 +572,14 @@ public class ProjectAPI {
 
         Project project = projectService.findById(
                 Long.parseLong(assignExtractFormDTO.getProject_id())
-        ).orElseThrow(() -> {
-           throw new DataInputException("ID dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("ID dự án không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 
-        projectUserService.findByProjectAndUser(project, user).orElseThrow(() -> {
-            throw new PermissionDenyException("Bạn không thuộc dự án này");
-        });
+        projectUserService.findByProjectAndUser(
+                project,
+                user
+        ).orElseThrow(() -> new PermissionDenyException("Bạn không thuộc dự án này"));
 
         if (assignExtractFormDTO.getUsers().size() < 2) {
             throw new DataInputException("Số người dùng được phân phối ít nhất là 2");
@@ -649,9 +598,10 @@ public class ProjectAPI {
                 throw new DataInputException("Danh sách người dùng không được trùng nhau");
             }
 
-            projectUserService.findByProjectAndUser(project, userOptional.get()).orElseThrow(() -> {
-                throw new PermissionDenyException("Tài khoản " + username + " không thuộc dự án này");
-            });
+            projectUserService.findByProjectAndUser(
+                    project,
+                    userOptional.get()
+            ).orElseThrow(() -> new PermissionDenyException("Tài khoản " + username + " không thuộc dự án này"));
 
             users.add(userOptional.get());
         }
@@ -705,19 +655,16 @@ public class ProjectAPI {
 
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("ID dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("ID dự án không tồn tại"));
 
         User user = userService.findByUsername(
                 extractFormEachUserAndTypeDTO.getUsername()
-        ).orElseThrow(() -> {
-            throw new DataInputException("Tài khoản người dùng không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Tài khoản người dùng không tồn tại"));
 
-        projectUserService.findByProjectAndUser(project, user).orElseThrow(() -> {
-            throw new DataInputException("Người dùng không thuộc dự án này");
-        });
+        projectUserService.findByProjectAndUser(
+                project,
+                user
+        ).orElseThrow(() -> new DataInputException("Người dùng không thuộc dự án này"));
 
         projectService.assignExtractFormEachUserAndType(
                 project,
@@ -739,9 +686,7 @@ public class ProjectAPI {
     ) {
         AccessPoint accessPoint = accessPointService.findById(
                 Long.parseLong(accessPointId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("ID điểm truy cập không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("ID điểm truy cập không tồn tại"));
 
         projectService.autoCompareExtractShortFull(accessPoint);
 
@@ -769,9 +714,7 @@ public class ProjectAPI {
 
         AccessPoint accessPoint = accessPointService.findById(
                 Long.parseLong(accessPointRevokeDTO.getAccess_point_id())
-        ).orElseThrow(() -> {
-            throw new DataInputException("ID điểm truy cập không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("ID điểm truy cập không tồn tại"));
 
         accessPointService.revokeExtractForm(accessPoint, Long.parseLong(accessPointRevokeDTO.getTotal_count_revoke()));
 
@@ -804,9 +747,7 @@ public class ProjectAPI {
 
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         boolean isValidType = ERegistrationType.checkValue(extractDataDTO.getRegistrationType().toUpperCase());
 

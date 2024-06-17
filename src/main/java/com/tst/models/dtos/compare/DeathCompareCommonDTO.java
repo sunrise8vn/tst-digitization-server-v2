@@ -14,7 +14,6 @@ public class DeathCompareCommonDTO {
     private String registrationType;
     private String signerPosition;
     private String implementer;
-    private String note;
     private String deadManFullName;
     private String deadManGender;
     private String deadManBirthday;

@@ -56,9 +56,6 @@ public class DeathExtractShort {
     @Column(name = "implementer", length = 50)
     private String implementer;
 
-    @Column(name = "note")
-    private String note;
-
     @Column(name = "dead_man_full_name", length = 50)
     private String deadManFullName;
 

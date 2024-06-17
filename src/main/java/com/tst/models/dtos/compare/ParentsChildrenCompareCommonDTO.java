@@ -18,7 +18,6 @@ public class ParentsChildrenCompareCommonDTO {
     private String signer;
     private String signerPosition;
     private String implementer;
-    private String note;
     private String parentFullName;
     private String parentBirthday;
     private String parentNation;

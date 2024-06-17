@@ -59,9 +59,6 @@ public class MarryExtractShort {
     @Column(name = "implementer", length = 50)
     private String implementer;
 
-    @Column(name = "note")
-    private String note;
-
     @Column(name = "marital_status")
     private String maritalStatus;
 

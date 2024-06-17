@@ -14,7 +14,6 @@ public class WedlockCompareCommonDTO {
     private String signer;
     private String signerPosition;
     private String implementer;
-    private String note;
     private String confirmerFullName;
     private String confirmerGender;
     private String confirmerBirthday;
