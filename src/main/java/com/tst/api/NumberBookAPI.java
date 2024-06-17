@@ -60,15 +60,11 @@ public class NumberBookAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         ProjectNumberBook projectNumberBook = projectNumberBookService.findById(
                 Long.parseLong(numberBookId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Sổ không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Sổ không tồn tại"));
 
         Optional<NumberBookPendingResponse> numberBookPendingResponse =  projectNumberBookService.findNewByProjectAndId(
                 project,
@@ -90,15 +86,11 @@ public class NumberBookAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         ProjectNumberBook projectNumberBook = projectNumberBookService.findById(
                 Long.parseLong(numberBookId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Sổ không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Sổ không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 
@@ -178,15 +170,11 @@ public class NumberBookAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         ProjectProvince projectProvince = projectProvinceService.findById(
                 Long.parseLong(provinceId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Tỉnh / Thành phố không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Tỉnh / Thành phố không tồn tại"));
 
         List<NumberBookNewResponse> numberBookNewResponses =  projectService.findAllNewNumberBooksByProjectAndProjectProvince(
                 project,
@@ -208,15 +196,11 @@ public class NumberBookAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         ProjectDistrict projectDistrict = projectDistrictService.findById(
                 Long.parseLong(districtId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Quận / Huyện / Thành phố không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Quận / Huyện / Thành phố không tồn tại"));
 
         List<NumberBookNewResponse> numberBookNewResponses =  projectService.findAllNewNumberBooksByProjectAndProjectDistrict(
                 project,
@@ -238,15 +222,11 @@ public class NumberBookAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         ProjectWard projectWard = projectWardService.findById(
                 Long.parseLong(wardId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Phường / Xã / Thị trấn không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Phường / Xã / Thị trấn không tồn tại"));
 
         List<NumberBookNewResponse> numberBookNewResponses =  projectService.findAllNewNumberBooksByProjectAndProjectWard(
                 project,
@@ -269,15 +249,11 @@ public class NumberBookAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         ProjectProvince projectProvince = projectProvinceService.findById(
                 Long.parseLong(provinceId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Tỉnh / Thành phố không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Tỉnh / Thành phố không tồn tại"));
 
         List<NumberBookApprovedResponse> numberBookApprovedResponses =  projectService.findAllApprovedNumberBooksByProjectAndProjectProvince(
                 project,
@@ -299,15 +275,11 @@ public class NumberBookAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         ProjectDistrict projectDistrict = projectDistrictService.findById(
                 Long.parseLong(districtId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Quận / Huyện / Thành phố không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Quận / Huyện / Thành phố không tồn tại"));
 
         List<NumberBookApprovedResponse> numberBookApprovedResponses =  projectService.findAllApprovedNumberBooksByProjectAndProjectDistrict(
                 project,
@@ -329,15 +301,11 @@ public class NumberBookAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         ProjectWard projectWard = projectWardService.findById(
                 Long.parseLong(wardId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Phường / Xã / Thị trấn không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Phường / Xã / Thị trấn không tồn tại"));
 
         List<NumberBookApprovedResponse> numberBookApprovedResponses =  projectService.findAllApprovedNumberBooksByProjectAndProjectWard(
                 project,
@@ -359,16 +327,12 @@ public class NumberBookAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         ProjectNumberBook projectNumberBook = projectNumberBookService.findByProjectAndId(
                 project,
                 Long.parseLong(numberBookId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Quyển sổ không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Quyển sổ không tồn tại"));
 
         if (!projectNumberBook.getStatus().equals(EProjectNumberBookStatus.ACCEPT)) {
             throw new DataInputException("Quyển sổ này chưa được phê duyệt để sử dụng");
@@ -446,9 +410,7 @@ public class NumberBookAPI {
 
         ProjectWard projectWard = projectWardService.findById(
                 Long.parseLong(registrationNumberBookDTO.getWard_id())
-        ).orElseThrow(() -> {
-            throw new DataInputException("ID phường/xã không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("ID phường/xã không tồn tại"));
 
         if (!ERegistrationType.checkValue(registrationNumberBookDTO.getRegistration_type_code())) {
             throw new DataInputException("Loại sổ đăng ký không hợp lệ");
@@ -458,9 +420,7 @@ public class NumberBookAPI {
 
         RegistrationType registrationType = registrationTypeService.findByCode(
                 eRegistrationType
-        ).orElseThrow(() -> {
-            throw new DataInputException("Loại sổ đăng ký không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Loại sổ đăng ký không tồn tại"));
 
         if (!EPaperSize.checkValue(registrationNumberBookDTO.getPaper_size_code())) {
             throw new DataInputException("Khổ giấy không hợp lệ");
@@ -493,9 +453,7 @@ public class NumberBookAPI {
         ProjectNumberBook projectNumberBook = projectNumberBookService.findByIdAndStatus(
                 Long.parseLong(id),
                 EProjectNumberBookStatus.NEW
-        ).orElseThrow(() -> {
-            throw new DataInputException("ID quyển số không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("ID quyển số không tồn tại"));
 
         projectNumberBookService.updateAccept(projectNumberBook);
 
@@ -515,9 +473,7 @@ public class NumberBookAPI {
         ProjectNumberBook projectNumberBook = projectNumberBookService.findByIdAndStatus(
                 Long.parseLong(id),
                 EProjectNumberBookStatus.NEW
-        ).orElseThrow(() -> {
-            throw new DataInputException("ID quyển số không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("ID quyển số không tồn tại"));
 
         projectNumberBookService.updateCancel(projectNumberBook);
 

@@ -14,7 +14,6 @@ public class MarryCompareCommonDTO {
     private String registrationType;
     private String maritalRelationshipEstablishmentDate;
     private String implementer;
-    private String note;
     private String maritalStatus;
     private String husbandBirthday;
     private String husbandNation;

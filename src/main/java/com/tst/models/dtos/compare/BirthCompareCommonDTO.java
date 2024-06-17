@@ -15,7 +15,6 @@ public class BirthCompareCommonDTO {
     private String signer;
     private String signerPosition;
     private String implementer;
-    private String note;
     private String birtherFullName;
     private String birtherGender;
     private String birtherBirthday;

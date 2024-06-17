@@ -52,9 +52,6 @@ public class WedlockExtractShort {
     @Column(name = "implementer", length = 50)
     private String implementer;
 
-    @Column(name = "note")
-    private String note;
-
     @Column(name = "confirmer_full_name", length = 50)
     private String confirmerFullName;
 

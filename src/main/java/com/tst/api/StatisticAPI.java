@@ -48,9 +48,7 @@ public class StatisticAPI {
     ) {
         ProjectNumberBook projectNumberBook = projectNumberBookService.findById(
                 Long.parseLong(numberBookId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Số Sổ không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Số Sổ không tồn tại"));
 
         List<StatictisProjectNumberBookFileResponse> numberBookFileResponses = projectNumberBookFileService.findAllProjectNumberBookFileResponse(
                 projectNumberBook
@@ -70,9 +68,7 @@ public class StatisticAPI {
     ) {
         ProjectRegistrationDate projectRegistrationDate = projectRegistrationDateService.findById(
                 Long.parseLong(registrationDateId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Năm đăng ký sổ không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Năm đăng ký sổ không tồn tại"));
 
         List<StatisticProjectNumberBookResponse> numberBookResponses = projectNumberBookService.findAllStatisticByProjectRegistrationDate(
                 projectRegistrationDate
@@ -92,9 +88,7 @@ public class StatisticAPI {
     ) {
         ProjectPaperSize projectPaperSize = projectPaperSizeService.findById(
                 Long.parseLong(paperSizeId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Kích thước sổ không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Kích thước sổ không tồn tại"));
 
         List<StatisticProjectNumberBookResponse> numberBookResponses = projectRegistrationDateService.findAllStatisticByProjectPaperSize(
                 projectPaperSize
@@ -114,9 +108,7 @@ public class StatisticAPI {
     ) {
         ProjectRegistrationType projectRegistrationType = projectRegistrationTypeService.findById(
                 Long.parseLong(registrationTypeId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Loại sổ không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Loại sổ không tồn tại"));
 
         List<StatisticProjectPaperSizeResponse> projectPaperSizeResponses = projectPaperSizeService.findAllStatisticByProjectRegistrationType(
                 projectRegistrationType
@@ -136,9 +128,7 @@ public class StatisticAPI {
     ) {
         ProjectWard projectWard = projectWardService.findById(
                 Long.parseLong(projectWardId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Phường / Xã / Thị trấn không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Phường / Xã / Thị trấn không tồn tại"));
 
         List<StatisticProjectRegistrationTypeResponse> registrationTypeResponses = projectRegistrationTypeService.findAllStatisticByProjectWard(
                 projectWard
@@ -158,9 +148,7 @@ public class StatisticAPI {
     ) {
         ProjectDistrict projectDistrict = projectDistrictService.findById(
                 Long.parseLong(projectDistrictId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Quận / Huyện / Thành phố không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Quận / Huyện / Thành phố không tồn tại"));
 
         List<StatisticProjectWardResponse> projectWardResponses = projectWardService.findAllStatisticByProjectDistrict(
                 projectDistrict
@@ -180,9 +168,7 @@ public class StatisticAPI {
     ) {
         ProjectProvince projectProvince = projectProvinceService.findById(
                 Long.parseLong(projectProvinceId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Tỉnh / Thành phố không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Tỉnh / Thành phố không tồn tại"));
 
         List<StatisticProjectDistrictResponse> projectDistrictResponses = projectDistrictService.findAllStatisticByProjectProvince(
                 projectProvince
@@ -202,9 +188,7 @@ public class StatisticAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         List<StatisticProjectProvinceResponse> projectProvinceResponses = projectProvinceService.findAllStatisticByProject(
                 project

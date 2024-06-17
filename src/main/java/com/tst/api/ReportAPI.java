@@ -49,9 +49,7 @@ public class ReportAPI {
 
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 
@@ -76,9 +74,7 @@ public class ReportAPI {
 
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         List<AccessPointResponse> accessPointResponses = accessPointService.findAllAccessPointProcessingByProjectAndStatusNot(
                 project,
@@ -101,15 +97,11 @@ public class ReportAPI {
 
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         AccessPoint accessPoint = accessPointService.findById(
                 Long.parseLong(accessPointId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Đợt phân phối không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Đợt phân phối không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 
@@ -147,9 +139,7 @@ public class ReportAPI {
 
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 
@@ -173,9 +163,7 @@ public class ReportAPI {
 
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         List<TotalAccessPointHistoryResponse> accessPointHistoryResponses = accessPointHistoryService.findAllNotDoneByProject(
                 project
@@ -197,15 +185,11 @@ public class ReportAPI {
 
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         AccessPoint accessPoint = accessPointService.findById(
                 Long.parseLong(accessPointId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Đợt phân phối không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Đợt phân phối không tồn tại"));
 
         List<TotalAccessPointHistoryResponse> accessPointHistoryResponses = accessPointHistoryService.findAllNotDoneByProjectAndAccessPoint(
                 project,
@@ -228,9 +212,7 @@ public class ReportAPI {
 
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         List<ExtractFormImportedForManagerResponse> extractFormImportedForManagerResponses;
 
@@ -242,9 +224,7 @@ public class ReportAPI {
         else {
             AccessPoint accessPoint = accessPointService.findById(
                     Long.parseLong(accessPointId)
-            ).orElseThrow(() -> {
-                throw new DataInputException("Đợt phân phối không tồn tại");
-            });
+            ).orElseThrow(() -> new DataInputException("Đợt phân phối không tồn tại"));
 
             extractFormImportedForManagerResponses = accessPointHistoryService.findAllExtractFormImportedByAccessPointForManager(
                     project.getId(),
@@ -267,9 +247,7 @@ public class ReportAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 
@@ -294,9 +272,7 @@ public class ReportAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 
@@ -321,9 +297,7 @@ public class ReportAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 
@@ -348,9 +322,7 @@ public class ReportAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         User user = userService.getAuthenticatedUser();
 

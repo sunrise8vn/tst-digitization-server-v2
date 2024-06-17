@@ -54,9 +54,7 @@ public class NumberBookFileAPI {
         ProjectNumberBookFile projectNumberBookFile = projectNumberBookFileService.findByIdAndStatus(
                 Long.parseLong(id),
                 EProjectNumberBookFileStatus.NEW
-        ).orElseThrow(() -> {
-            throw new DataInputException("Tập tin không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Tập tin không tồn tại"));
 
         NumberBookFileResponse numberBookFileResponse = new NumberBookFileResponse()
                 .setId(projectNumberBookFile.getId())
@@ -117,9 +115,7 @@ public class NumberBookFileAPI {
         ProjectNumberBookFile projectNumberBookFile = projectNumberBookFileService.findByIdAndStatus(
                 Long.parseLong(id),
                 EProjectNumberBookFileStatus.ORGANIZED
-        ).orElseThrow(() -> {
-            throw new DataInputException("Tập tin không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Tập tin không tồn tại"));
 
         NumberBookFileResponse numberBookFileResponse = new NumberBookFileResponse()
                 .setId(projectNumberBookFile.getId())
@@ -179,17 +175,13 @@ public class NumberBookFileAPI {
     ) {
         ProjectNumberBookFile projectNumberBookFile = projectNumberBookFileService.findById(
                 Long.parseLong(id)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Tập tin không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Tập tin không tồn tại"));
 
         ProjectNumberBookFile projectNumberBookFileNext = projectNumberBookFileService.findNextByIdAndStatus(
                 projectNumberBookFile.getProject().getId(),
                 Long.parseLong(id),
                 EProjectNumberBookFileStatus.NEW.getValue()
-        ).orElseThrow(() -> {
-            throw new DataInputException("Không có tập tin tiếp theo");
-        });
+        ).orElseThrow(() -> new DataInputException("Không có tập tin tiếp theo"));
 
         NumberBookFileResponse numberBookFileResponse = new NumberBookFileResponse()
                 .setId(projectNumberBookFileNext.getId())
@@ -249,17 +241,13 @@ public class NumberBookFileAPI {
     ) {
         ProjectNumberBookFile projectNumberBookFile = projectNumberBookFileService.findById(
                 Long.parseLong(id)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Tập tin không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Tập tin không tồn tại"));
 
         ProjectNumberBookFile projectNumberBookFileNext = projectNumberBookFileService.findNextByIdAndStatus(
                 projectNumberBookFile.getProject().getId(),
                 Long.parseLong(id),
                 EProjectNumberBookFileStatus.ORGANIZED.getValue()
-        ).orElseThrow(() -> {
-            throw new DataInputException("Không có tập tin tiếp theo");
-        });
+        ).orElseThrow(() -> new DataInputException("Không có tập tin tiếp theo"));
 
         NumberBookFileResponse numberBookFileResponse = new NumberBookFileResponse()
                 .setId(projectNumberBookFileNext.getId())
@@ -321,9 +309,7 @@ public class NumberBookFileAPI {
         ProjectWard projectWard = projectWardService.findByIdAndProjectId(
                 Long.parseLong(wardId),
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Phường / xã / thị trấn không thuộc dự án này");
-        });
+        ).orElseThrow(() -> new DataInputException("Phường / xã / thị trấn không thuộc dự án này"));
 
         List<NumberBookFileListResponse> numberBookFileListResponses = projectNumberBookFileService.findAllNumberBookFileByStatus(
                 projectWard,
@@ -347,9 +333,7 @@ public class NumberBookFileAPI {
         ProjectWard projectWard = projectWardService.findByIdAndProjectId(
                 Long.parseLong(wardId),
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Phường / xã / thị trấn không thuộc dự án này");
-        });
+        ).orElseThrow(() -> new DataInputException("Phường / xã / thị trấn không thuộc dự án này"));
 
         List<NumberBookFileListResponse> numberBookFileListResponses = projectNumberBookFileService.findAllNumberBookFileByStatus(
                 projectWard,
@@ -404,9 +388,7 @@ public class NumberBookFileAPI {
         ProjectNumberBook projectNumberBook = projectNumberBookService.findByIdAndStatus(
                 Long.parseLong(projectNumberBookFileDTO.getNumber_book_id()),
                 EProjectNumberBookStatus.ACCEPT
-        ).orElseThrow(() -> {
-            throw new DataInputException("ID quyển số không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("ID quyển số không tồn tại"));
 
         List<String> failedFiles = projectNumberBookFileService.create(
                 files,
@@ -448,9 +430,7 @@ public class NumberBookFileAPI {
         ProjectNumberBookFile projectNumberBookFile = projectNumberBookFileService.findByIdAndStatus(
                 Long.parseLong(projectNumberBookFileOrganizationDTO.getId()),
                 EProjectNumberBookFileStatus.NEW
-        ).orElseThrow(() -> {
-            throw new DataInputException("ID tập tin không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("ID tập tin không tồn tại"));
 
         projectNumberBookFileService.organization(
                 projectNumberBookFile,
@@ -476,9 +456,7 @@ public class NumberBookFileAPI {
         ProjectNumberBookFile projectNumberBookFile = projectNumberBookFileService.findByIdAndStatus(
                 Long.parseLong(id),
                 EProjectNumberBookFileStatus.ORGANIZED
-        ).orElseThrow(() -> {
-            throw new DataInputException("ID tập tin không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("ID tập tin không tồn tại"));
 
         projectNumberBookFileService.approve(projectNumberBookFile);
 

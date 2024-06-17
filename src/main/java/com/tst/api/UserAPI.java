@@ -97,9 +97,7 @@ public class UserAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-           throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         List<UserAssignResponse> users = projectUserService.findAllByProject(project);
 
@@ -117,9 +115,7 @@ public class UserAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         List<UserAssignResponse> users = projectUserService.findAllByProject(project);
 
@@ -145,15 +141,11 @@ public class UserAPI {
     ) {
         Project project = projectService.findById(
                 Long.parseLong(projectId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("Dự án không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
         AccessPoint accessPoint = accessPointService.findById(
                 Long.parseLong(accessPointId)
-        ).orElseThrow(() -> {
-            throw new DataInputException("ID điểm truy cập không tồn tại");
-        });
+        ).orElseThrow(() -> new DataInputException("ID điểm truy cập không tồn tại"));
 
         List<UserAssignResponse> users = projectUserService.findAllByProjectAndAccessPoint(project, accessPoint);
 
