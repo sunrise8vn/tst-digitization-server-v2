@@ -7,9 +7,12 @@ import com.tst.models.entities.User;
 import com.tst.models.responses.project.ProjectResponse;
 import com.tst.models.responses.user.UserAssignResponse;
 import com.tst.repositories.ProjectUserRepository;
+import com.tst.services.BatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +21,8 @@ import java.util.Optional;
 public class ProjectUserService implements IProjectUserService {
 
     private final ProjectUserRepository projectUserRepository;
+
+    private final BatchService batchService;
 
 
     @Override
@@ -43,6 +48,24 @@ public class ProjectUserService implements IProjectUserService {
     @Override
     public List<UserAssignResponse> findAllByProjectAndAccessPoint(Project project, AccessPoint accessPoint) {
         return projectUserRepository.findAllByProjectAndAccessPoint(project, accessPoint);
+    }
+
+    @Override
+    @Transactional
+    public void updateUsers(Project project, List<User> users) {
+        projectUserRepository.deleteAllByProject(project);
+
+        List<ProjectUser> projectUsers = new ArrayList<>();
+
+        for (User user : users) {
+            ProjectUser projectUser = new ProjectUser()
+                    .setProject(project)
+                    .setUser(user);
+
+            projectUsers.add(projectUser);
+        }
+
+        batchService.batchCreate(projectUsers);
     }
 
     @Override

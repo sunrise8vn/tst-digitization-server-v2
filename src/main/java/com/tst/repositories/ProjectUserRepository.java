@@ -63,5 +63,6 @@ public interface ProjectUserRepository extends JpaRepository<ProjectUser, Long> 
     List<UserAssignResponse> findAllByProjectAndAccessPoint(Project project, AccessPoint accessPoint);
 
 
+    void deleteAllByProject(Project project);
 
 }

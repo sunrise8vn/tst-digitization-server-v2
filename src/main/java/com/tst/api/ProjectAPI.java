@@ -766,4 +766,49 @@ public class ProjectAPI {
                 .build());
     }
 
+    // Cập nhật danh sách người dùng trong dự án
+    @PatchMapping("/update-users/{projectId}")
+    public ResponseEntity<ResponseObject> extractData(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @Validated @RequestBody AddUsersToProjectDTO addUsersToProjectDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi cập nhật danh sách người dùng trong dự án")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
+
+        List<User> users = new ArrayList<>();
+
+        for (String username : addUsersToProjectDTO.getUsers()) {
+            Optional<User> userOptional = userService.findByUsername(username);
+
+            if (userOptional.isEmpty()) {
+                throw new PermissionDenyException("Tài khoản " + username + " không tồn tại");
+            }
+
+            if (users.contains(userOptional.get())) {
+                throw new DataInputException("Danh sách người dùng không được trùng nhau");
+            }
+
+            users.add(userOptional.get());
+        }
+
+        projectUserService.updateUsers(project, users);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Cập nhật danh sách người dùng trong dự án thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .build());
+    }
+
 }
