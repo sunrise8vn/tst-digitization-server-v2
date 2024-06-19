@@ -21,4 +21,6 @@ public interface IProjectUserService extends IGeneralService<ProjectUser, Long> 
 
     List<UserAssignResponse> findAllByProjectAndAccessPoint(Project project, AccessPoint accessPoint);
 
+    void updateUsers(Project project, List<User> users);
+
 }
