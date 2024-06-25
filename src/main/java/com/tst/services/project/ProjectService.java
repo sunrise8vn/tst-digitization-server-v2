@@ -4,6 +4,8 @@ import com.tst.exceptions.DataInputException;
 import com.tst.models.dtos.compare.*;
 import com.tst.models.dtos.project.ExtractFormCountTypeDTO;
 import com.tst.models.dtos.project.PaperSizeDTO;
+import com.tst.models.dtos.project.ProjectCreateDTO;
+import com.tst.models.dtos.project.ProjectUpdateDTO;
 import com.tst.models.entities.*;
 import com.tst.models.entities.extractFull.*;
 import com.tst.models.entities.extractShort.*;
@@ -29,6 +31,7 @@ import com.tst.services.user.IUserService;
 import com.tst.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,6 +47,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class ProjectService implements IProjectService {
+
+    @Value("${server.digitization-folder-prefix}")
+    private String digitizationFolderPrefix;
 
     private final AccessPointRepository accessPointRepository;
     private final AccessPointHistoryRepository accessPointHistoryRepository;
@@ -88,7 +94,7 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
-    public Optional<ProjectResponse> findProjectResponseByProjectAndUser(Project project, User user) {
+    public Optional<ProjectByUserResponse> findProjectResponseByProjectAndUser(Project project, User user) {
         return projectRepository.findProjectResponseByProjectAndUser(project, user);
     }
 
@@ -149,6 +155,11 @@ public class ProjectService implements IProjectService {
 
         return new TotalCountExtractFormNewResponse()
                 .setTotalExtractFormNew(totalExtractFormNew);
+    }
+
+    @Override
+    public List<ProjectResponse> findAllProjectsResponse() {
+        return projectRepository.findAllProjectsResponse();
     }
 
     @Override
@@ -1556,6 +1567,33 @@ public class ProjectService implements IProjectService {
                 .setCode(numberBookCode)
                 .setStatus(EProjectNumberBookStatus.NEW);
         projectNumberBookRepository.save(projectNumberBook);
+    }
+
+    @Override
+    public void create(ProjectCreateDTO projectCreateDTO) {
+        String code = projectCreateDTO.getCode();
+
+        code = appUtils.replaceNonEnglishChar(code);
+        code = appUtils.removeNonAlphanumeric(code);
+        code = code.replaceAll("-", "_");
+        code = code.toUpperCase();
+
+        String folder = digitizationFolderPrefix + "_" + code;
+        folder = folder.toUpperCase();
+
+        Project project = new Project()
+                .setName(projectCreateDTO.getName())
+                .setCode(code)
+                .setFolder(folder)
+                .setDescription(projectCreateDTO.getDescription());
+        projectRepository.save(project);
+    }
+
+    @Override
+    public void update(Project project, ProjectUpdateDTO projectUpdateDTO) {
+        project.setName(projectUpdateDTO.getName());
+        project.setDescription(projectUpdateDTO.getDescription());
+        projectRepository.save(project);
     }
 
     @Override

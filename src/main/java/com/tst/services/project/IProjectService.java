@@ -1,6 +1,8 @@
 package com.tst.services.project;
 
 import com.tst.models.dtos.project.ExtractFormCountTypeDTO;
+import com.tst.models.dtos.project.ProjectCreateDTO;
+import com.tst.models.dtos.project.ProjectUpdateDTO;
 import com.tst.models.entities.*;
 import com.tst.models.entities.locationRegion.LocationDistrict;
 import com.tst.models.entities.locationRegion.LocationProvince;
@@ -25,13 +27,15 @@ import java.util.Optional;
 
 public interface IProjectService extends IGeneralService<Project, Long> {
 
-    Optional<ProjectResponse> findProjectResponseByProjectAndUser(Project project, User user);
+    Optional<ProjectByUserResponse> findProjectResponseByProjectAndUser(Project project, User user);
 
     TotalCountExtractFormResponse getTotalCountExtractForm(Project project, AccessPoint accessPoint);
 
     TotalCountExtractFormNewResponse getTotalCountExtractFormNew(Project project, AccessPoint accessPoint);
 
     CountExtractFormNotAssignResponse getCountExtractFormNotAssign(Project project);
+
+    List<ProjectResponse> findAllProjectsResponse();
 
     List<ExtractShortResponse> findAllExtractShortResponse(Project project, User importer);
 
@@ -119,6 +123,9 @@ public interface IProjectService extends IGeneralService<Project, Long> {
 
     List<ExtractFormCheckedMatchingResponse> findAllExtractFormCheckedMatching(Project project, EInputStatus status);
 
+    void create(ProjectCreateDTO projectCreateDTO);
+
+    void update(Project project, ProjectUpdateDTO projectUpdateDTO);
 
     void updatePaperCountSize(Project project);
 
