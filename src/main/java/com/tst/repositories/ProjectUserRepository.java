@@ -4,7 +4,7 @@ import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectUser;
 import com.tst.models.entities.User;
-import com.tst.models.responses.project.ProjectResponse;
+import com.tst.models.responses.project.ProjectByUserResponse;
 import com.tst.models.responses.user.UserAssignResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +17,7 @@ public interface ProjectUserRepository extends JpaRepository<ProjectUser, Long> 
     Optional<ProjectUser> findByProjectAndUser(Project project, User user);
 
 
-    @Query("SELECT NEW com.tst.models.responses.project.ProjectResponse (" +
+    @Query("SELECT NEW com.tst.models.responses.project.ProjectByUserResponse (" +
                 "prj.id, " +
                 "prj.name, " +
                 "prj.description" +
@@ -27,7 +27,7 @@ public interface ProjectUserRepository extends JpaRepository<ProjectUser, Long> 
             "ON prju.project = prj " +
             "WHERE prju.user = :user"
     )
-    List<ProjectResponse> findAllProjectResponseByUser(User user);
+    List<ProjectByUserResponse> findAllProjectsByUserResponse(User user);
 
 
     @Query("SELECT NEW com.tst.models.responses.user.UserAssignResponse (" +

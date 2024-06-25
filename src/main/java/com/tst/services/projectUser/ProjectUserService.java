@@ -4,7 +4,7 @@ import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
 import com.tst.models.entities.ProjectUser;
 import com.tst.models.entities.User;
-import com.tst.models.responses.project.ProjectResponse;
+import com.tst.models.responses.project.ProjectByUserResponse;
 import com.tst.models.responses.user.UserAssignResponse;
 import com.tst.repositories.ProjectUserRepository;
 import com.tst.services.BatchService;
@@ -36,8 +36,8 @@ public class ProjectUserService implements IProjectUserService {
     }
 
     @Override
-    public List<ProjectResponse> findAllProjectResponseByUser(User user) {
-        return projectUserRepository.findAllProjectResponseByUser(user);
+    public List<ProjectByUserResponse> findAllProjectsByUserResponse(User user) {
+        return projectUserRepository.findAllProjectsByUserResponse(user);
     }
 
     @Override

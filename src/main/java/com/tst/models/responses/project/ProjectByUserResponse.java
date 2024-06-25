@@ -10,17 +10,9 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class ProjectResponse {
+public class ProjectByUserResponse {
     private Long id;
     private String name;
-    private String folder;
     private String description;
-    private Long a0;
-    private Long a1;
-    private Long a2;
-    private Long a3;
-    private Long a4;
-    private Long convertA4;
-    private Long totalSize;
 
 }

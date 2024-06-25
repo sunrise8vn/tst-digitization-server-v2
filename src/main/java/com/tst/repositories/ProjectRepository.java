@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 
-    @Query("SELECT NEW com.tst.models.responses.project.ProjectResponse (" +
+    @Query("SELECT NEW com.tst.models.responses.project.ProjectByUserResponse (" +
                 "prj.id, " +
                 "prj.name, " +
                 "prj.description" +
@@ -24,7 +24,26 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "AND pu.user = :user " +
             "AND prj = :project"
     )
-    Optional<ProjectResponse> findProjectResponseByProjectAndUser(Project project, User user);
+    Optional<ProjectByUserResponse> findProjectResponseByProjectAndUser(Project project, User user);
+
+
+    @Query("SELECT NEW com.tst.models.responses.project.ProjectResponse (" +
+                "prj.id, " +
+                "prj.name, " +
+                "prj.folder, " +
+                "prj.description, " +
+                "prj.a0, " +
+                "prj.a1, " +
+                "prj.a2, " +
+                "prj.a3, " +
+                "prj.a4, " +
+                "prj.convertA4, " +
+                "prj.totalSize" +
+            ") " +
+            "FROM Project AS prj " +
+            "WHERE prj.deleted = FALSE"
+    )
+    List<ProjectResponse> findAllProjectsResponse();
 
 
     @Query("SELECT NEW com.tst.models.responses.project.RegistrationPointResponse (" +

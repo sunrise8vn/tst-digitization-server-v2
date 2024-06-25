@@ -1,6 +1,7 @@
 server:
   port: 9347
   root-folder: storage
+  digitization-folder-prefix: CSDL_SOHOA
   excel-folder: excel
   zip-folder: zip
   compression:

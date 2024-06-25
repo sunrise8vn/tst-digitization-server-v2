@@ -10,6 +10,7 @@ import com.tst.models.entities.locationRegion.LocationProvince;
 import com.tst.models.entities.locationRegion.LocationWard;
 import com.tst.models.enums.EInputStatus;
 import com.tst.models.enums.ERegistrationType;
+import com.tst.models.enums.EUserRole;
 import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.locationRegion.LocationResponse;
 import com.tst.models.responses.project.*;
@@ -67,15 +68,90 @@ public class ProjectAPI {
 
     @GetMapping("/get-all")
     public ResponseEntity<ResponseObject> getAllProjects() {
-        User user = userService.getAuthenticatedUser();
-
-        List<ProjectResponse> projectResponses = projectUserService.findAllProjectResponseByUser(user);
+        List<ProjectResponse> projectsResponse = projectService.findAllProjectsResponse();
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Lấy danh sách dự án thành công")
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
-                .data(projectResponses)
+                .data(projectsResponse)
+                .build());
+    }
+
+    @GetMapping("/get-all-by-user")
+    public ResponseEntity<ResponseObject> getAllProjectsByUser() {
+        User user = userService.getAuthenticatedUser();
+
+        List<ProjectByUserResponse> projectByUserResponse = projectUserService.findAllProjectsByUserResponse(user);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy danh sách dự án theo người dùng thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(projectByUserResponse)
+                .build());
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<ResponseObject> createProject(
+            @Validated @RequestBody ProjectCreateDTO projectCreateDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Thêm mới dự án không thành công")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        User user = userService.getAuthenticatedUser();
+
+        if (!user.getRole().getName().equals(EUserRole.ROLE_SUPER_ADMIN)) {
+            throw new PermissionDenyException("Bạn không đủ quyền hạn để thực hiện chức năng này");
+        }
+
+        projectService.create(projectCreateDTO);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Thêm mới dự án thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .build());
+    }
+
+    @PatchMapping("/update/{projectId}")
+    public ResponseEntity<ResponseObject> updateProject(
+            @Validated @RequestBody ProjectUpdateDTO projectUpdateDTO,
+            @PathVariable @NotEmpty(message = "ID dự án là bắt buộc") String projectId,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Cập nhật dự án không thành công")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        User user = userService.getAuthenticatedUser();
+
+        if (!user.getRole().getName().equals(EUserRole.ROLE_SUPER_ADMIN)) {
+            throw new PermissionDenyException("Bạn không đủ quyền hạn để thực hiện chức năng này");
+        }
+
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
+
+        projectService.update(project, projectUpdateDTO);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Cập nhật dự án thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
                 .build());
     }
 
@@ -451,7 +527,7 @@ public class ProjectAPI {
 
         User user = userService.getAuthenticatedUser();
 
-        Optional<ProjectResponse> projectResponse = projectService.findProjectResponseByProjectAndUser(project, user);
+        Optional<ProjectByUserResponse> projectResponse = projectService.findProjectResponseByProjectAndUser(project, user);
 
         if (projectResponse.isEmpty()) {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
@@ -485,7 +561,7 @@ public class ProjectAPI {
 
         User user = userService.getAuthenticatedUser();
 
-        Optional<ProjectResponse> projectResponse = projectService.findProjectResponseByProjectAndUser(project, user);
+        Optional<ProjectByUserResponse> projectResponse = projectService.findProjectResponseByProjectAndUser(project, user);
 
         if (projectResponse.isEmpty()) {
             throw new PermissionDenyException("Bạn không thuộc dự án này");
