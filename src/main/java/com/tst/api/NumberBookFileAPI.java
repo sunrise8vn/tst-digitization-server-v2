@@ -21,6 +21,7 @@ import com.tst.utils.FileUtils;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -348,7 +349,7 @@ public class NumberBookFileAPI {
                 .build());
     }
 
-    @PostMapping("/upload-pdf")
+    @PostMapping(value = "/upload-pdf", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseObject> uploadPdfFiles(
             @Validated ProjectNumberBookFileDTO projectNumberBookFileDTO,
             BindingResult result

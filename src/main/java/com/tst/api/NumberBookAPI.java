@@ -24,6 +24,7 @@ import com.tst.utils.FileUtils;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -385,7 +386,7 @@ public class NumberBookAPI {
                 .build());
     }
 
-    @PostMapping("/create")
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseObject> create(
             @Validated RegistrationNumberBookDTO registrationNumberBookDTO,
             BindingResult result
