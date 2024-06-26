@@ -7,6 +7,7 @@ import com.tst.models.dtos.user.UserLoginDTO;
 import com.tst.models.entities.Token;
 import com.tst.models.entities.User;
 import com.tst.models.entities.UserInfo;
+import com.tst.models.enums.EUserRole;
 import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.auth.AuthLoginResponse;
 import com.tst.models.responses.auth.AuthTokenResponse;
@@ -23,6 +24,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -121,11 +125,19 @@ public class AuthAPI {
 
     @PostMapping("/verify-token")
     public ResponseEntity<ResponseObject> verifyToken() {
+
+        User user = userService.getAuthenticatedUser();
+        EUserRole userRole = user.getRole().getName();
+
+        Map<String, String> data = new HashMap<>();
+        data.put("role", userRole.getValue());
+
         return ResponseEntity.ok().body(
                 ResponseObject.builder()
                         .message(localizationUtils.getLocalizedMessage(MessageKeys.VERIFY_TOKEN_SUCCESSFULLY))
                         .status(HttpStatus.OK.value())
                         .statusText(HttpStatus.OK)
+                        .data(data)
                         .build());
     }
 
