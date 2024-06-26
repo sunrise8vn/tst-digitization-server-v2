@@ -12,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -61,11 +59,10 @@ public class ProjectUserService implements IProjectUserService {
             ProjectUser projectUser = new ProjectUser()
                     .setProject(project)
                     .setUser(user);
-
             projectUsers.add(projectUser);
         }
 
-        batchService.batchCreate(projectUsers);
+        projectUserRepository.saveAllAndFlush(projectUsers);
     }
 
     @Override
