@@ -858,6 +858,10 @@ public class ProjectAPI {
                     .build());
         }
 
+        if (addUsersToProjectDTO.getUsers().isEmpty()) {
+            throw new DataInputException("Danh sách người dùng không được trống");
+        }
+
         Project project = projectService.findById(
                 Long.parseLong(projectId)
         ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));

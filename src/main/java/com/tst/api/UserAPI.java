@@ -4,8 +4,6 @@ import com.tst.components.LocalizationUtils;
 import com.tst.exceptions.DataInputException;
 import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
-import com.tst.models.entities.ProjectUser;
-import com.tst.models.entities.User;
 import com.tst.models.responses.PaginationResponseObject;
 import com.tst.models.responses.PagingResponseObject;
 import com.tst.models.responses.ResponseObject;
@@ -99,7 +97,7 @@ public class UserAPI {
                 Long.parseLong(projectId)
         ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
-        List<UserAssignResponse> users = projectUserService.findAllByProject(project);
+        List<UserAssignResponse> users = projectUserService.findAllUserAssignByProject(project);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Get user list with project successfully")
@@ -117,7 +115,7 @@ public class UserAPI {
                 Long.parseLong(projectId)
         ).orElseThrow(() -> new DataInputException("Dự án không tồn tại"));
 
-        List<UserAssignResponse> users = projectUserService.findAllByProject(project);
+        List<UserAssignResponse> users = projectUserService.findAllUserAssignByProject(project);
 
         Long remainingTotal = projectService.getRemainingTotal(project);
 

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -39,8 +40,8 @@ public class ProjectUserService implements IProjectUserService {
     }
 
     @Override
-    public List<UserAssignResponse> findAllByProject(Project project) {
-        return projectUserRepository.findAllByProject(project);
+    public List<UserAssignResponse> findAllUserAssignByProject(Project project) {
+        return projectUserRepository.findAllUserAssignByProject(project);
     }
 
     @Override
@@ -50,19 +51,33 @@ public class ProjectUserService implements IProjectUserService {
 
     @Override
     @Transactional
-    public void updateUsers(Project project, List<User> users) {
-        projectUserRepository.deleteAllByProject(project);
+    public void updateUsers(Project project, List<User> newUsers) {
+        List<ProjectUser> existingProjectUsers = projectUserRepository.findAllByProject(project);
 
-        List<ProjectUser> projectUsers = new ArrayList<>();
+        // Tạo danh sách các users hiện có
+        List<User> existingUsers = existingProjectUsers.stream()
+                .map(ProjectUser::getUser)
+                .toList();
 
-        for (User user : users) {
-            ProjectUser projectUser = new ProjectUser()
-                    .setProject(project)
-                    .setUser(user);
-            projectUsers.add(projectUser);
-        }
+        // Tạo danh sách các users cần xóa
+        List<User> usersToDelete = existingUsers.stream()
+                .filter(user -> !newUsers.contains(user))
+                .toList();
 
-        projectUserRepository.saveAllAndFlush(projectUsers);
+        // Tạo danh sách các users cần thêm mới
+        List<User> usersToAdd = newUsers.stream()
+                .filter(user -> !existingUsers.contains(user))
+                .toList();
+
+        // Xóa các users cũ
+        projectUserRepository.deleteAllByProjectAndUserIn(project, usersToDelete);
+
+        // Thêm mới các users mới
+        List<ProjectUser> newProjectUsers = usersToAdd.stream()
+                .map(user -> new ProjectUser().setProject(project).setUser(user))
+                .collect(Collectors.toList());
+
+        projectUserRepository.saveAll(newProjectUsers);
     }
 
     @Override
