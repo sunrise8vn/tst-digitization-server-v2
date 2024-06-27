@@ -6,8 +6,6 @@ import com.tst.models.entities.ProjectUser;
 import com.tst.models.entities.User;
 import com.tst.models.responses.project.ProjectByUserResponse;
 import com.tst.models.responses.user.UserAssignResponse;
-import org.hibernate.annotations.OnDelete;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -45,7 +43,10 @@ public interface ProjectUserRepository extends JpaRepository<ProjectUser, Long> 
             "LEFT JOIN UserInfo AS ui " +
             "ON ui.user = us"
     )
-    List<UserAssignResponse> findAllByProject(Project project);
+    List<UserAssignResponse> findAllUserAssignByProject(Project project);
+
+
+    List<ProjectUser> findAllByProject(Project project);
 
 
     @Query("SELECT NEW com.tst.models.responses.user.UserAssignResponse (" +
@@ -66,6 +67,7 @@ public interface ProjectUserRepository extends JpaRepository<ProjectUser, Long> 
     List<UserAssignResponse> findAllByProjectAndAccessPoint(Project project, AccessPoint accessPoint);
 
 
-    void deleteAllByProject(Project project);
+    @Modifying
+    void deleteAllByProjectAndUserIn(Project project, List<User> user);
 
 }

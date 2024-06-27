@@ -17,7 +17,7 @@ public interface IProjectUserService extends IGeneralService<ProjectUser, Long> 
 
     List<ProjectByUserResponse> findAllProjectsByUserResponse(User user);
 
-    List<UserAssignResponse> findAllByProject(Project project);
+    List<UserAssignResponse> findAllUserAssignByProject(Project project);
 
     List<UserAssignResponse> findAllByProjectAndAccessPoint(Project project, AccessPoint accessPoint);
 
