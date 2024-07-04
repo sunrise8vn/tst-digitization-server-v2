@@ -125,6 +125,14 @@ public class AppUtils {
         return pattern.matcher(input).matches();
     }
 
+    public boolean isValidPhoneNumber(String input) {
+        String regex = "^0(\\d{9})$";
+
+        Pattern pattern = Pattern.compile(regex);
+
+        return pattern.matcher(input).matches();
+    }
+
     public boolean isValidEvenNumber(String input) {
         String regex = "^(?!0+$)[0-9]*[02468]$";
 

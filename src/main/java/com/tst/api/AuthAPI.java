@@ -1,18 +1,19 @@
 package com.tst.api;
 
 import com.tst.components.LocalizationUtils;
+import com.tst.exceptions.DataInputException;
+import com.tst.exceptions.PermissionDenyException;
 import com.tst.models.dtos.auth.RefreshTokenDTO;
 import com.tst.models.dtos.user.UserCreateDTO;
 import com.tst.models.dtos.user.UserLoginDTO;
-import com.tst.models.entities.Token;
-import com.tst.models.entities.User;
-import com.tst.models.entities.UserInfo;
+import com.tst.models.entities.*;
 import com.tst.models.enums.EUserRole;
 import com.tst.models.responses.ResponseObject;
 import com.tst.models.responses.auth.AuthLoginResponse;
 import com.tst.models.responses.auth.AuthTokenResponse;
 import com.tst.models.responses.auth.AuthUserResponse;
-import com.tst.models.responses.user.UserRegisterResponse;
+import com.tst.services.project.IProjectService;
+import com.tst.services.role.IRoleService;
 import com.tst.services.token.ITokenService;
 import com.tst.services.user.IUserService;
 import com.tst.utils.AppUtils;
@@ -34,7 +35,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthAPI {
 
+    private final IProjectService projectService;
     private final IUserService userService;
+    private final IRoleService roleService;
+
     private final LocalizationUtils localizationUtils;
     private final AppUtils appUtils;
     private final ITokenService tokenService;
@@ -54,7 +58,7 @@ public class AuthAPI {
                     .build());
         }
 
-        if (!userCreateDTO.getPassword().equals(userCreateDTO.getRetype_password())) {
+        if (!userCreateDTO.getPassword().equals(userCreateDTO.getRetypePassword())) {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .message(localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_FAILED))
                     .status(HttpStatus.BAD_REQUEST.value())
@@ -63,14 +67,32 @@ public class AuthAPI {
                     .build());
         }
 
-        User user = userService.createUser(userCreateDTO);
+        Role userRoleCreate = roleService.findByCodeNumber(
+                Integer.parseInt(userCreateDTO.getRoleCode())
+        ).orElseThrow(() -> new DataInputException("Mã vai trò không tồn tại"));
+
+        Project project = projectService.findById(
+                Long.parseLong(userCreateDTO.getProjectId())
+        ).orElseThrow(() -> new DataInputException("Mã dự án không tồn tại"));
+
+        User user = userService.getAuthenticatedUser();
+
+        Role userRole = user.getRole();
+
+        Integer roleCodeCreate = userRoleCreate.getCodeNumber();
+        Integer roleCode = userRole.getCodeNumber();
+
+        if (roleCodeCreate < roleCode) {
+            throw new PermissionDenyException("Bạn không đủ quyền hạn để tạo tài khoản cấp cao");
+        }
+
+        userService.createUser(userCreateDTO, userRoleCreate, project);
 
         return new ResponseEntity<>(
                 ResponseObject.builder()
                 .message(localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_SUCCESSFULLY))
                 .status(HttpStatus.CREATED.value())
                 .statusText(HttpStatus.CREATED)
-                .data(UserRegisterResponse.fromUser(user))
                 .build(),
                 HttpStatus.CREATED
         );

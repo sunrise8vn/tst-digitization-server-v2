@@ -20,6 +20,11 @@ public class RoleService implements IRoleService {
     }
 
     @Override
+    public Optional<Role> findByCodeNumber(Integer codeNumber) {
+        return roleRepository.findByCodeNumber(codeNumber);
+    }
+
+    @Override
     public void delete(Role role) {
 
     }

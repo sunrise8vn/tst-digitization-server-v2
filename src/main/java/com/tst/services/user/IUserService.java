@@ -1,6 +1,8 @@
 package com.tst.services.user;
 
 import com.tst.models.dtos.user.UserCreateDTO;
+import com.tst.models.entities.Project;
+import com.tst.models.entities.Role;
 import com.tst.models.entities.User;
 import com.tst.models.responses.user.UserResponse;
 import com.tst.services.IGeneralService;
@@ -24,6 +26,6 @@ public interface IUserService extends IGeneralService<User, String> {
 
     Page<UserResponse> findAllUserResponse(String keyWord, Pageable pageable);
 
-    User createUser(UserCreateDTO userCreateDTO);
+    void createUser(UserCreateDTO userCreateDTO, Role role, Project project);
 
 }
