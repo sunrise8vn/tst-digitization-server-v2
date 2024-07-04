@@ -170,7 +170,7 @@ public class UserAPI {
     ) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
-                    .message(localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_FAILED))
+                    .message("Lỗi cập nhật thông tin")
                     .status(HttpStatus.BAD_REQUEST.value())
                     .statusText(HttpStatus.BAD_REQUEST)
                     .data(appUtils.mapErrorToResponse(result))
