@@ -2,8 +2,11 @@ package com.tst.api;
 
 import com.tst.components.LocalizationUtils;
 import com.tst.exceptions.DataInputException;
+import com.tst.models.dtos.user.UserUpdateInfoDTO;
+import com.tst.models.dtos.user.UserUpdatePasswordDTO;
 import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.User;
 import com.tst.models.responses.PaginationResponseObject;
 import com.tst.models.responses.PagingResponseObject;
 import com.tst.models.responses.ResponseObject;
@@ -14,6 +17,8 @@ import com.tst.services.accessPoint.IAccessPointService;
 import com.tst.services.project.IProjectService;
 import com.tst.services.projectUser.IProjectUserService;
 import com.tst.services.user.IUserService;
+import com.tst.services.userInfo.IUserInfoService;
+import com.tst.utils.AppUtils;
 import com.tst.utils.MessageKeys;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +28,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,9 +42,12 @@ public class UserAPI {
 
     private final LocalizationUtils localizationUtils;
     private final IUserService userService;
+    private final IUserInfoService userInfoService;
     private final IProjectService projectService;
     private final IProjectUserService projectUserService;
     private final IAccessPointService accessPointService;
+
+    private final AppUtils appUtils;
 
 
     @GetMapping("")
@@ -150,6 +160,69 @@ public class UserAPI {
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .data(users)
+                .build());
+    }
+
+    @PatchMapping("/update-info")
+    public ResponseEntity<ResponseObject> updateInfo(
+            @Validated @RequestBody UserUpdateInfoDTO userUpdateInfoDTO,
+            BindingResult result
+    ) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message(localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_FAILED))
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        if (!appUtils.isValidPhoneNumber(userUpdateInfoDTO.getPhoneNumber())) {
+            throw new DataInputException("Số điện thoại không hợp ệ");
+        }
+
+        User user = userService.getAuthenticatedUser();
+
+        userInfoService.updateInfo(user, userUpdateInfoDTO);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Cập nhật thông tin thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .build());
+    }
+
+    @PatchMapping("/change-password")
+    public ResponseEntity<ResponseObject> changePassword(
+            @Validated @RequestBody UserUpdatePasswordDTO userUpdatePasswordDTO,
+            BindingResult result
+    ) {
+        if (result.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi cập nhật mật khẩu")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        if (!userUpdatePasswordDTO.getPassword().equals(userUpdatePasswordDTO.getRetypePassword())) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi cập nhật mật khẩu")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(localizationUtils.getLocalizedMessage(MessageKeys.PASSWORD_NOT_MATCH))
+                    .build());
+        }
+
+        User user = userService.getAuthenticatedUser();
+
+        userService.changePassword(user, userUpdatePasswordDTO.getPassword());
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Cập nhật mật khẩu thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
                 .build());
     }
 }

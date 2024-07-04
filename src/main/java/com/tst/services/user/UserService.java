@@ -29,7 +29,6 @@ public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final UserInfoRepository userInfoRepository;
-    private final RoleRepository roleRepository;
     private final ProjectUserRepository projectUserRepository;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
@@ -140,9 +139,9 @@ public class UserService implements IUserService {
             String username,
             String password
     ) {
-        User existingUser = userRepository.findByUsernameOrEmailOrPhoneNumber(username).orElseThrow(() -> {
-            throw new UnauthorizedException(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_USERNAME_PASSWORD));
-        });
+        User existingUser = userRepository.findByUsernameOrEmailOrPhoneNumber(
+                username
+        ).orElseThrow(() -> new UnauthorizedException(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_USERNAME_PASSWORD)));
 
         if (!existingUser.isActivated()) {
             throw new UnauthorizedException(localizationUtils.getLocalizedMessage(MessageKeys.USER_IS_LOCKED));
@@ -169,6 +168,13 @@ public class UserService implements IUserService {
         }
 
         return jwtTokenUtil.generateToken(existingUser, fullName);
+    }
+
+    @Override
+    public void changePassword(User user, String password) {
+        String encodedPassword = passwordEncoder.encode(password);
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
     }
 
     @Override
