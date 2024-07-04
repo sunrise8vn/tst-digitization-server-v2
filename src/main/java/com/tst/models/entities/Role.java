@@ -23,4 +23,7 @@ public class Role {
     @Column(nullable = false, unique = true)
     private EUserRole name;
 
+    @Column(name = "code_number", nullable = false, unique = true)
+    private Integer codeNumber;
+
 }

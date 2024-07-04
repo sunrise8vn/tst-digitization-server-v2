@@ -4,16 +4,11 @@ import com.tst.components.JwtTokenUtils;
 import com.tst.components.LocalizationUtils;
 import com.tst.models.dtos.user.UserCreateDTO;
 import com.tst.exceptions.*;
-import com.tst.models.entities.Role;
-import com.tst.models.entities.Token;
-import com.tst.models.entities.User;
-import com.tst.models.entities.UserInfo;
+import com.tst.models.entities.*;
 import com.tst.models.enums.EUserRole;
 import com.tst.models.responses.user.UserResponse;
-import com.tst.repositories.RoleRepository;
-import com.tst.repositories.TokenRepository;
-import com.tst.repositories.UserInfoRepository;
-import com.tst.repositories.UserRepository;
+import com.tst.repositories.*;
+import com.tst.utils.AppUtils;
 import com.tst.utils.MessageKeys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,14 +26,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class UserService implements IUserService {
+
     private final UserRepository userRepository;
     private final UserInfoRepository userInfoRepository;
     private final RoleRepository roleRepository;
+    private final ProjectUserRepository projectUserRepository;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
     private final LocalizationUtils localizationUtils;
+    private final AppUtils appUtils;
 
 
     @Override
@@ -88,16 +86,12 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public User createUser(UserCreateDTO userCreateDTO) {
+    public void createUser(UserCreateDTO userCreateDTO, Role role, Project project) {
         String username = userCreateDTO.getUsername();
 
         if (userRepository.existsByUsername(username)) {
             throw new DataExistsException(localizationUtils.getLocalizedMessage(MessageKeys.USER_IS_EXISTING));
         }
-
-        Role role = roleRepository.findById(userCreateDTO.getRole_id())
-                .orElseThrow(() -> new DataInputException(
-                        localizationUtils.getLocalizedMessage(MessageKeys.ROLE_DOES_NOT_EXISTS)));
 
         if (role.getName().equals(EUserRole.ROLE_ADMIN)) {
             throw new PermissionDenyException("Không được phép đăng ký tài khoản có vai trò " + EUserRole.ROLE_ADMIN.getValue());
@@ -108,12 +102,37 @@ public class UserService implements IUserService {
         User newUser = User.builder()
                 .username(userCreateDTO.getUsername())
                 .password(encodedPassword)
+                .role(role)
                 .activated(true)
                 .build();
+        userRepository.save(newUser);
 
-        newUser.setRole(role);
+        ProjectUser projectUser = new ProjectUser()
+                .setUser(newUser)
+                .setProject(project);
+        projectUserRepository.save(projectUser);
 
-        return userRepository.save(newUser);
+        if (userCreateDTO.getFullName() != null && userCreateDTO.getPhoneNumber() != null) {
+            if (userCreateDTO.getPhoneNumber().length() > 10
+                    || !appUtils.isValidPhoneNumber(userCreateDTO.getPhoneNumber())
+            ) {
+                throw new DataExistsException("Số điện thoại không hợp lệ");
+            }
+            else {
+                Optional<UserInfo> userInfoOptional = userInfoRepository.findByPhoneNumber(userCreateDTO.getPhoneNumber());
+
+                if (userInfoOptional.isPresent()) {
+                    throw new DataInputException("Số điện thoại này đã được sử dụng");
+                }
+
+                UserInfo userInfo = new UserInfo()
+                        .setUser(newUser)
+                        .setEmail(userCreateDTO.getUsername())
+                        .setFullName(userCreateDTO.getFullName())
+                        .setPhoneNumber(userCreateDTO.getPhoneNumber());
+                userInfoRepository.save(userInfo);
+            }
+        }
     }
 
     @Override

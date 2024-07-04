@@ -88,7 +88,6 @@ public class UserAPI {
         }
     }
 
-
     @GetMapping("/get-all-by-project/{projectId}")
     public ResponseEntity<ResponseObject> getAllUserByProject(
             @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId
@@ -121,8 +120,7 @@ public class UserAPI {
 
         UserAssignWithRemainingTotalResponse userAssignWithRemainingTotal = new UserAssignWithRemainingTotalResponse()
                 .setUsers(users)
-                .setRemainingTotal(remainingTotal)
-                ;
+                .setRemainingTotal(remainingTotal);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Get user list with project successfully")
