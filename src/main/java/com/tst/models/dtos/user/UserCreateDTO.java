@@ -31,13 +31,11 @@ public class UserCreateDTO {
 
     private String retypePassword;
 
-    @NotNull(message = "Vai trò không được rỗng")
-    @Size(min = 1, message = "Vai trò là bắt buộc")
+    @NotBlank(message = "Vai trò là bắt buộc")
     @Pattern(regexp = "^[1-9]\\d*$", message = "Mã vai trò phải là số")
     private String roleCode;
 
-    @NotNull(message = "Dự án là không được rỗng")
-    @Size(min = 1, message = "Dự án là bắt buộc")
+    @NotBlank(message = "Dự án là bắt buộc")
     @Pattern(regexp = "^[1-9]\\d*$", message = "Mã dự án phải là số")
     private String projectId;
 }

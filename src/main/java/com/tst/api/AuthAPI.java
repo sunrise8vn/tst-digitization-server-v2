@@ -62,7 +62,7 @@ public class AuthAPI {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .message(localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_FAILED))
                     .status(HttpStatus.BAD_REQUEST.value())
-                    .statusText(HttpStatus.BAD_GATEWAY)
+                    .statusText(HttpStatus.BAD_REQUEST)
                     .data(localizationUtils.getLocalizedMessage(MessageKeys.PASSWORD_NOT_MATCH))
                     .build());
         }
@@ -107,7 +107,7 @@ public class AuthAPI {
             return ResponseEntity.badRequest().body(ResponseObject.builder()
                     .message(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_FAILED))
                     .status(HttpStatus.BAD_REQUEST.value())
-                    .statusText(HttpStatus.BAD_GATEWAY)
+                    .statusText(HttpStatus.BAD_REQUEST)
                     .data(appUtils.mapErrorToResponse(result))
                     .build());
         }

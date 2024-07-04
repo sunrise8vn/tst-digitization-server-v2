@@ -28,4 +28,6 @@ public interface IUserService extends IGeneralService<User, String> {
 
     void createUser(UserCreateDTO userCreateDTO, Role role, Project project);
 
+    void changePassword(User user, String password);
+
 }
