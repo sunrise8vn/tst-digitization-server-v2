@@ -92,8 +92,8 @@ public class UserService implements IUserService {
             throw new DataExistsException(localizationUtils.getLocalizedMessage(MessageKeys.USER_IS_EXISTING));
         }
 
-        if (role.getName().equals(EUserRole.ROLE_ADMIN)) {
-            throw new PermissionDenyException("Không được phép đăng ký tài khoản có vai trò " + EUserRole.ROLE_ADMIN.getValue());
+        if (role.getName().equals(EUserRole.ROLE_SUPER_ADMIN)) {
+            throw new PermissionDenyException("Không được phép đăng ký tài khoản có vai trò " + EUserRole.ROLE_SUPER_ADMIN.getValue());
         }
 
         String encodedPassword = passwordEncoder.encode(userCreateDTO.getPassword());
