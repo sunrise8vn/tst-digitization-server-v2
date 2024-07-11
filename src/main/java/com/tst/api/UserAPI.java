@@ -1,11 +1,15 @@
 package com.tst.api;
 
 import com.tst.components.LocalizationUtils;
+import com.tst.exceptions.DataExistsException;
 import com.tst.exceptions.DataInputException;
+import com.tst.exceptions.PermissionDenyException;
+import com.tst.models.dtos.user.UserChangeInfoDTO;
 import com.tst.models.dtos.user.UserUpdateInfoDTO;
 import com.tst.models.dtos.user.UserUpdatePasswordDTO;
 import com.tst.models.entities.AccessPoint;
 import com.tst.models.entities.Project;
+import com.tst.models.entities.Role;
 import com.tst.models.entities.User;
 import com.tst.models.responses.PaginationResponseObject;
 import com.tst.models.responses.PagingResponseObject;
@@ -16,10 +20,12 @@ import com.tst.models.responses.user.UserResponse;
 import com.tst.services.accessPoint.IAccessPointService;
 import com.tst.services.project.IProjectService;
 import com.tst.services.projectUser.IProjectUserService;
+import com.tst.services.role.IRoleService;
 import com.tst.services.user.IUserService;
 import com.tst.services.userInfo.IUserInfoService;
 import com.tst.utils.AppUtils;
 import com.tst.utils.MessageKeys;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -41,6 +47,7 @@ import java.util.List;
 public class UserAPI {
 
     private final LocalizationUtils localizationUtils;
+    private final IRoleService roleService;
     private final IUserService userService;
     private final IUserInfoService userInfoService;
     private final IProjectService projectService;
@@ -187,6 +194,57 @@ public class UserAPI {
 
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Cập nhật thông tin thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .build());
+    }
+
+    @PatchMapping("/change-info/{userId}")
+    public ResponseEntity<ResponseObject> changeInfo(
+            @PathVariable @NotBlank(message = "ID người dùng là bắt buộc") String userId,
+            @Validated @RequestBody UserChangeInfoDTO userChangeInfoDTO,
+            BindingResult result
+    ) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(ResponseObject.builder()
+                    .message("Lỗi cập nhật thông tin")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .statusText(HttpStatus.BAD_REQUEST)
+                    .data(appUtils.mapErrorToResponse(result))
+                    .build());
+        }
+
+        if (!appUtils.isValidPhoneNumber(userChangeInfoDTO.getPhoneNumber())) {
+            throw new DataInputException("Số điện thoại không hợp ệ");
+        }
+
+        User currentUser = userService.getAuthenticatedUser();
+
+        User userChange = userService.findById(
+                userId
+        ).orElseThrow(() -> new DataInputException("Người dùng không tồn tại"));
+
+        if (currentUser.getId().equals(userChange.getId())) {
+            throw new DataInputException("Bạn không thể thay đổi thông tin chính mình bằng chức năng này");
+        }
+
+        Role roleChange = roleService.findByCodeNumber(
+                Integer.parseInt(userChangeInfoDTO.getRoleCode())
+        ).orElseThrow(() -> new DataInputException("Mã vai trò không tồn tại"));
+
+        Integer roleCodeChange = roleChange.getCodeNumber();
+        Integer roleCode = currentUser.getRole().getCodeNumber();
+
+        if (roleCode > roleCodeChange) {
+            throw new PermissionDenyException("Bạn không đủ quyền hạn để cập nhật vai trò cấp cao");
+        }
+
+        userChange.setRole(roleChange);
+
+        userInfoService.changeInfo(userChange, userChangeInfoDTO);
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Thay đổi thông tin người dùng thành công")
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .build());
