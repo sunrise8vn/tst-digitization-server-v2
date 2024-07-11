@@ -1,7 +1,6 @@
 package com.tst.api;
 
 import com.tst.components.LocalizationUtils;
-import com.tst.exceptions.DataExistsException;
 import com.tst.exceptions.DataInputException;
 import com.tst.exceptions.PermissionDenyException;
 import com.tst.models.dtos.user.UserChangeInfoDTO;

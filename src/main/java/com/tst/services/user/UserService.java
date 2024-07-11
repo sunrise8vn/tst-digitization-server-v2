@@ -99,7 +99,7 @@ public class UserService implements IUserService {
         String encodedPassword = passwordEncoder.encode(userCreateDTO.getPassword());
 
         User newUser = User.builder()
-                .username(userCreateDTO.getUsername())
+                .username(userCreateDTO.getUsername().toLowerCase())
                 .password(encodedPassword)
                 .role(role)
                 .activated(true)
