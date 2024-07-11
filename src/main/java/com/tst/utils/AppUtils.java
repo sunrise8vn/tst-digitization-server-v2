@@ -33,6 +33,18 @@ public class AppUtils {
         return errors;
     }
 
+    public boolean isValidEnglishCharAndNumberAndUnderscore(String input) {
+        String pattern = "^[a-zA-Z0-9_]+$";
+
+        return input.matches(pattern);
+    }
+
+    public boolean isValidEmail(String email) {
+        String emailPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+
+        return email.matches(emailPattern);
+    }
+
     public boolean isValidDateDot(String dateStr) {
         Pattern pattern = Pattern.compile(
                 String.format("(%s)|(%s)|(%s)", YEAR_PATTERN, MONTH_YEAR_PATTERN_DOT, DATE_MONTH_YEAR_PATTERN_DOT)

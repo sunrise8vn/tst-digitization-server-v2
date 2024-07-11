@@ -67,6 +67,10 @@ public class AuthAPI {
                     .build());
         }
 
+        if (!appUtils.isValidEmail(userCreateDTO.getUsername())) {
+            throw new DataInputException("Email tài khoản không hợp lệ");
+        }
+
         Role userRoleCreate = roleService.findByCodeNumber(
                 Integer.parseInt(userCreateDTO.getRoleCode())
         ).orElseThrow(() -> new DataInputException("Mã vai trò không tồn tại"));
