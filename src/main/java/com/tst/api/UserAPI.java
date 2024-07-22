@@ -6,10 +6,8 @@ import com.tst.exceptions.PermissionDenyException;
 import com.tst.models.dtos.user.UserChangeInfoDTO;
 import com.tst.models.dtos.user.UserUpdateInfoDTO;
 import com.tst.models.dtos.user.UserUpdatePasswordDTO;
-import com.tst.models.entities.AccessPoint;
-import com.tst.models.entities.Project;
-import com.tst.models.entities.Role;
-import com.tst.models.entities.User;
+import com.tst.models.entities.*;
+import com.tst.models.enums.EUserRole;
 import com.tst.models.responses.PaginationResponseObject;
 import com.tst.models.responses.PagingResponseObject;
 import com.tst.models.responses.ResponseObject;
@@ -38,6 +36,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -104,6 +103,83 @@ public class UserAPI {
         }
     }
 
+    @GetMapping("/get-my-info")
+    public ResponseEntity<ResponseObject> getMyInfo() {
+        User user = userService.getAuthenticatedUser();
+
+        Optional<UserInfo> userInfoOptional = userInfoService.findByUser(user);
+
+        UserResponse userResponse = new UserResponse()
+                .setId(user.getId())
+                .setUsername(user.getUsername())
+                .setRole(user.getRole().getName())
+                .setActivated(user.isActivated());
+
+        if (userInfoOptional.isPresent()) {
+            userResponse.setFullName(userInfoOptional.get().getFullName());
+            userResponse.setEmail(userInfoOptional.get().getEmail());
+            userResponse.setPhoneNumber(userInfoOptional.get().getPhoneNumber());
+            userResponse.setAddress(userInfoOptional.get().getAddress());
+        }
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy thông tin thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(userResponse)
+                .build());
+    }
+
+    @GetMapping("/get-info/{projectId}/{userId}")
+    public ResponseEntity<ResponseObject> getUserInfo(
+            @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId,
+            @PathVariable @NotBlank(message = "ID người dùng là bắt buộc") String userId
+    ) {
+        User user = userService.findById(
+                userId
+        ).orElseThrow(() -> new DataInputException("ID người dùng không tồn tại"));
+
+        User currentUser = userService.getAuthenticatedUser();
+
+        Project project = projectService.findById(
+                Long.parseLong(projectId)
+        ).orElseThrow(() -> new DataInputException("ID dự án không tồn tại"));
+
+        if (!currentUser.getRole().getName().equals(EUserRole.ROLE_SUPER_ADMIN)) {
+            projectUserService.findByProjectAndUser(
+                    project,
+                    currentUser
+            ).orElseThrow(() -> new DataInputException("Bạn không thuộc dự án này"));
+
+            projectUserService.findByProjectAndUser(
+                    project,
+                    user
+            ).orElseThrow(() -> new DataInputException("Người dùng không thuộc dự án này"));
+        }
+
+        Optional<UserInfo> userInfoOptional = userInfoService.findByUser(user);
+
+        UserResponse userResponse = new UserResponse()
+                .setId(user.getId())
+                .setUsername(user.getUsername())
+                .setRole(user.getRole().getName())
+                .setActivated(user.isActivated());
+
+        if (userInfoOptional.isPresent()) {
+            userResponse.setFullName(userInfoOptional.get().getFullName());
+            userResponse.setEmail(userInfoOptional.get().getEmail());
+            userResponse.setPhoneNumber(userInfoOptional.get().getPhoneNumber());
+            userResponse.setAddress(userInfoOptional.get().getAddress());
+        }
+
+        return ResponseEntity.ok().body(ResponseObject.builder()
+                .message("Lấy thông tin người dùng thành công")
+                .status(HttpStatus.OK.value())
+                .statusText(HttpStatus.OK)
+                .data(userResponse)
+                .build());
+    }
+
     @GetMapping("/get-all-by-project/{projectId}")
     public ResponseEntity<ResponseObject> getAllUserByProject(
             @PathVariable @Pattern(regexp = "^\\d+$", message = "ID dự án phải là một số") String projectId
@@ -115,7 +191,7 @@ public class UserAPI {
         List<UserAssignResponse> users = projectUserService.findAllUserAssignByProject(project);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
-                .message("Get user list with project successfully")
+                .message("Lấy danh sách tất cả người dùng theo dự án thành công")
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .data(users)
@@ -139,7 +215,7 @@ public class UserAPI {
                 .setRemainingTotal(remainingTotal);
 
         return ResponseEntity.ok().body(ResponseObject.builder()
-                .message("Get user list with project successfully")
+                .message("Lấy danh sách người dùng theo dự án thành công")
                 .status(HttpStatus.OK.value())
                 .statusText(HttpStatus.OK)
                 .data(userAssignWithRemainingTotal)
@@ -183,6 +259,10 @@ public class UserAPI {
                     .build());
         }
 
+        if (!appUtils.isValidEmail(userUpdateInfoDTO.getEmail())) {
+            throw new DataInputException("Email không hợp lệ");
+        }
+
         if (!appUtils.isValidPhoneNumber(userUpdateInfoDTO.getPhoneNumber())) {
             throw new DataInputException("Số điện thoại không hợp ệ");
         }
@@ -211,6 +291,10 @@ public class UserAPI {
                     .statusText(HttpStatus.BAD_REQUEST)
                     .data(appUtils.mapErrorToResponse(result))
                     .build());
+        }
+
+        if (!appUtils.isValidEmail(userChangeInfoDTO.getEmail())) {
+            throw new DataInputException("Email không hợp lệ");
         }
 
         if (!appUtils.isValidPhoneNumber(userChangeInfoDTO.getPhoneNumber())) {
