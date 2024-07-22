@@ -92,10 +92,6 @@ public class UserService implements IUserService {
             throw new DataExistsException(localizationUtils.getLocalizedMessage(MessageKeys.USER_IS_EXISTING));
         }
 
-        if (role.getName().equals(EUserRole.ROLE_SUPER_ADMIN)) {
-            throw new PermissionDenyException("Không được phép đăng ký tài khoản có vai trò " + EUserRole.ROLE_SUPER_ADMIN.getValue());
-        }
-
         String encodedPassword = passwordEncoder.encode(userCreateDTO.getPassword());
 
         User newUser = User.builder()
@@ -110,28 +106,6 @@ public class UserService implements IUserService {
                 .setUser(newUser)
                 .setProject(project);
         projectUserRepository.save(projectUser);
-
-        if (userCreateDTO.getFullName() != null && userCreateDTO.getPhoneNumber() != null) {
-            if (userCreateDTO.getPhoneNumber().length() > 10
-                    || !appUtils.isValidPhoneNumber(userCreateDTO.getPhoneNumber())
-            ) {
-                throw new DataExistsException("Số điện thoại không hợp lệ");
-            }
-            else {
-                Optional<UserInfo> userInfoOptional = userInfoRepository.findByPhoneNumber(userCreateDTO.getPhoneNumber());
-
-                if (userInfoOptional.isPresent()) {
-                    throw new DataInputException("Số điện thoại này đã được sử dụng");
-                }
-
-                UserInfo userInfo = new UserInfo()
-                        .setUser(newUser)
-                        .setEmail(userCreateDTO.getUsername())
-                        .setFullName(userCreateDTO.getFullName())
-                        .setPhoneNumber(userCreateDTO.getPhoneNumber());
-                userInfoRepository.save(userInfo);
-            }
-        }
     }
 
     @Override

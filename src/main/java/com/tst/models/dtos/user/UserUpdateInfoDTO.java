@@ -19,6 +19,10 @@ public class UserUpdateInfoDTO {
     @Size(max = 100, message = "Tên người dùng tối đa 100 ký tự")
     private String fullName;
 
+    @NotBlank(message = "Email không được rỗng")
+    @Size(max = 25, message = "Email tối đa 25 ký tự")
+    private String email;
+
     @NotBlank(message = "Số điện thoại không được rỗng")
     @Size(max = 10, message = "Số điện thoại tối đa 10 ký tự")
     private String phoneNumber;

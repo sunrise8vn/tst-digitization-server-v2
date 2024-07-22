@@ -27,39 +27,62 @@ public class UserInfoService implements IUserInfoService {
     }
 
     @Override
+    public Optional<UserInfo> findByUser(User user) {
+        return userInfoRepository.findByUser(user);
+    }
+
+    @Override
     public void updateInfo(User user, UserUpdateInfoDTO userUpdateInfoDTO) {
         Optional<UserInfo> userInfoOptional = userInfoRepository.findByUser(user);
 
         UserInfo userInfo;
 
         if (userInfoOptional.isPresent()) {
-            Optional<UserInfo> userInfoCurrentOptional = userInfoRepository.findByPhoneNumberAndUserIsNot(
+            Optional<UserInfo> userEmailOptional = userInfoRepository.findByPhoneNumberAndUserIsNot(
+                    userUpdateInfoDTO.getEmail(),
+                    user
+            );
+
+            if (userEmailOptional.isPresent()) {
+                throw  new DataExistsException("Email này đã được sử dụng");
+            }
+
+            Optional<UserInfo> userPhoneOptional = userInfoRepository.findByPhoneNumberAndUserIsNot(
                     userUpdateInfoDTO.getPhoneNumber(),
                     user
             );
 
-            if (userInfoCurrentOptional.isPresent()) {
+            if (userPhoneOptional.isPresent()) {
                 throw  new DataExistsException("Số điện thoại này đã được sử dụng");
             }
 
             userInfo = userInfoOptional.get();
-            userInfo.setPhoneNumber(userUpdateInfoDTO.getPhoneNumber());
             userInfo.setFullName(userUpdateInfoDTO.getFullName());
+            userInfo.setEmail(userUpdateInfoDTO.getEmail());
+            userInfo.setPhoneNumber(userUpdateInfoDTO.getPhoneNumber());
             userInfo.setAddress(userUpdateInfoDTO.getAddress());
         }
         else {
-            Optional<UserInfo> userInfoCurrentOptional = userInfoRepository.findByPhoneNumber(
+            Optional<UserInfo> userEmailOptional = userInfoRepository.findByEmail(
+                    userUpdateInfoDTO.getEmail()
+            );
+
+            if (userEmailOptional.isPresent()) {
+                throw  new DataExistsException("Email này đã được sử dụng");
+            }
+
+            Optional<UserInfo> userPhoneOptional = userInfoRepository.findByPhoneNumber(
                     userUpdateInfoDTO.getPhoneNumber()
             );
 
-            if (userInfoCurrentOptional.isPresent()) {
+            if (userPhoneOptional.isPresent()) {
                 throw  new DataExistsException("Số điện thoại này đã được sử dụng");
             }
 
             userInfo = new UserInfo()
                     .setUser(user)
-                    .setEmail(user.getUsername())
                     .setFullName(userUpdateInfoDTO.getFullName())
+                    .setEmail(userUpdateInfoDTO.getEmail())
                     .setPhoneNumber(userUpdateInfoDTO.getPhoneNumber())
                     .setAddress(userUpdateInfoDTO.getAddress());
         }
